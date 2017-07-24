@@ -199,7 +199,7 @@ function Config:CreateConfigMenu()
 	ConfigFrame.inviteButton:SetSize(100, 30); -- width, height
 	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
 	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.inviteButton.text:SetPoint("LEFT", ConfigFrame.inviteButton, "LEFT", 5,0);
+	ConfigFrame.inviteButton.text:SetPoint("CENTER", ConfigFrame.inviteButton, "CENTER", 0,0);
 	ConfigFrame.inviteButton.text:SetText("Invite");
 end
 
