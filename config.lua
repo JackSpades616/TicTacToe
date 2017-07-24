@@ -18,7 +18,7 @@ local defaults = {
 
 local xPositionDefault, yPositionDefault = UIParent:GetCenter();
 xPositionDefault = xPositionDefault * 1.5;
-yPositionDefault = yPositionDefault / 2;
+yPositionDefault = yPositionDefault / 1.5;
 
 
 --------------------------------------
