@@ -575,9 +575,13 @@ end
 ---------------------------------
 -- Events
 ---------------------------------
-local msg = CreateFrame("Frame");
-msg:RegisterEvent("CHAT_MSG_EMOTE");
-msg:SetScript("OnEvent", ReceiveInput);
+local msgEmote = CreateFrame("Frame");
+msgEmote:RegisterEvent("CHAT_MSG_EMOTE");
+msgEmote:SetScript("OnEvent", ReceiveInput);
+
+local msgWhisper = CreateFrame("Frame");
+msgWhisper:RegisterEvent("CHAT_MSG_WHISPER");
+msgWhisper:SetScript("OnEvent", ReceiveInput);
 
 
 
