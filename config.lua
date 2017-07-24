@@ -154,6 +154,16 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
 	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
 	-- ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
+
+	ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
+	ConfigFrame.whisperEditBox:ClearAllPoints();
+	ConfigFrame.whisperEditBox:SetSize(80, 30);
+	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
+	if (whisperMode) then
+		ConfigFrame.whisperEditBox:Enable();
+	else
+		ConfigFrame.whisperEditBox:Disable();
+	end
 end
 
 --------------------------------------
