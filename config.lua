@@ -198,6 +198,7 @@ function Config:CreateConfigMenu()
 	else
 		ConfigFrame.whisperEditBox:Disable();
 	end
+	ConfigFrame.whisperEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
 		
 	-- this Button invites another Player to the game
 	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
