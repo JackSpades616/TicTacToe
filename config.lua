@@ -190,7 +190,13 @@ function Config:CreateConfigMenu()
 	else
 		ConfigFrame.whisperEditBox:Disable();
 	end
-
+	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
+			if (self:GetText() == "") then
+				whisperTarget = nil;
+			else
+				whisperTarget = self:GetText();
+			end
+		end);
 		
 	-- this Button invites another Player to the game
 	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
