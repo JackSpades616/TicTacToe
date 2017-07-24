@@ -185,11 +185,6 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperEditBox:ClearAllPoints();
 	ConfigFrame.whisperEditBox:SetSize(80, 30);
 	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
-	if (whisperMode) then
-		ConfigFrame.whisperEditBox:Enable();
-	else
-		ConfigFrame.whisperEditBox:Disable();
-	end
 	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
 			if (self:GetText() == "") then
 				whisperTarget = nil;
@@ -197,6 +192,11 @@ function Config:CreateConfigMenu()
 				whisperTarget = self:GetText();
 			end
 		end);
+	if (whisperMode) then
+		ConfigFrame.whisperEditBox:Enable();
+	else
+		ConfigFrame.whisperEditBox:Disable();
+	end
 		
 	-- this Button invites another Player to the game
 	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
