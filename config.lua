@@ -201,6 +201,11 @@ function Config:CreateConfigMenu()
 	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.inviteButton.text:SetPoint("CENTER", ConfigFrame.inviteButton, "CENTER", 0,0);
 	ConfigFrame.inviteButton.text:SetText("Invite");
+	
+	ConfigFrame.inviteEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
+	ConfigFrame.inviteEditBox:ClearAllPoints();
+	ConfigFrame.inviteEditBox:SetSize(80, 30);
+	ConfigFrame.inviteEditBox:SetPoint("LEFT", ConfigFrame.inviteButton, "RIGHT", 10, 0);
 end
 
 --------------------------------------
