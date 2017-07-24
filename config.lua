@@ -173,17 +173,7 @@ function Config:CreateConfigMenu()
 				ConfigFrame.whisperEditBox:Disable();
 			end
 		end);
-<<<<<<< HEAD
-		
-	-- this Button invites another Player to the game
-	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
-	ConfigFrame.inviteButton:ClearAllPoints();
-	ConfigFrame.inviteButton:SetSize(100, 30); -- width, height
-	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
-	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.inviteButton.text:SetPoint("LEFT", ConfigFrame.inviteButton, "LEFT", 5,0);
-	ConfigFrame.inviteButton.text:SetText("Invite");
-=======
+
 
 	if (whisperMode) then
 		ConfigFrame.whisperCheckBox:SetChecked(true);
@@ -201,7 +191,16 @@ function Config:CreateConfigMenu()
 	else
 		ConfigFrame.whisperEditBox:Disable();
 	end
->>>>>>> fa8f61b8ae6fe1731ad015e3b421d2b7037acf0b
+
+		
+	-- this Button invites another Player to the game
+	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
+	ConfigFrame.inviteButton:ClearAllPoints();
+	ConfigFrame.inviteButton:SetSize(100, 30); -- width, height
+	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
+	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.inviteButton.text:SetPoint("LEFT", ConfigFrame.inviteButton, "LEFT", 5,0);
+	ConfigFrame.inviteButton.text:SetText("Invite");
 end
 
 --------------------------------------
