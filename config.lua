@@ -211,6 +211,12 @@ function Config:CreateConfigMenu()
 	ConfigFrame.inviteEditBox:ClearAllPoints();
 	ConfigFrame.inviteEditBox:SetSize(80, 30);
 	ConfigFrame.inviteEditBox:SetPoint("TOPLEFT", ConfigFrame.whisperEditBox, "BOTTOMLEFT", 0, 0);
+	
+	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
+		if ConfigFrame.inviteEditBox ~= "" then
+			InviteUnit(ConfigFrame.inviteEditBox)
+		else
+		end);
 end
 
 --------------------------------------
