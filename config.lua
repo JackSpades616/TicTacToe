@@ -149,7 +149,7 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
 	ConfigFrame.whisperCheckBox:ClearAllPoints();
 	ConfigFrame.whisperCheckBox:SetSize(30, 30); -- width, height
-	ConfigFrame.whisperCheckBox:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 12, -50);
+	ConfigFrame.whisperCheckBox:SetPoint("TOP", ConfigFrame.soloCheckBox, "BOTTOM", 0, 0);
 	ConfigFrame.whisperCheckBox.text = ConfigFrame.whisperCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
 	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
