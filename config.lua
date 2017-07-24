@@ -36,8 +36,8 @@ local playerTwo = "";
 local myTurn = true;
 local playerX = true;
 local singleplayer = false;
-local whisperMode= false;
-local chatType= "EMOTE";
+local whisperMode = false;
+local chatType = "EMOTE";
 local counter = 0;
 local win = false;
 local blackList = "";
@@ -141,6 +141,7 @@ function Config:CreateConfigMenu()
 				singleplayer = false;
 			end
 		end);
+
 	if (singleplayer) then
 		ConfigFrame.soloCheckBox:SetChecked(true);
 	else
@@ -159,10 +160,25 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperCheckBox:SetScript("OnClick", function(self)
 			if (self:GetChecked()) then
 				chatType = "WHISPER";
+				whisperMode = true;
 			else
 				chatType = "EMOTE";
+				whisperMode = false;
+			end
+
+			if (whisperMode) then
+				ConfigFrame.whisperEditBox:Enable();
+			else
+				ConfigFrame.whisperEditBox:Disable();
 			end
 		end);
+
+	if (whisperMode) then
+		ConfigFrame.whisperCheckBox:SetChecked(true);
+	else
+		ConfigFrame.whisperCheckBox:SetChecked(false);
+	end
+
 
 	ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
 	ConfigFrame.whisperEditBox:ClearAllPoints();
