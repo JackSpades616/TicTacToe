@@ -216,7 +216,7 @@ function Config:CreateConfigMenu()
 	
 	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
 			if ConfigFrame.inviteEditBox ~= "" then
-				InviteUnit(ConfigFrame.inviteEditBox)
+				InviteUnit(ConfigFrame.inviteEditBox:GetText())
 			end
 		end);
 end
