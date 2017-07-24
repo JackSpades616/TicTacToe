@@ -13,11 +13,12 @@ local defaults = {
 		g = 0.8, -- 204/255
 		b = 1,
 		hex = "00ccff"
-	}
+	} 
 }
 
-local xPositionDefault = 500;
-local yPositionDefault = -200;
+local xPositionDefault, yPositionDefault = UIParent:GetCenter();
+xPositionDefault = xPositionDefault * 1.5;
+yPositionDefault = yPositionDefault / 2;
 
 
 --------------------------------------
@@ -46,7 +47,7 @@ local blackList = "";
 function Config:CreateMenu() -- creates the Main Frame
 	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
 	MainFrame:SetSize(240, 240); -- width, height
-	MainFrame:SetPoint("CENTER", UIParent, "CENTER", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
 	MainFrame.title:SetText(Title);
@@ -62,7 +63,7 @@ function Config:CreateMenu() -- creates the Main Frame
 	  if button == "LeftButton" and self.isMoving then
 	   self:StopMovingOrSizing();
 	   self.isMoving = false;
-	   local point, relativeTo, relativePoint, xOffset, yOffset = self:GetPoint(1)
+	   local xOffset, yOffset = self:GetCenter();
 	   xPosition = xOffset;
 	   yPosition = yOffset;
 	  end

@@ -7,4 +7,5 @@ Commands
 -------------------------------------
 
 Start the game: /ttt
+
 Reset the game: /ttt reset
