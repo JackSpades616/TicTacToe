@@ -147,12 +147,13 @@ function Config:CreateConfigMenu()
 
 	-- this CheckBox is if you want to play in whisper Mode
 	ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
-	Configframe.whisperCheckBox:ClearAllPoints();
-	Configframe.whisperCheckBox:SetSize(30, 30); -- width, height
+	ConfigFrame.whisperCheckBox:ClearAllPoints();
+	ConfigFrame.whisperCheckBox:SetSize(30, 30); -- width, height
+	ConfigFrame.whisperCheckBox:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 12, -50);
 	ConfigFrame.whisperCheckBox.text = ConfigFrame.whisperCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.whisperCheckBox.text:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 12, -40);
+	ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
 	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
-	ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
+	-- ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
 end
 
 --------------------------------------
