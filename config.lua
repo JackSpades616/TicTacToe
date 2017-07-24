@@ -185,6 +185,7 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperEditBox:ClearAllPoints();
 	ConfigFrame.whisperEditBox:SetSize(80, 30);
 	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
+	ConfigFrame.whisperEditBox:SetAutoFocus(false);
 	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
 			if (self:GetText() == "") then
 				whisperTarget = nil;
