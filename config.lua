@@ -36,6 +36,8 @@ local playerTwo = "";
 local myTurn = true;
 local playerX = true;
 local singleplayer = false;
+local whisperMode=false;
+local chatType="EMOTE";
 local counter = 0;
 local win = false;
 local blackList = "";
@@ -154,6 +156,13 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
 	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
 	-- ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
+	ConfigFrame.whisperCheckBox:SetScript("OnClick", function(self)
+			if (self:GetChecked()) then
+				chatType = "WHISPER";
+			else
+				chatType = "EMOTE";
+			end
+		end);
 end
 
 --------------------------------------
@@ -161,7 +170,7 @@ end
 --------------------------------------
 function Config:Exit()
 	if (not singleplayer and playerTwo ~= "") then
-		SendChatMessage("has quit the game.", "EMOTE");
+		SendChatMessage("has quit the game.", chatType);
 	end
 	myTurn = true;
 	playerTwo = "";
@@ -229,9 +238,9 @@ end
 local function Field_Onclick(self)
 	if (singleplayer == false) then
 		if (playerX) then
-			SendChatMessage("has put an X on the field : " .. self:GetID(), "EMOTE");
+			SendChatMessage("has put an X on the field : " .. self:GetID(), chatType);
 		else
-			SendChatMessage("has put an O on the field : " .. self:GetID(), "EMOTE");
+			SendChatMessage("has put an O on the field : " .. self:GetID(), chatType);
 		end
 	end
 
@@ -300,7 +309,7 @@ function SelectField(key)
 				MainFrame.field[2]:LockHighlight();
 				MainFrame.field[3]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -314,7 +323,7 @@ function SelectField(key)
 				MainFrame.field[5]:LockHighlight();
 				MainFrame.field[6]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -328,7 +337,7 @@ function SelectField(key)
 				MainFrame.field[8]:LockHighlight();
 				MainFrame.field[9]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -342,7 +351,7 @@ function SelectField(key)
 				MainFrame.field[4]:LockHighlight();
 				MainFrame.field[7]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -356,7 +365,7 @@ function SelectField(key)
 				MainFrame.field[5]:LockHighlight();
 				MainFrame.field[8]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -370,7 +379,7 @@ function SelectField(key)
 				MainFrame.field[6]:LockHighlight();
 				MainFrame.field[9]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -384,7 +393,7 @@ function SelectField(key)
 				MainFrame.field[5]:LockHighlight();
 				MainFrame.field[9]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
@@ -398,7 +407,7 @@ function SelectField(key)
 				MainFrame.field[5]:LockHighlight();
 				MainFrame.field[7]:LockHighlight();
 				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", "EMOTE");
+					SendChatMessage("won the game!", chatType);
 					DoEmote("DANCE", none);
 				elseif (myTurn == false) and (singleplayer == false) then
 					DoEmote("CRY", playerTwo);
