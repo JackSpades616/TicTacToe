@@ -116,7 +116,7 @@ end
 function Config:CreateConfigMenu()
 	-- Creates the ConfigFrame
 	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame, "BasicFrameTemplateWithInset");
-	ConfigFrame:SetSize(MainFrame:GetWidth(), 80); -- width, height
+	ConfigFrame:SetSize(MainFrame:GetWidth(), 100); -- width, height
 	ConfigFrame:SetPoint("TOP", MainFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	ConfigFrame.title = ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.title:SetPoint("LEFT", ConfigFrame.TitleBg, "LEFT", 5, 0);
@@ -131,6 +131,16 @@ function Config:CreateConfigMenu()
 	ConfigFrame.soloCheckBox.text:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 12, -32);
 	ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
 	ConfigFrame.soloCheckBox:SetPoint("LEFT", ConfigFrame.soloCheckBox.text, "RIGHT", 0, 0);
+	
+	-- this CheckBox is if you want to play in whisper Mode
+	ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
+	Configframe.whisperCheckBox:ClearAllPoints();
+	Configframe.whisperCheckBox:SetSize(30, 30); -- width, height
+	ConfigFrame.whisperCheckBox.text = ConfigFrame.whisperCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.whisperCheckBox.text:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 12, -40);
+	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
+	ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
+	
 
 	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
 			if (self:GetChecked()) then
