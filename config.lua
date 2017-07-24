@@ -128,7 +128,7 @@ function Config:CreateConfigMenu()
 	ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
 	ConfigFrame.soloCheckBox:ClearAllPoints();
 	ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
-	ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 8, -28);
+	ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 8, -32);
 	ConfigFrame.soloCheckBox.text = ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.soloCheckBox.text:SetPoint("LEFT", ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
 	ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
