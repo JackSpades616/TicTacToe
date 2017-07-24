@@ -227,6 +227,9 @@ function Config:Exit()
 	blackList = "";
 	counter = 0;
 	win = false;
+	chatType = "EMOTE";
+	whisperMode = false;
+	whisperTarget = nil;
 	MainFrame:Hide();
 	ConfigFrame:Hide();
 	ConfigFrame = nil;
