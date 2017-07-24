@@ -37,6 +37,7 @@ local myTurn = true;
 local playerX = true;
 local singleplayer = false;
 local whisperMode = false;
+local whisperTarget = nil;
 local chatType = "EMOTE";
 local counter = 0;
 local win = false;
