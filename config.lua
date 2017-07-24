@@ -163,6 +163,16 @@ function Config:CreateConfigMenu()
 				chatType = "EMOTE";
 			end
 		end);
+
+	ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
+	ConfigFrame.whisperEditBox:ClearAllPoints();
+	ConfigFrame.whisperEditBox:SetSize(80, 30);
+	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
+	if (whisperMode) then
+		ConfigFrame.whisperEditBox:Enable();
+	else
+		ConfigFrame.whisperEditBox:Disable();
+	end
 end
 
 --------------------------------------
