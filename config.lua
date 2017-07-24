@@ -119,7 +119,7 @@ end
 function Config:CreateConfigMenu()
 	-- Creates the ConfigFrame
 	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame, "BasicFrameTemplateWithInset");
-	ConfigFrame:SetSize(MainFrame:GetWidth(), 100); -- width, height
+	ConfigFrame:SetSize(MainFrame:GetWidth(), 140); -- width, height
 	ConfigFrame:SetPoint("TOP", MainFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	ConfigFrame.title = ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.title:SetPoint("LEFT", ConfigFrame.TitleBg, "LEFT", 5, 0);
@@ -163,6 +163,15 @@ function Config:CreateConfigMenu()
 				chatType = "EMOTE";
 			end
 		end);
+		
+	-- this Button invites another Player to the game
+	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
+	ConfigFrame.inviteButton:ClearAllPoints();
+	ConfigFrame.inviteButton:SetSize(100, 30); -- width, height
+	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
+	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.inviteButton.text:SetPoint("LEFT", ConfigFrame.inviteButton, "LEFT", 5,0);
+	ConfigFrame.inviteButton.text:SetText("Invite");
 end
 
 --------------------------------------
@@ -238,9 +247,9 @@ end
 local function Field_Onclick(self)
 	if (singleplayer == false) then
 		if (playerX) then
-			SendChatMessage("has put an X on the field : " .. self:GetID(), chatType);
+			SendChatMessage("has put an X on the field : " .. self:GetID(), chatType, nil, whisperTarget);
 		else
-			SendChatMessage("has put an O on the field : " .. self:GetID(), chatType);
+			SendChatMessage("has put an O on the field : " .. self:GetID(), chatType, nil, whisperTarget);
 		end
 	end
 
