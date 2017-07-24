@@ -190,6 +190,13 @@ function Config:CreateConfigMenu()
 	else
 		ConfigFrame.whisperEditBox:Disable();
 	end
+	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
+			if (self:GetText() == "") then
+				whisperTarget = nil;
+			else
+				whisperTarget = self:GetText();
+			end
+		end);
 end
 
 --------------------------------------
