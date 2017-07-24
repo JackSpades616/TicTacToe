@@ -36,9 +36,9 @@ local playerTwo = "";
 local myTurn = true;
 local playerX = true;
 local singleplayer = false;
+local chatType = "EMOTE";
 local whisperMode = false;
 local whisperTarget = nil;
-local chatType = "EMOTE";
 local counter = 0;
 local win = false;
 local blackList = "";
@@ -185,11 +185,7 @@ function Config:CreateConfigMenu()
 	ConfigFrame.whisperEditBox:ClearAllPoints();
 	ConfigFrame.whisperEditBox:SetSize(80, 30);
 	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
-	if (whisperMode) then
-		ConfigFrame.whisperEditBox:Enable();
-	else
-		ConfigFrame.whisperEditBox:Disable();
-	end
+	ConfigFrame.whisperEditBox:SetAutoFocus(false);
 	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
 			if (self:GetText() == "") then
 				whisperTarget = nil;
@@ -197,6 +193,12 @@ function Config:CreateConfigMenu()
 				whisperTarget = self:GetText();
 			end
 		end);
+	if (whisperMode) then
+		ConfigFrame.whisperEditBox:Enable();
+	else
+		ConfigFrame.whisperEditBox:Disable();
+	end
+	ConfigFrame.whisperEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
 		
 	-- this Button invites another Player to the game
 	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
@@ -233,6 +235,9 @@ function Config:Exit()
 	blackList = "";
 	counter = 0;
 	win = false;
+	chatType = "EMOTE";
+	whisperMode = false;
+	whisperTarget = nil;
 	MainFrame:Hide();
 	ConfigFrame:Hide();
 	ConfigFrame = nil;
