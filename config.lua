@@ -568,11 +568,18 @@ end
 
 function Config:CreateStatsMenu()
 	-- Creates the MainFrame.ScrollFrame.StatFrame
-	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.StatFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
-	MainFrame.ScrollFrame.StatsFrame = 
+	MainFrame.ScrollFrame.StatsFrame.plOnetitle = MainFrame.ScrollFrame.StatsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plOnetitle:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT", 5, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plOnetitle:SetText("Player One");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plOnetitle:SetText(player[1].name);
+	end
 	--[[print("Player 1: " .. player[1].name);
 	print("Wins: " .. player[1].wins);
 	print("Losts: " .. player[1].loses);
@@ -588,6 +595,7 @@ end
 function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.ConfigFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
 	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
