@@ -74,6 +74,7 @@ function Config:Exit()
 end
 
 function Config:Reset()
+	SendChatMessage("has reseted the game.", chatType);
 	core.Config.Exit();
 	core.Config.Toggle();
 end
