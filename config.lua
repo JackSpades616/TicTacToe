@@ -36,8 +36,30 @@ local ConfigFrame;
 local xPosition = default.position.x;
 local yPosition = default.position.y;
 
-local playerOne = UnitName("player");
-local playerTwo = "";
+local player = {
+	["1"] = {
+		name = "",
+		wins = 0,
+		loses = 0,
+		playedGames = 0,
+	},
+	["2"] = {
+		name = "",
+		wins = 0,
+		loses = 0,
+		playedGames = 0,
+	},
+}
+	--[[
+	{
+		name = "",
+		symbol = "X",
+		wins = 0,
+	}
+	]]
+
+local curPlayerOne = UnitName("player");
+local curPlayerTwo = nil;
 local myTurn = true;
 local playerX = true;
 local singleplayer = false;
@@ -47,17 +69,18 @@ local whisperTarget = nil;
 local counter = 0;
 local win = false;
 local blackList = "";
+local lastMoveMsg = "";
 
 
 --------------------------------------
 -- Config functions
 --------------------------------------
 function Config:Exit()
-	if (not singleplayer and playerTwo ~= "") then
+	if (not singleplayer and curPlayerTwo ~= "") then
 		SendChatMessage("has quit the game.", chatType);
 	end
 	myTurn = true;
-	playerTwo = "";
+	curPlayerTwo = nil;
 	playerX = true;
 	--singleplayer = false;
 	blackList = "";
@@ -134,9 +157,37 @@ local function InvitePlayer()
 	end
 end
 
+-- A function that is not yet used.
+local function CreatePlayer(name, symbol)
+	if (not player[1]) then
+		player[1] = {
+			name = name,
+			symbol = symbol,
+			wins = 0,
+			loses = 0,
+		}
+	else
+		player[#player + 1] = {
+			name = name,
+			mark = symbol,
+			wins = 0,
+			loses = 0,
+		}
+	end
+end
+
+-- Another function that is not yet in usage.
+local function UpdatePlayer(number, name, symbol, wins, loses)
+	if (name) 	then player[number].name 	= name; 	end
+	if (symbol) then player[number].symbol 	= symbol; 	end
+	if (wins) 	then player[number].wins 	= wins; 	end
+	if (loses) 	then player[number].loses 	= loses; 	end
+end
+
 -- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
 local function Field_Onclick(self)
 	if (singleplayer == false) then
+
 		if (playerX) then
 			SendChatMessage("has put an X on the field : " .. self:GetID(), chatType, nil, whisperTarget);
 		else
@@ -189,18 +240,12 @@ end
 --------------------------------------
 -- Functions
 --------------------------------------
-function SelectField(key)
-	if (string.find(blackList, tostring(key))) then
-	else
+function SelectField(key, mark)
+	print(mark)
+	if (not string.find(blackList, tostring(key))) then
 		MainFrame.field[tonumber(key)]:Disable();
 		counter = counter + 1;
-		if (playerX == true) then
-			MainFrame.field[key]:SetText("X");
-			playerX = false;
-		else
-			MainFrame.field[key]:SetText("O");
-			playerX = true;
-		end
+		MainFrame.field[key]:SetText(mark);
 
 		blackList = blackList .. key;
 
@@ -351,8 +396,8 @@ end
 ---------------------------------
 -- Main Frame
 ---------------------------------
-	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
 function Config:CreateMainMenu() -- creates the Main Frame
+	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplate");
 	MainFrame:ClearAllPoints();
 	MainFrame:SetSize(240, 240); -- width, height
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
@@ -385,11 +430,16 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	end)
 	MainFrame:SetScript("OnHide", function(self) ConfigFrame:Hide(); end)
 
+	MainFrame.gameFrame = CreateFrame("Frame", "TicTacToe_MainFrame_GameFrame", MainFrame, "InsetFrameTemplate");
+	MainFrame.gameFrame:ClearAllPoints();
+	MainFrame.gameFrame:SetSize(MainFrame:GetWidth(), 240);
+	MainFrame.gameFrame:SetPoint("TOP", MainFrame, "TOP", 0, 0);
+
 	MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
 	MainFrame.configBtn:ClearAllPoints();
 	MainFrame.configBtn:SetWidth(50); -- width, height
 	MainFrame.configBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
-	MainFrame.configBtn:SetScript("OnClick", function(self) if (ConfigFrame:IsShown()) then ConfigFrame:Hide(); else ConfigFrame:Show(); end end);
+	MainFrame.configBtn:SetScript("OnClick", function(self) if (ConfigFrame:IsShown()) then ConfigFrame:Hide(); InfoFrame:Show(); else ConfigFrame:Show(); InfoFrame:Hide(); end end);
 	MainFrame.configBtn.title = MainFrame.configBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.configBtn.title:SetPoint("LEFT", MainFrame.configBtn, "LEFT", 5, 0);
 	MainFrame.configBtn.title:SetText("Config");
@@ -417,10 +467,44 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	}  
 
 	Config.CreateConfigMenu();
+	-- Config.CreateInfoPanel();
 
-	 MainFrame:Hide();
-	 return MainFrame;
+	MainFrame:Hide();
+	return MainFrame;
 end
+
+--[[
+function Config:CreateInfoPanel()
+	InfoFrame = CreateFrame("Frame", "TicTacToe_InfoFrame", MainFrame, "TooltipBorderedFrameTemplate");
+	InfoFrame:ClearAllPoints();
+	InfoFrame:SetSize(MainFrame:GetWidth(), 140); -- width, height
+	InfoFrame:SetPoint("TOP", MainFrame, "BOTTOM", 0, 2); -- point, relativeFrame, relativePoint, xOffset, yOffset
+
+	InfoFrame.playerOne = CreateFrame("Frame", "TicTacToe_InfoFrame_PlayerOne", InfoFrame, "InsetFrameTemplate");
+	InfoFrame.playerOne:ClearAllPoints();
+	InfoFrame.playerOne:SetSize((InfoFrame:GetWidth() / 2) - 5, InfoFrame:GetHeight() - 10);
+	InfoFrame.playerOne:SetPoint("TOPLEFT", InfoFrame, "TOPLEFT", 5, -5);
+	InfoFrame.playerOne.title = InfoFrame.playerOne:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge");
+	InfoFrame.playerOne.title:SetPoint("TOPLEFT", InfoFrame.playerOne, "TOPLEFT", 5, -5);
+	InfoFrame.playerOne.title:SetText(curPlayerOne or "Player One");
+
+	InfoFrame.playerTwo = CreateFrame("Frame", "TicTacToe_InfoFrame_playerTwo", InfoFrame, "InsetFrameTemplate");
+	InfoFrame.playerTwo:ClearAllPoints();
+	InfoFrame.playerTwo:SetSize((InfoFrame:GetWidth() / 2) - 5, InfoFrame:GetHeight() - 10);
+	InfoFrame.playerTwo:SetPoint("TOPRIGHT", InfoFrame, "TOPRIGHT", -5, -5);
+	InfoFrame.playerTwo.title = InfoFrame.playerTwo:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge");
+	InfoFrame.playerTwo.title:SetPoint("TOPRIGHT", InfoFrame.playerTwo, "TOPRIGHT", -5, -5);
+	InfoFrame.playerTwo.title:SetText(curPlayerTwo or "Player Two");
+
+	InfoFrame.versus = CreateFrame("Frame", "TicTacToe_InfoFrame_Versus", InfoFrame, "");
+	InfoFrame.versus:ClearAllPoints();
+	InfoFrame.versus:SetSize(15, 15);
+	InfoFrame.versus:SetPoint("TOP", InfoFrame, "TOP", 0, -5);
+	InfoFrame.versus.text = InfoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge");
+	InfoFrame.versus.text:SetPoint("CENTER", InfoFrame.versus, "CENTER", 0, 0);
+	InfoFrame.versus.text:SetText("VS");
+end
+]]
 
 function Config:CreateConfigMenu()
 	-- Creates the ConfigFrame
@@ -430,7 +514,6 @@ function Config:CreateConfigMenu()
 	ConfigFrame.title = ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.title:SetPoint("LEFT", ConfigFrame.TitleBg, "LEFT", 5, 0);
 	ConfigFrame.title:SetText("Configuration");
-	ConfigFrame:Hide();
 
 	-- this is for the CheckBox if you want to play a solo game
 	ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
@@ -568,6 +651,7 @@ function Config:CreateConfigMenu()
 				end
 			end
 		end);
+	ConfigFrame:Hide();
 end
 
 ---------------------------------
