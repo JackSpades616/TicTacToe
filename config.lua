@@ -349,12 +349,12 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 end
 
 local function AcceptingInvitation()
-	SendChatMessage("has accepted the invitation.", chatType);
+	SendChatMessage("has accepted " ..senderName.. "'s invitation.", chatType);
 	core.Config.Toggle()
 end
 
 local function DeclineInvitation()
-	SendChatMessage("has declined the invitation.", chatType);
+	SendChatMessage("has declined " ..senderName.. "'s invitation.", chatType);
 end
 
 ---------------------------------
@@ -589,16 +589,16 @@ end
 -- PopUps
 ---------------------------------
 StaticPopupDialogs["TICTACTOE_INVITATION"] = {
-  text = "You have been invited to play Tic Tac Toe. Do you want to accept this invitation?",
-  button1 = "Accept",
-  button2 = "Decline",
-  OnAccept = function()
-      AcceptingInvitation();
-  end,
-  timeout = 0,
-  whileDead = true,
-  hideOnEscape = true,
-  preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+		text = "You have been invited to play Tic Tac Toe. Do you want to accept this invitation?",
+		button1 = "Accept",
+		button2 = "Decline",
+		OnAccept = function()
+		AcceptingInvitation();
+	end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
 }
 	
 ---------------------------------
