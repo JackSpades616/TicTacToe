@@ -452,7 +452,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
 	MainFrame.ScrollFrame:SetClipsChildren(true);
 	
-	MainFrame.ScrollFrame.gameFrame = CreateFrame("Frame", "TicTacToe_MainFrame_GameFrame", MainFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.gameFrame = CreateFrame("Frame", "TicTacToe_GameFrame", MainFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.gameFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.gameFrame:SetSize(240, 205);
 	MainFrame.ScrollFrame.gameFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
@@ -563,7 +563,7 @@ function Config:CreateStatMenu()
 end
 function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
-	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
 	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
