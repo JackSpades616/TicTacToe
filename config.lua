@@ -303,6 +303,14 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 		end
 	end
 	
+	-- Check if the second word is the keyword "accepted".
+	if (argsMsg[2] == "accepted") then
+		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
+		if (senderName == UnitName("player") and argsMsg[3] ~= UnitName("player")) then
+			;
+		end
+	end
+	
 	if (singleplayer == false) then
 		local mark
 		if ((argsMsg[2] == "put") and (argsMsg[4] == "X" or "O")) then
