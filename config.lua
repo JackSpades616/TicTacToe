@@ -411,36 +411,32 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 			end
 		end
 
-		if (#argsMsg[#argsMsg] ~= 1) then
-			return
-		end
-
-		if (argsMsg[#argsMsg] == "at-x0g") then
-			EnableFields();
-			for i = 1, #blackList do
-				local c = blackList:sub(i,i)
-				MainFrame.field[tonumber(c)]:Disable();
-			end
-		end
-
-
-		if (senderName ~= UnitName("player")) then
-			if (#playerTwo > 0) then
-			else
-				playerTwo = senderName;
-				MainFrame.title:SetText(playerOne .. " VS " .. playerTwo);
+		-- Check if the id is a valid number from 1 to 9.
+		-- To avoid errors it will not be converted into a number.
+		if (argsMsg[#argsMsg] == "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9") then
+			if (argsMsg[#argsMsg] == "at-x0g") then
+				EnableFields();
+				DisableBlacklistedFields();
 			end
 
-			EnableFields();
+			-- Senders name mustn't be the own player name.
+			if (senderName ~= UnitName("player")) then
+				-- If there is no player two, it will be set here.
+				if (playerTwo == "") then
+					playerTwo = senderName;
+					MainFrame.title:SetText(playerOne .. " VS " .. playerTwo);
+				end
 
-			for i = 1, #blackList do
-				local c = blackList:sub(i,i)
-				MainFrame.field[tonumber(c)]:Disable();
+				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
+				if (playerTwo == senderName) then
+					EnableFields();
+
+					DisableBlacklistedFields();
+					
+					SelectField(tonumber(argsMsg[#argsMsg]));
+					myTurn = true;
+				end
 			end
-
-			
-			SelectField(tonumber(argsMsg[#argsMsg]));
-			myTurn = true;
 		end
 	end
 end
