@@ -419,8 +419,8 @@ function Config:CreateMainMenu() -- creates the Main Frame
 
 	Config.CreateConfigMenu();
 
-	 MainFrame:Hide();
-	 return MainFrame;
+	MainFrame:Hide();
+	return MainFrame;
 end
 
 function Config:CreateConfigMenu()
