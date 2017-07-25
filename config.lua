@@ -170,7 +170,21 @@ function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, y
 	return btn;
 end
 
-
+local function checkIfWon(frst, scnd, thrd)
+	if ((MainFrame.field[frst]:GetText() == MainFrame.field[scnd]:GetText()) and (MainFrame.field[frst]:GetText() == MainFrame.field[thrd]:GetText()) and (MainFrame.field[frst]:GetText() ~= nil)) then
+		MainFrame.field[frst]:LockHighlight();
+		MainFrame.field[scnd]:LockHighlight();
+		MainFrame.field[thrd]:LockHighlight();
+		if (myTurn == true) and (singleplayer == false) then
+			SendChatMessage("won the game!", chatType);
+			DoEmote("DANCE", none);
+		elseif (myTurn == false) and (singleplayer == false) then
+			DoEmote("CRY", curPlayerTwo);
+		end
+		DisableFields();
+		return true;
+	end
+end
 
 --------------------------------------
 -- Functions
@@ -192,129 +206,14 @@ function SelectField(key)
 
 		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
 		if (counter >= 5) then
-			--[[
-			local btnOne = MainFrame.field[1];
-			local btnTwo = MainFrame.field[2];
-			local btnThree = MainFrame.field[3]:LockHighlight();
-			local btnFour = MainFrame.field[4]:LockHighlight();
-			local btnFive = MainFrame.field[5]:LockHighlight();
-			local btnSix = MainFrame.field[6]:LockHighlight();
-			local btnSeven = MainFrame.field[7]:LockHighlight();
-			local btnEight = MainFrame.field[8]:LockHighlight();
-			local btnNine = MainFrame.field[9]:LockHighlight();
-			]]
-
-			if ((MainFrame.field[1]:GetText() == MainFrame.field[2]:GetText()) and (MainFrame.field[1]:GetText() == MainFrame.field[3]:GetText()) and (MainFrame.field[1]:GetText() ~= nil)) then
-				MainFrame.field[1]:LockHighlight();
-				MainFrame.field[2]:LockHighlight();
-				MainFrame.field[3]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[4]:GetText() == MainFrame.field[5]:GetText()) and (MainFrame.field[4]:GetText() == MainFrame.field[6]:GetText()) and (MainFrame.field[4]:GetText() ~= nil)) then
-				MainFrame.field[4]:LockHighlight();
-				MainFrame.field[5]:LockHighlight();
-				MainFrame.field[6]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[7]:GetText() == MainFrame.field[8]:GetText()) and (MainFrame.field[7]:GetText() == MainFrame.field[9]:GetText()) and (MainFrame.field[7]:GetText() ~= nil)) then
-				MainFrame.field[7]:LockHighlight();
-				MainFrame.field[8]:LockHighlight();
-				MainFrame.field[9]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[1]:GetText() == MainFrame.field[4]:GetText()) and (MainFrame.field[1]:GetText() == MainFrame.field[7]:GetText()) and (MainFrame.field[1]:GetText() ~= nil)) then
-				MainFrame.field[1]:LockHighlight();
-				MainFrame.field[4]:LockHighlight();
-				MainFrame.field[7]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[2]:GetText() == MainFrame.field[5]:GetText()) and (MainFrame.field[2]:GetText() == MainFrame.field[8]:GetText()) and (MainFrame.field[2]:GetText() ~= nil)) then
-				MainFrame.field[2]:LockHighlight();
-				MainFrame.field[5]:LockHighlight();
-				MainFrame.field[8]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[3]:GetText() == MainFrame.field[6]:GetText()) and (MainFrame.field[3]:GetText() == MainFrame.field[9]:GetText()) and (MainFrame.field[3]:GetText() ~= nil)) then
-				MainFrame.field[3]:LockHighlight();
-				MainFrame.field[6]:LockHighlight();
-				MainFrame.field[9]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[1]:GetText() == MainFrame.field[5]:GetText()) and (MainFrame.field[1]:GetText() == MainFrame.field[9]:GetText()) and (MainFrame.field[1]:GetText() ~= nil)) then
-				MainFrame.field[1]:LockHighlight();
-				MainFrame.field[5]:LockHighlight();
-				MainFrame.field[9]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
-
-			if ((MainFrame.field[3]:GetText() == MainFrame.field[5]:GetText()) and (MainFrame.field[3]:GetText() == MainFrame.field[7]:GetText()) and (MainFrame.field[3]:GetText() ~= nil)) then
-				MainFrame.field[3]:LockHighlight();
-				MainFrame.field[5]:LockHighlight();
-				MainFrame.field[7]:LockHighlight();
-				if (myTurn == true) and (singleplayer == false) then
-					SendChatMessage("won the game!", chatType);
-					DoEmote("DANCE", none);
-				elseif (myTurn == false) and (singleplayer == false) then
-					DoEmote("CRY", playerTwo);
-				end
-				DisableFields();
-				win = true;
-			end
+			win = checkIfWon(1, 2, 3);
+			win = checkIfWon(4, 5, 6);
+			win = checkIfWon(7, 8, 9);
+			win = checkIfWon(1, 4, 7);
+			win = checkIfWon(2, 5, 8);
+			win = checkIfWon(3, 6, 9);
+			win = checkIfWon(1, 5, 9);
+			win = checkIfWon(3, 5, 7);
 		end
 	end
 
