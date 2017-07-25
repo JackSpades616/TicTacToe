@@ -303,6 +303,14 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 		end
 	end
 	
+	-- Check if the second word is the keyword "accepted".
+	if (argsMsg[2] == "accepted") then
+		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
+		if (senderName == UnitName("player") and argsMsg[3] ~= UnitName("player")) then
+			;
+		end
+	end
+	
 	if (singleplayer == false) then
 		local mark
 		if ((argsMsg[2] == "put") and (argsMsg[4] == "X" or "O")) then
@@ -349,12 +357,12 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 end
 
 local function AcceptingInvitation()
-	SendChatMessage("has accepted the invitation.", chatType);
+	SendChatMessage("has accepted " ..senderName.. "'s invitation.", chatType);
 	core.Config.Toggle()
 end
 
 local function DeclineInvitation()
-	SendChatMessage("has declined the invitation.", chatType);
+	SendChatMessage("has declined " ..senderName.. "'s invitation.", chatType);
 end
 
 ---------------------------------
@@ -589,16 +597,16 @@ end
 -- PopUps
 ---------------------------------
 StaticPopupDialogs["TICTACTOE_INVITATION"] = {
-  text = "You have been invited to play Tic Tac Toe. Do you want to accept this invitation?",
-  button1 = "Accept",
-  button2 = "Decline",
-  OnAccept = function()
-      AcceptingInvitation();
-  end,
-  timeout = 0,
-  whileDead = true,
-  hideOnEscape = true,
-  preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+		text = "You have been invited to play Tic Tac Toe. Do you want to accept this invitation?",
+		button1 = "Accept",
+		button2 = "Decline",
+		OnAccept = function()
+		AcceptingInvitation();
+	end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
 }
 	
 ---------------------------------
