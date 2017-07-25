@@ -286,56 +286,63 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 	-- ABC is the senders name.
 	-- XYZ is the recipients name.
 	-- The message-string ("has invited XZY to play Tic Tac Toe.") is split by the spaces (" ").
-	-- the recipients name becomes index three of the array (argsInvite[3]).
-	local argsInvite = {};
+	-- the recipients name becomes index three of the array (argsMsg[3]).
+	local argsMsg = {};
 	for _, arg in ipairs({ string.split(' ', message) }) do
 		if (#arg > 0) then
-			table.insert(argsInvite, arg);
+			table.insert(argsMsg, arg);
 		end
 	end
 
 	-- Check if the second word is the keyword "invited".
-	if (argsInvite[2] == "invited") then
+	if (argsMsg[2] == "invited") then
 		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
-		if (senderName ~= UnitName("player") and argsInvite[3] == UnitName("player")) then
+		if (senderName ~= UnitName("player") and argsMsg[3] == UnitName("player")) then
 			StaticPopup_Show ("TICTACTOE_INVITATION");
 		end
 	end
 	
 	if (singleplayer == false) then
-		local argsMsg = {};
+		local mark
+		if ((argsMsg[2] == "put") and (argsMsg[4] == "X" or "O")) then
+			mark = argsMsg[4];
+		end
+
+		local argsFieldId = {};
 		for _, arg in ipairs({ string.split(' : ', message) }) do
 			if (#arg > 0) then
-				table.insert(argsMsg, arg);
+				table.insert(argsFieldId, arg);
 			end
 		end
+		local fieldId = argsFieldId[#argsFieldId];
 
 		-- Check if the id is a valid number from 1 to 9.
 		-- To avoid errors it will not be converted into a number.
-		if (argsMsg[#argsMsg] == "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9") then
-			if (argsMsg[#argsMsg] == "at-x0g") then
-				EnableFields();
-				DisableBlacklistedFields();
-			end
-
+		if (fieldId == "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9") then
 			-- Senders name mustn't be the own player name.
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
-				if (playerTwo == "") then
-					playerTwo = senderName;
-					MainFrame.title:SetText(playerOne .. " VS " .. playerTwo);
+				if (curPlayerTwo == "") then
+					curPlayerTwo = senderName;
+					MainFrame.title:SetText(curPlayerOne .. " VS " .. curPlayerTwo);
 				end
 
 				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
-				if (playerTwo == senderName) then
+				if (curPlayerTwo == senderName) then
 					EnableFields();
-
 					DisableBlacklistedFields();
 					
-					SelectField(tonumber(argsMsg[#argsMsg]));
+					print(mark)
+					SelectField(tonumber(fieldId));
 					myTurn = true;
 				end
 			end
+		end
+
+		-- This is a cheat code to enable the fields. For testing purposes.
+		if (fieldId == "at-x0g") then
+			EnableFields();
+			DisableBlacklistedFields();
 		end
 	end
 end
