@@ -26,7 +26,7 @@ local default = {
 	
 	size = {
 		width = 250,
-		height = 240,
+		height = 260,
 	},
 }
 
@@ -393,6 +393,12 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
 	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
 	MainFrame.ScrollFrame:SetClipsChildren(true);
+	
+	MainFrame.ScrollFrame.SpaceFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.SpaceFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame:GetWidth() - 10, 20);
+	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOPLEFT", MainFrame.gameFrame, "BOTTOMLEFT", 0, -5);
+	
 	
 
 	MainFrame.ScrollFrame.gameFrame = CreateFrame("Frame", "TicTacToe_MainFrame_GameFrame", MainFrame, "InsetFrameTemplate");
