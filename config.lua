@@ -103,7 +103,7 @@ function Config:GetThemeColor()
 end
 
 function Config:Toggle()
-	local menu = MainFrame or Config:CreateMenu();
+	local menu = MainFrame or Config:CreateMainMenu();
 	menu:SetShown(not menu:IsShown());
 end
 
@@ -351,8 +351,8 @@ end
 ---------------------------------
 -- Main Frame
 ---------------------------------
-function Config:CreateMenu() -- creates the Main Frame
 	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
+function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame:ClearAllPoints();
 	MainFrame:SetSize(240, 240); -- width, height
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
