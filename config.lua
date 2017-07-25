@@ -351,8 +351,8 @@ end
 ---------------------------------
 -- Main Frame
 ---------------------------------
-	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
 function Config:CreateMainMenu() -- creates the Main Frame
+	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
 	MainFrame:ClearAllPoints();
 	MainFrame:SetSize(240, 240); -- width, height
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
