@@ -462,15 +462,16 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame:GetWidth() - 10, 30);
 	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOP", MainFrame.ScrollFrame.gameFrame, "BOTTOM", 0, -5);
 	
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 2, 30);
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.SpaceFrame, "TOPLEFT", 0, 0);
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame, "LEFT", 10, 0);
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle:SetText("Statistics");
-	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:SetScript("OnClick", function(self)
-	MainFrame.ScrollFrame.StatFrame:Show();
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 2, 30);
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.SpaceFrame, "TOPLEFT", 0, 0);
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame, "LEFT", 10, 0);
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetText("Statistics");
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetScript("OnClick", function(self)
+	MainFrame.ScrollFrame.StatsFrame:Show();
+	MainFrame.ScrollFrame.ConfigFrame:Hide();
 			if (expandedMainFrame) then
 				MainFrame:SetHeight(default.size.height);
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
@@ -495,6 +496,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetText("Configuration");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetScript("OnClick", function(self)
 	MainFrame.ScrollFrame.ConfigFrame:Show();
+	MainFrame.ScrollFrame.StatsFrame:Hide();
 			if (expandedMainFrame) then
 				MainFrame:SetHeight(default.size.height);
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
@@ -553,11 +555,11 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	return MainFrame;
 end
 
-function Config:CreateStatMenu()
+function Config:CreateStatsMenu()
 	-- Creates the MainFrame.ScrollFrame.StatFrame
-	MainFrame.ScrollFrame.StatFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.StatFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.StatFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
-	MainFrame.ScrollFrame.StatFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
+	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.StatFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
+	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
 
 end
