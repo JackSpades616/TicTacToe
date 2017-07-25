@@ -374,14 +374,20 @@ end
 
 -- this function is for splitting the Emote Messages. The AddOn of the other player can take over the move of the first player
 local function ReceiveInput(event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
+	-- Getting the name of the sender without the addition of the realm
 	local argsSnd = {};
 	for _, arg in ipairs({ string.split('-', sender) }) do
 		if (#arg > 0) then
 			table.insert(argsSnd, arg);
 		end
 	end
-	local senderName = argsSnd[1];
+	local senderName = argsSnd[1]; -- Setting the sendername in its variable for further processing.
 	
+	-- The invitation looks like this: "ABC has invited XYZ to play Tic Tac Toe."
+	-- ABC is the senders name.
+	-- XYZ is the recipients name.
+	-- The message-string ("has invited XZY to play Tic Tac Toe.") is split by the spaces (" ").
+	-- the recipients name becomes index three of the array (argsInvite[3]).
 	local argsInvite = {};
 	for _, arg in ipairs({ string.split(' ', message) }) do
 		if (#arg > 0) then
