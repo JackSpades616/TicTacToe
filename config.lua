@@ -258,7 +258,7 @@ local function AcceptingInvitation()
 end
 
 local function DecliningInvitation()
-	SendChatMessage("has declined the invitation of" .. invitationSender .. ".", chatType);
+	SendChatMessage("has declined the invitation of " .. invitationSender .. ".", chatType);
 end
 
 -- this function is for splitting the Emote Messages. The AddOn of the other player can take over the move of the first player
