@@ -129,6 +129,20 @@ function Config:Toggle()
 	menu:SetShown(not menu:IsShown());
 end
 
+function Config:PrintPlayerStats()
+	print("-------------------------");
+	print("Player 1: " .. player[1].name);
+	print("Wins: " .. player[1].wins);
+	print("Losts: " .. player[1].loses);
+	print("Played Games: " .. player[1].playedGames);
+	print("-------------------------");
+	print("Played 2: " .. player[2].name);
+	print("Wins: " .. player[2].wins);
+	print("Losts: " .. player[2].loses);
+	print("Played Games: " .. player[2].playedGames);
+	print("-------------------------");
+end
+
 -- this function disables all Buttons
 local function DisableFields()
 	for i = 1, #MainFrame.ScrollFrame.gameFrame.field do
