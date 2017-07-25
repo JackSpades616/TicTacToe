@@ -140,7 +140,7 @@ function Config:PrintPlayerStats()
 	print("Losts: " .. player[1].loses);
 	print("Played Games: " .. player[1].playedGames);
 	print("-------------------------");
-	print("Played 2: " .. player[2].name);
+	print("Player 2: " .. player[2].name);
 	print("Wins: " .. player[2].wins);
 	print("Losts: " .. player[2].loses);
 	print("Played Games: " .. player[2].playedGames);
