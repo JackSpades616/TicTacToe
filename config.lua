@@ -131,7 +131,7 @@ end
 
 local function InvitePlayer()
 	if ConfigFrame.inviteEditBox ~= "" then
-		SendChatMessage("has invited " ..ConfigFrame.inviteEditBox:GetText().. " to play Tic Tac Toe", chatType, nil, whisperTarget);
+		SendChatMessage("has invited " ..ConfigFrame.inviteEditBox:GetText().. " to play Tic Tac Toe.", chatType, nil, whisperTarget);
 	end
 end
 
@@ -191,8 +191,7 @@ end
 -- Functions
 --------------------------------------
 function SelectField(key)
-	if (string.find(blackList, tostring(key))) then
-	else
+	if (not string.find(blackList, tostring(key))) then
 		MainFrame.gameFrame.field[tonumber(key)]:Disable();
 		counter = counter + 1;
 		if (playerX == true) then
@@ -307,7 +306,7 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 	if (argsMsg[2] == "accepted") then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName == UnitName("player") and argsMsg[3] ~= UnitName("player")) then
-			;
+			
 		end
 	end
 	
@@ -327,13 +326,13 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 
 		-- Check if the id is a valid number from 1 to 9.
 		-- To avoid errors it will not be converted into a number.
-		if (fieldId == "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9") then
+		if (fieldId == ("1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9")) then
 			-- Senders name mustn't be the own player name.
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
 				if (curPlayerTwo == "") then
 					curPlayerTwo = senderName;
-					MainFrame.title:SetText(curPlayerOne .. " VS " .. curPlayerTwo);
+					-- MainFrame.title:SetText(curPlayerOne .. " VS " .. curPlayerTwo);
 				end
 
 				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
@@ -341,7 +340,6 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 					EnableFields();
 					DisableBlacklistedFields();
 					
-					print(mark)
 					SelectField(tonumber(fieldId));
 					myTurn = true;
 				end
