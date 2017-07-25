@@ -204,7 +204,7 @@ local function Field_Onclick(self)
 	end
 	
 	-- if it is not your turn, this disables for you the Buttons
-	SelectField(self:GetID(playerSelf));
+	SelectField(self:GetID(), playerSelf);
 	if (singleplayer == false) then
 		myTurn = false;
 	end
