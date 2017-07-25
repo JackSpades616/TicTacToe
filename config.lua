@@ -469,6 +469,22 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame, "LEFT", 10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle:SetText("Statistics");
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:SetScript("OnClick", function(self)
+	MainFrame.ScrollFrame.StatFrame:Show();
+			if (expandedMainFrame) then
+				MainFrame:SetHeight(default.size.height);
+				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
+				MainFrame:ClearAllPoints();
+				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+				expandedMainFrame = false;
+			else
+				MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.StatFrame:GetHeight());
+				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
+				MainFrame:ClearAllPoints();
+				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+				expandedMainFrame = true;
+			end
+		end);
 	
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:ClearAllPoints();
@@ -537,6 +553,14 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	return MainFrame;
 end
 
+function Config:CreateStatMenu()
+	-- Creates the MainFrame.ScrollFrame.StatFrame
+	MainFrame.ScrollFrame.StatFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.StatFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
+	MainFrame.ScrollFrame.StatFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
+
+
+end
 function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
