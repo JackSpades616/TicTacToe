@@ -26,7 +26,7 @@ local default = {
 	
 	size = {
 		width = 250,
-		height = 260,
+		height = 270,
 	},
 }
 
