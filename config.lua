@@ -38,6 +38,7 @@ local yPosition = default.position.y;
 
 local curPlayerOne = UnitName("player");
 local curPlayerTwo = "";
+local invitationSender = "";
 local myTurn = true;
 local playerX = true;
 local singleplayer = false;
@@ -298,6 +299,7 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 	if (argsMsg[2] == "invited") then
 		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
 		if (senderName ~= UnitName("player") and argsMsg[3] == UnitName("player")) then
+			invitationSender = senderName;
 			StaticPopup_Show ("TICTACTOE_INVITATION");
 		end
 	end
@@ -355,12 +357,12 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 end
 
 local function AcceptingInvitation()
-	SendChatMessage("has accepted " ..senderName.. "'s invitation.", chatType);
+	SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType);
 	core.Config.Toggle()
 end
 
-local function DeclineInvitation()
-	SendChatMessage("has declined " ..senderName.. "'s invitation.", chatType);
+local function DecliningInvitation()
+	SendChatMessage("has declined the invitation of" .. invitationSender .. ".", chatType);
 end
 
 ---------------------------------
