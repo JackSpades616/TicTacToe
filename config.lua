@@ -573,12 +573,58 @@ function Config:CreateStatsMenu()
 	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
-	MainFrame.ScrollFrame.StatsFrame.plOnetitle = MainFrame.ScrollFrame.StatsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOnetitle:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT", 5, -10);
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 2, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT");
+		
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame, "TOPLEFT", 10, -10);
 	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plOnetitle:SetText("Player One");
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText("Player One");
 	else
-		MainFrame.ScrollFrame.StatsFrame.plOnetitle:SetText(player[1].name);
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
+	end
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText("Wins:         0");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText("Wins:         " ..player[1].wins);
+	end
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetText("Losts:        0");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetText("Losts:        " ..player[1].loses);
+	end
+	
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 2, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.StatsFrame, "TOPRIGHT");
+		
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame, "TOPLEFT", 10, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetText("Player Two");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetText(player[2].name);
+	end
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo, "BOTTOMLEFT", 0, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetText("Wins:         0");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetText("Wins:         " ..player[2].wins);
+	end
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo, "BOTTOMLEFT", 0, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        0");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        " ..player[1].loses);
 	end
 	--[[print("Player 1: " .. player[1].name);
 	print("Wins: " .. player[1].wins);
