@@ -404,6 +404,23 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame:GetWidth() - 10, 30);
 	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOP", MainFrame.ScrollFrame.gameFrame, "BOTTOM", 0, -5);
 	
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 2, 30);
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.SpaceFrame, "TOPLEFT", 0, 0);
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame, "LEFT", 10, 0);
+	MainFrame.ScrollFrame.SpaceFrame.StatBtnFrame.statTitle:SetText("Statistics");
+	
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 2, 30);
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.SpaceFrame, "TOPRIGHT", 0, 0);
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle = MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetPoint("RIGHT", MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame, "RIGHT", -10, 0);
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetText("Configuration");
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetScript("OnClick", function(self)
+	MainFrame.ScrollFrame.ConfigFrame:Show();
 			if (expandedMainFrame) then
 				MainFrame:SetHeight(default.size.height);
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
@@ -418,14 +435,26 @@ function Config:CreateMainMenu() -- creates the Main Frame
 				expandedMainFrame = true;
 			end
 		end);
+
+	--[[MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate")
+	MainFrame.configBtn:ClearAllPoints();
+	MainFrame.configBtn:SetWidth(50); -- width, height
+	MainFrame.configBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
+	MainFrame.configBtn:SetScript("OnClick", function(self)
+			if (MainFrame.ScrollFrame.ConfigFrame:IsShown()) then
+				MainFrame.ScrollFrame.ConfigFrame:Hide();
+			else
+				MainFrame.ScrollFrame.ConfigFrame:Show();
+			end
+			
 	MainFrame.configBtn.title = MainFrame.configBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.configBtn.title:SetPoint("LEFT", MainFrame.configBtn, "LEFT", 5, 0);
 	MainFrame.configBtn.title:SetText("Config");
-
+	]]
 	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
 	MainFrame.resetBtn:ClearAllPoints();
 	MainFrame.resetBtn:SetWidth(50); -- width, height
-	MainFrame.resetBtn:SetPoint("RIGHT", MainFrame.configBtn, "LEFT", 0, 0);
+	MainFrame.resetBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
 	MainFrame.resetBtn:SetScript("OnClick", Config.Reset);
 	MainFrame.resetBtn.title = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.resetBtn.title:SetPoint("LEFT", MainFrame.resetBtn, "LEFT", 5, 0);
@@ -454,10 +483,7 @@ function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.gameFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
-	MainFrame.ScrollFrame.ConfigFrame.title = MainFrame.ScrollFrame.ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.title:SetPoint("TOPLEFT", MainFrame.ScrollFrame.gameFrame, "BOTTOMLEFT", 10, -10);
-	MainFrame.ScrollFrame.ConfigFrame.title:SetText("Configuration");
+	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
 	-- this is for the CheckBox if you want to play a solo game
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
