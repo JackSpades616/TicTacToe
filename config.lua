@@ -369,7 +369,7 @@ end
 function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplate");
 	MainFrame:ClearAllPoints();
-	MainFrame:SetSize(230, 240); -- width, height
+	MainFrame:SetSize(230, 350); -- width, height
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
@@ -446,8 +446,8 @@ end
 function Config:CreateConfigMenu()
 	-- Creates the ConfigFrame
 	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame, "BasicFrameTemplateWithInset");
-	ConfigFrame:SetSize(MainFrame:GetWidth(), 140); -- width, height
-	ConfigFrame:SetPoint("TOP", MainFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
+	ConfigFrame:SetSize(230, MainFrame:GetHeight()); -- width, height
+	ConfigFrame:SetPoint("LEFT", MainFrame, "RIGHT"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	ConfigFrame.title = ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	ConfigFrame.title:SetPoint("LEFT", ConfigFrame.TitleBg, "LEFT", 5, 0);
 	ConfigFrame.title:SetText("Configuration");
