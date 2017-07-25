@@ -44,183 +44,6 @@ local win = false;
 local blackList = "";
 
 
----------------------------------
--- Main Frame
----------------------------------
-function Config:CreateMenu() -- creates the Main Frame
-	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
-	MainFrame:SetSize(240, 240); -- width, height
-	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
-	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
-	MainFrame.title:SetText(Title);
-	MainFrame:SetMovable(true)
-	MainFrame:EnableMouse(true)
-	MainFrame:SetScript("OnMouseDown", function(self, button)
-	  if button == "LeftButton" and not self.isMoving then
-	   self:StartMoving();
-	   self.isMoving = true;
-	  end
-	end)
-	MainFrame:SetScript("OnMouseUp", function(self, button)
-	  if button == "LeftButton" and self.isMoving then
-	   self:StopMovingOrSizing();
-	   self.isMoving = false;
-	   local xOffset, yOffset = self:GetCenter();
-	   xPosition = xOffset;
-	   yPosition = yOffset;
-	  end
-	end)
-	MainFrame:SetScript("OnHide", function(self)
-	  if On( self.isMoving ) then
-	   self:StopMovingOrSizing();
-	   self.isMoving = false;
-	  end
-	  core.Config.Exit();
-	end)
-	MainFrame:SetScript("OnHide", function(self) ConfigFrame:Hide(); end)
-
-	MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
-	MainFrame.configBtn:ClearAllPoints();
-	MainFrame.configBtn:SetWidth(50); -- width, height
-	MainFrame.configBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
-	MainFrame.configBtn:SetScript("OnClick", function(self) if (ConfigFrame:IsShown()) then ConfigFrame:Hide(); else ConfigFrame:Show(); end end);
-	MainFrame.configBtn.title = MainFrame.configBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.configBtn.title:SetPoint("LEFT", MainFrame.configBtn, "LEFT", 5, 0);
-	MainFrame.configBtn.title:SetText("Config");
-
-	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
-	MainFrame.resetBtn:ClearAllPoints();
-	MainFrame.resetBtn:SetWidth(50); -- width, height
-	MainFrame.resetBtn:SetPoint("RIGHT", MainFrame.configBtn, "LEFT", 0, 0);
-	MainFrame.resetBtn:SetScript("OnClick", Config.Reset);
-	MainFrame.resetBtn.title = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.resetBtn.title:SetPoint("LEFT", MainFrame.resetBtn, "LEFT", 5, 0);
-	MainFrame.resetBtn.title:SetText("Reset");
-
-	-- Creates the 9 Buttons in the MainFrame
-	MainFrame.field = {
-		self:CreateButton(1, "TOPLEFT",		MainFrame,	"TOPLEFT",		12,		-24, "");
-		self:CreateButton(2, "TOP", 		MainFrame,	"TOP",			0,		-24, "");
-		self:CreateButton(3, "TOPRIGHT", 	MainFrame,	"TOPRIGHT",		-12,	-24, "");
-		self:CreateButton(4, "LEFT",		MainFrame,	"LEFT",			12,		-6,	"");
-		self:CreateButton(5, "CENTER",		MainFrame,	"CENTER",		0,		-6, "");
-		self:CreateButton(6, "RIGHT",		MainFrame,	"RIGHT",		-12,	-6, "");
-		self:CreateButton(7, "BOTTOMLEFT", 	MainFrame,	"BOTTOMLEFT",	12,		12, "");
-		self:CreateButton(8, "BOTTOM", 		MainFrame,	"BOTTOM",		0,		12, "");
-		self:CreateButton(9, "BOTTOMRIGHT", MainFrame,	"BOTTOMRIGHT",	-12,	12, "");
-	}  
-
-	Config.CreateConfigMenu();
-
-	 MainFrame:Hide();
-	 return MainFrame;
-end
-
-function Config:CreateConfigMenu()
-	-- Creates the ConfigFrame
-	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame, "BasicFrameTemplateWithInset");
-	ConfigFrame:SetSize(MainFrame:GetWidth(), 140); -- width, height
-	ConfigFrame:SetPoint("TOP", MainFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
-	ConfigFrame.title = ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.title:SetPoint("LEFT", ConfigFrame.TitleBg, "LEFT", 5, 0);
-	ConfigFrame.title:SetText("Configuration");
-	ConfigFrame:Hide();
-
-	-- this is for the CheckBox if you want to play a solo game
-	ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
-	ConfigFrame.soloCheckBox:ClearAllPoints();
-	ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
-	ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 8, -32);
-	ConfigFrame.soloCheckBox.text = ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.soloCheckBox.text:SetPoint("LEFT", ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
-	ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
-	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
-			if (self:GetChecked()) then
-				singleplayer = true;
-			else
-				singleplayer = false;
-			end
-		end);
-
-	if (singleplayer) then
-		ConfigFrame.soloCheckBox:SetChecked(true);
-	else
-		ConfigFrame.soloCheckBox:SetChecked(false);
-	end
-
-	-- this CheckBox is if you want to play in whisper Mode
-	ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
-	ConfigFrame.whisperCheckBox:ClearAllPoints();
-	ConfigFrame.whisperCheckBox:SetSize(30, 30); -- width, height
-	ConfigFrame.whisperCheckBox:SetPoint("TOP", ConfigFrame.soloCheckBox, "BOTTOM", 0, 0);
-	ConfigFrame.whisperCheckBox.text = ConfigFrame.whisperCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
-	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
-	-- ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
-	ConfigFrame.whisperCheckBox:SetScript("OnClick", function(self)
-			if (self:GetChecked()) then
-				chatType = "WHISPER";
-				whisperMode = true;
-			else
-				chatType = "EMOTE";
-				whisperMode = false;
-			end
-
-			if (whisperMode) then
-				ConfigFrame.whisperEditBox:Enable();
-			else
-				ConfigFrame.whisperEditBox:Disable();
-			end
-		end);
-
-	if (whisperMode) then
-		ConfigFrame.whisperCheckBox:SetChecked(true);
-	else
-		ConfigFrame.whisperCheckBox:SetChecked(false);
-	end
-
-
-	ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
-	ConfigFrame.whisperEditBox:ClearAllPoints();
-	ConfigFrame.whisperEditBox:SetSize(80, 30);
-	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
-	ConfigFrame.whisperEditBox:SetAutoFocus(false);
-	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
-			if (self:GetText() == "") then
-				whisperTarget = nil;
-			else
-				whisperTarget = self:GetText();
-			end
-		end);
-	if (whisperMode) then
-		ConfigFrame.whisperEditBox:Enable();
-	else
-		ConfigFrame.whisperEditBox:Disable();
-	end
-	ConfigFrame.whisperEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
-		
-	-- this Button invites another Player to the game
-	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
-	ConfigFrame.inviteButton:ClearAllPoints();
-	ConfigFrame.inviteButton:SetSize(120, 30); -- width, height
-	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
-	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	ConfigFrame.inviteButton.text:SetPoint("CENTER", ConfigFrame.inviteButton, "CENTER", 0,0);
-	ConfigFrame.inviteButton.text:SetText("Invite");
-	
-	ConfigFrame.inviteEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
-	ConfigFrame.inviteEditBox:ClearAllPoints();
-	ConfigFrame.inviteEditBox:SetSize(80, 30);
-	ConfigFrame.inviteEditBox:SetPoint("TOPLEFT", ConfigFrame.whisperEditBox, "BOTTOMLEFT", 0, 0);
-	
-	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
-			if ConfigFrame.inviteEditBox ~= "" then
-				SendChatMessage("has invited " ..ConfigFrame.inviteEditBox:GetText().. " to play Tic Tac Toe", chatType, nil, whisperTarget);
-			end
-		end);
-end
-
 --------------------------------------
 -- Config functions
 --------------------------------------
@@ -579,6 +402,200 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 			SelectField(tonumber(argsMsg[#argsMsg]));
 			myTurn = true;
 		end
+	end
+end
+
+
+---------------------------------
+-- Main Frame
+---------------------------------
+function Config:CreateMenu() -- creates the Main Frame
+	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
+	MainFrame:SetSize(240, 240); -- width, height
+	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
+	MainFrame.title:SetText(Title);
+	MainFrame:SetMovable(true)
+	MainFrame:EnableMouse(true)
+	MainFrame:SetScript("OnMouseDown", function(self, button)
+	  if button == "LeftButton" and not self.isMoving then
+	   self:StartMoving();
+	   self.isMoving = true;
+	  end
+	end)
+	MainFrame:SetScript("OnMouseUp", function(self, button)
+	  if button == "LeftButton" and self.isMoving then
+	   self:StopMovingOrSizing();
+	   self.isMoving = false;
+	   local xOffset, yOffset = self:GetCenter();
+	   xPosition = xOffset;
+	   yPosition = yOffset;
+	  end
+	end)
+	MainFrame:SetScript("OnHide", function(self)
+	  if On( self.isMoving ) then
+	   self:StopMovingOrSizing();
+	   self.isMoving = false;
+	  end
+	  core.Config.Exit();
+	end)
+	MainFrame:SetScript("OnHide", function(self) ConfigFrame:Hide(); end)
+
+	MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
+	MainFrame.configBtn:ClearAllPoints();
+	MainFrame.configBtn:SetWidth(50); -- width, height
+	MainFrame.configBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
+	MainFrame.configBtn:SetScript("OnClick", function(self) if (ConfigFrame:IsShown()) then ConfigFrame:Hide(); else ConfigFrame:Show(); end end);
+	MainFrame.configBtn.title = MainFrame.configBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.configBtn.title:SetPoint("LEFT", MainFrame.configBtn, "LEFT", 5, 0);
+	MainFrame.configBtn.title:SetText("Config");
+
+	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
+	MainFrame.resetBtn:ClearAllPoints();
+	MainFrame.resetBtn:SetWidth(50); -- width, height
+	MainFrame.resetBtn:SetPoint("RIGHT", MainFrame.configBtn, "LEFT", 0, 0);
+	MainFrame.resetBtn:SetScript("OnClick", Config.Reset);
+	MainFrame.resetBtn.title = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.resetBtn.title:SetPoint("LEFT", MainFrame.resetBtn, "LEFT", 5, 0);
+	MainFrame.resetBtn.title:SetText("Reset");
+
+	-- Creates the 9 Buttons in the MainFrame
+	MainFrame.field = {
+		self:CreateButton(1, "TOPLEFT",		MainFrame,	"TOPLEFT",		12,		-24, "");
+		self:CreateButton(2, "TOP", 		MainFrame,	"TOP",			0,		-24, "");
+		self:CreateButton(3, "TOPRIGHT", 	MainFrame,	"TOPRIGHT",		-12,	-24, "");
+		self:CreateButton(4, "LEFT",		MainFrame,	"LEFT",			12,		-6,	"");
+		self:CreateButton(5, "CENTER",		MainFrame,	"CENTER",		0,		-6, "");
+		self:CreateButton(6, "RIGHT",		MainFrame,	"RIGHT",		-12,	-6, "");
+		self:CreateButton(7, "BOTTOMLEFT", 	MainFrame,	"BOTTOMLEFT",	12,		12, "");
+		self:CreateButton(8, "BOTTOM", 		MainFrame,	"BOTTOM",		0,		12, "");
+		self:CreateButton(9, "BOTTOMRIGHT", MainFrame,	"BOTTOMRIGHT",	-12,	12, "");
+	}  
+
+	Config.CreateConfigMenu();
+
+	 MainFrame:Hide();
+	 return MainFrame;
+end
+
+function Config:CreateConfigMenu()
+	-- Creates the ConfigFrame
+	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame, "BasicFrameTemplateWithInset");
+	ConfigFrame:SetSize(MainFrame:GetWidth(), 140); -- width, height
+	ConfigFrame:SetPoint("TOP", MainFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
+	ConfigFrame.title = ConfigFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.title:SetPoint("LEFT", ConfigFrame.TitleBg, "LEFT", 5, 0);
+	ConfigFrame.title:SetText("Configuration");
+	ConfigFrame:Hide();
+
+	-- this is for the CheckBox if you want to play a solo game
+	ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
+	ConfigFrame.soloCheckBox:ClearAllPoints();
+	ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
+	ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 8, -32);
+	ConfigFrame.soloCheckBox.text = ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.soloCheckBox.text:SetPoint("LEFT", ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
+	ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
+	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
+			if (self:GetChecked()) then
+				singleplayer = true;
+			else
+				singleplayer = false;
+			end
+		end);
+
+	if (singleplayer) then
+		ConfigFrame.soloCheckBox:SetChecked(true);
+	else
+		ConfigFrame.soloCheckBox:SetChecked(false);
+	end
+
+	-- this CheckBox is if you want to play in whisper Mode
+	ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate");
+	ConfigFrame.whisperCheckBox:ClearAllPoints();
+	ConfigFrame.whisperCheckBox:SetSize(30, 30); -- width, height
+	ConfigFrame.whisperCheckBox:SetPoint("TOP", ConfigFrame.soloCheckBox, "BOTTOM", 0, 0);
+	ConfigFrame.whisperCheckBox.text = ConfigFrame.whisperCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
+	ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
+	-- ConfigFrame.whisperCheckBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
+	ConfigFrame.whisperCheckBox:SetScript("OnClick", function(self)
+			if (self:GetChecked()) then
+				chatType = "WHISPER";
+				whisperMode = true;
+			else
+				chatType = "EMOTE";
+				whisperMode = false;
+			end
+
+			if (whisperMode) then
+				ConfigFrame.whisperEditBox:Enable();
+			else
+				ConfigFrame.whisperEditBox:Disable();
+			end
+		end);
+
+	if (whisperMode) then
+		ConfigFrame.whisperCheckBox:SetChecked(true);
+	else
+		ConfigFrame.whisperCheckBox:SetChecked(false);
+	end
+
+
+	ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
+	ConfigFrame.whisperEditBox:ClearAllPoints();
+	ConfigFrame.whisperEditBox:SetSize(80, 30);
+	ConfigFrame.whisperEditBox:SetPoint("LEFT", ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
+	ConfigFrame.whisperEditBox:SetAutoFocus(false);
+	ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
+			if (self:GetText() == "") then
+				whisperTarget = nil;
+			else
+				whisperTarget = self:GetText();
+			end
+		end);
+	if (whisperMode) then
+		ConfigFrame.whisperEditBox:Enable();
+	else
+		ConfigFrame.whisperEditBox:Disable();
+	end
+	ConfigFrame.whisperEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
+		
+	-- this Button invites another Player to the game
+	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
+	ConfigFrame.inviteButton:ClearAllPoints();
+	ConfigFrame.inviteButton:SetSize(120, 30); -- width, height
+	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
+	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.inviteButton.text:SetPoint("CENTER", ConfigFrame.inviteButton, "CENTER", 0,0);
+	ConfigFrame.inviteButton.text:SetText("Invite");
+	
+	ConfigFrame.inviteEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate");
+	ConfigFrame.inviteEditBox:ClearAllPoints();
+	ConfigFrame.inviteEditBox:SetSize(80, 30);
+	ConfigFrame.inviteEditBox:SetPoint("TOPLEFT", ConfigFrame.whisperEditBox, "BOTTOMLEFT", 0, 0);
+	ConfigFrame.inviteEditBox:SetAutoFocus(false);
+	ConfigFrame.inviteEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); InvitePlayer(self); end);
+	ConfigFrame.inviteEditBox:SetScript("OnTextChanged", function(self)
+			if (self:GetText() ~= "") then
+				ConfigFrame.inviteButton:Enable();
+			else
+				ConfigFrame.inviteButton:Disable();
+			end
+		end);
+	
+	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
+			if (ConfigFrame.inviteEditBox:GetText() == "") then
+				ConfigFrame.inviteEditBox:SetFocus();
+			else
+				InvitePlayer();
+			end
+		end);
+	if (ConfigFrame.inviteEditBox:GetText() == "") then
+		ConfigFrame.inviteButton:Disable();
+	else
+		ConfigFrame.inviteButton:Enable();
 	end
 end
 
