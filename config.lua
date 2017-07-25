@@ -601,6 +601,9 @@ StaticPopupDialogs["TICTACTOE_INVITATION"] = {
 	OnAccept = function()
 		AcceptingInvitation();
 	end,
+	OnCancel = function()
+		DecliningInvitation();
+	end,
 	timeout = 0,
 	whileDead = true,
 	hideOnEscape = true,
