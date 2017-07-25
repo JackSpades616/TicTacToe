@@ -36,6 +36,20 @@ local ConfigFrame;
 local xPosition = default.position.x;
 local yPosition = default.position.y;
 
+local player = {
+	{
+		name = "",
+		wins = 0,
+		loses = 0,
+		playedGames = 0,
+	},
+	{
+		name = "",
+		wins = 0,
+		loses = 0,
+		playedGames = 0,
+	},
+}
 local curPlayerOne = UnitName("player");
 local curPlayerTwo = "";
 local invitationSender = "";
@@ -307,8 +321,18 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 	-- Check if the second word is the keyword "accepted".
 	if (argsMsg[2] == "accepted") then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
-		if (senderName ~= UnitName("player") and argsMsg[6] == (UnitName("player") .. ".")) then
-			-- Here needs to be what happens, when the invitation gets accepted.
+		if (senderName ~= UnitName("player")) then
+			local argsInviteSender = {};
+			for _, arg in ipairs({ string.split('.', argsMsg[6]) }) do
+				if (#arg > 0) then
+					table.insert(argsInviteSender, arg);
+				end
+			end
+			local inviteSender = argsInviteSender[1];
+			player[1].name = inviteSender;
+			player[2].name = senderName;
+			print("Player 1: " .. player[1].name);
+			print("Player 2: " .. player[2].name);
 		end
 	end
 	
