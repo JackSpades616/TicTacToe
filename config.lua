@@ -246,6 +246,20 @@ function SelectField(key)
 	end
 end
 
+local function SetPlayers(playerOne, playerTwo)
+	player[1].name = playerOne;
+	player[2].name = playerTwo;
+end
+
+local function AcceptingInvitation()
+	SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType);
+	SetPlayers(invitationSender, UnitName("player"));
+	core.Config.Toggle()
+end
+
+local function DecliningInvitation()
+	SendChatMessage("has declined the invitation of" .. invitationSender .. ".", chatType);
+end
 
 -- this function is for splitting the Emote Messages. The AddOn of the other player can take over the move of the first player
 local function ReceiveInput(event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
@@ -336,21 +350,6 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 			DisableBlacklistedFields();
 		end
 	end
-end
-
-local function AcceptingInvitation()
-	SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType);
-	SetPlayers(invitationSender, UnitName("player"));
-	core.Config.Toggle()
-end
-
-local function DecliningInvitation()
-	SendChatMessage("has declined the invitation of" .. invitationSender .. ".", chatType);
-end
-
-local function SetPlayers(playerOne, playerTwo)
-	player[1].name = playerOne;
-	player[2].name = playerTwo;
 end
 
 ---------------------------------
