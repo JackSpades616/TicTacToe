@@ -549,6 +549,14 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	return MainFrame;
 end
 
+function Config:CreateStatMenu()
+	-- Creates the MainFrame.ScrollFrame.StatFrame
+	MainFrame.ScrollFrame.StatFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.StatFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
+	MainFrame.ScrollFrame.StatFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
+
+
+end
 function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
