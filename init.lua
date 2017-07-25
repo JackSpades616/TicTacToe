@@ -14,6 +14,7 @@ core.commands = {
 		core:Print("|cff00cc66/ttt exit|r  - exit the game");
 		core:Print("|cff00cc66/ttt solo|r  - enables singleplayer mode");
 		core:Print("|cff00cc66/ttt help|r  - shows help info");
+		core:Print("|cff00cc66/ttt stats|r - shows the player statistics");
 		print(" ");
 	end,
 	
@@ -31,6 +32,8 @@ core.commands = {
 	["exit"] = core.Config.Exit,
 
 	["solo"] = core.Config.Singleplayer,
+
+	["stats"] = core.Config.PrintPlayerStats,
 };
 
 local function HandleSlashCommands(str)	

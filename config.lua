@@ -54,6 +54,7 @@ local player = {
 		playedGames = 0,
 	},
 }
+local playerSelf = "";
 local curPlayerOne = UnitName("player");
 local curPlayerTwo = "";
 local invitationSender = "";
@@ -66,6 +67,7 @@ local whisperTarget = nil;
 local counter = 0;
 local win = false;
 local blackList = "";
+local lastMsg = "";
 
 local expandedMainFrame = false;
 
@@ -74,7 +76,7 @@ local expandedMainFrame = false;
 -- Config functions
 --------------------------------------
 function Config:Exit()
-	if (not singleplayer and curPlayerTwo ~= "") then
+	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
 		SendChatMessage("has quit the game.", chatType);
 	end
 	myTurn = true;
@@ -95,7 +97,9 @@ function Config:Exit()
 end
 
 function Config:Reset()
-	SendChatMessage("has reseted the game.", chatType);
+	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
+		SendChatMessage("has reset the game.", chatType);
+	end
 	core.Config.Exit();
 	core.Config.Toggle();
 end
@@ -129,6 +133,20 @@ function Config:Toggle()
 	menu:SetShown(not menu:IsShown());
 end
 
+function Config:PrintPlayerStats()
+	print("-------------------------");
+	print("Player 1: " .. player[1].name);
+	print("Wins: " .. player[1].wins);
+	print("Losts: " .. player[1].loses);
+	print("Played Games: " .. player[1].playedGames);
+	print("-------------------------");
+	print("Played 2: " .. player[2].name);
+	print("Wins: " .. player[2].wins);
+	print("Losts: " .. player[2].loses);
+	print("Played Games: " .. player[2].playedGames);
+	print("-------------------------");
+end
+
 -- this function disables all Buttons
 local function DisableFields()
 	for i = 1, #MainFrame.ScrollFrame.gameFrame.field do
@@ -158,16 +176,35 @@ end
 
 -- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
 local function Field_Onclick(self)
-	if (singleplayer == false) then
-		if (playerX) then
-			SendChatMessage("has put an X on the field : " .. self:GetID(), chatType, nil, whisperTarget);
-		else
-			SendChatMessage("has put an O on the field : " .. self:GetID(), chatType, nil, whisperTarget);
+	if (player[1].name == "") then
+		player[1].name = UnitName("player");
+		if (playerSelf == "") then
+			playerSelf = 1;
+		elseif (singleplayer) then
+			playerSelf = 2;
+		end
+	end
+	if (player[2].name == "") then
+		player[2].name = UnitName("player");
+		if (playerSelf == "") then
+			playerSelf = 2;
+		elseif (singleplayer) then
+			playerSelf = 1;
 		end
 	end
 
+	if (singleplayer == false) then
+		if (playerSelf == 1) then
+			lastMsg = "has put an X on the field : " .. self:GetID();
+			SendChatMessage(lastMsg, chatType, nil, whisperTarget);
+		elseif (playerSelf == 2) then
+			lastMsg = "has put an O on the field : " .. self:GetID();
+			SendChatMessage(lastMsg, chatType, nil, whisperTarget);
+		end
+	end
+	
 	-- if it is not your turn, this disables for you the Buttons
-	SelectField(self:GetID());
+	SelectField(self:GetID(playerSelf));
 	if (singleplayer == false) then
 		myTurn = false;
 	end
@@ -192,16 +229,30 @@ function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, y
 	return btn;
 end
 
-local function checkIfWon(frst, scnd, thrd)
+local function UpdatePlayerStats(playerNumber, played, win, lose)
+	if (win) 	then player[curPlayer].wins			= player[curPlayer].wins 			+ 1;	end
+	if (lose)	then player[curPlayer].loses			= player[curPlayer].loses 			+ 1;	end
+	if (played) then player[curPlayer].playedGames	= player[curPlayer].playedGames	+ 1;	end
+end
+
+local function checkIfWon(frst, scnd, thrd, curPlayer)
 	if ((MainFrame.ScrollFrame.gameFrame.field[frst]:GetText() == MainFrame.ScrollFrame.gameFrame.field[scnd]:GetText()) and (MainFrame.ScrollFrame.gameFrame.field[frst]:GetText() == MainFrame.ScrollFrame.gameFrame.field[thrd]:GetText()) and (MainFrame.ScrollFrame.gameFrame.field[frst]:GetText() ~= nil)) then
 		MainFrame.ScrollFrame.gameFrame.field[frst]:LockHighlight();
 		MainFrame.ScrollFrame.gameFrame.field[scnd]:LockHighlight();
 		MainFrame.ScrollFrame.gameFrame.field[thrd]:LockHighlight();
-		if (myTurn == true) and (singleplayer == false) then
+		if (curPlayer == playerSelf) and (singleplayer == false) then
 			SendChatMessage("won the game!", chatType);
 			DoEmote("DANCE", none);
-		elseif (myTurn == false) and (singleplayer == false) then
+		elseif (curPlayer ~= playerSelf) and (singleplayer == false) then
 			DoEmote("CRY", curPlayerTwo);
+		end
+
+		if (curPlayer == 1) then
+			UpdatePlayerStats(1, true, true, false);
+			UpdatePlayerStats(2, true, false, true);
+		elseif (curPlayer == 2) then
+			UpdatePlayerStats(2, true, true, false);
+			UpdatePlayerStats(1, true, false, true);
 		end
 		DisableFields();
 		return true;
@@ -211,30 +262,28 @@ end
 --------------------------------------
 -- Functions
 --------------------------------------
-function SelectField(key)
+function SelectField(key, curPlayer)
 	if (not string.find(blackList, tostring(key))) then
 		MainFrame.ScrollFrame.gameFrame.field[tonumber(key)]:Disable();
 		counter = counter + 1;
-		if (playerX == true) then
+		if (curPlayer == 1) then
 			MainFrame.ScrollFrame.gameFrame.field[key]:SetText("X");
-			playerX = false;
-		else
+		elseif (curPlayer == 2) then
 			MainFrame.ScrollFrame.gameFrame.field[key]:SetText("O");
-			playerX = true;
 		end
 
 		blackList = blackList .. key;
 
 		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
 		if (counter >= 5) then
-			win = checkIfWon(1, 2, 3);
-			win = checkIfWon(4, 5, 6);
-			win = checkIfWon(7, 8, 9);
-			win = checkIfWon(1, 4, 7);
-			win = checkIfWon(2, 5, 8);
-			win = checkIfWon(3, 6, 9);
-			win = checkIfWon(1, 5, 9);
-			win = checkIfWon(3, 5, 7);
+			win = checkIfWon(1, 2, 3, curPlayer);
+			win = checkIfWon(4, 5, 6, curPlayer);
+			win = checkIfWon(7, 8, 9, curPlayer);
+			win = checkIfWon(1, 4, 7, curPlayer);
+			win = checkIfWon(2, 5, 8, curPlayer);
+			win = checkIfWon(3, 6, 9, curPlayer);
+			win = checkIfWon(1, 5, 9, curPlayer);
+			win = checkIfWon(3, 5, 7, curPlayer);
 		end
 	end
 
@@ -328,18 +377,23 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 			-- Senders name mustn't be the own player name.
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
-				if (curPlayerTwo == "") then
-					curPlayerTwo = senderName;
-					-- MainFrame.title:SetText(curPlayerOne .. " VS " .. curPlayerTwo);
+				if (player[1].name == "") then
+					player[1].name = senderName;
+				end
+				if (player[2].name == "") then
+					player[2].name = senderName;
 				end
 
 				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
-				if (curPlayerTwo == senderName) then
+				if (senderName == (player[1].name or player[2].name)) then
 					EnableFields();
 					DisableBlacklistedFields();
 					
-					SelectField(tonumber(fieldId));
-					myTurn = true;
+					if (senderName == player[1].name) then
+						SelectField(tonumber(fieldId), 1);
+					else
+						SelectField(tonumber(fieldId), 2);
+					end
 				end
 			end
 		end
