@@ -362,6 +362,25 @@ end
 
 -- this function is for splitting the Emote Messages. The AddOn of the other player can take over the move of the first player
 local function ReceiveInput(event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
+	local argsSnd = {};
+	for _, arg in ipairs({ string.split('-', sender) }) do
+		if (#arg > 0) then
+			table.insert(argsSnd, arg);
+		end
+	end
+	local senderName = argsSnd[1];
+	
+	local argsInvite = {};
+	for _, arg in ipairs({ string.split(' ', message) }) do
+		if (#arg > 0) then
+			table.insert(argsInvite, arg);
+		end
+	end
+	local nameInvite = argsInvite[3];
+	if (senderNamer ~= UnitName("player") and nameInvite == UnitName("player"))  then
+		StaticPopup_Show ("TICTACTOE_INVITATION");
+	end
+	
 	if (singleplayer == false) then
 		local argsMsg = {};
 		for _, arg in ipairs({ string.split(' : ', message) }) do
@@ -372,13 +391,6 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 
 		if (#argsMsg[#argsMsg] ~= 1) then
 			return
-		end
-		
-		local argsSnd = {};
-		for _, arg in ipairs({ string.split('-', sender) }) do
-			if (#arg > 0) then
-				table.insert(argsSnd, arg);
-			end
 		end
 
 		if (argsMsg[#argsMsg] == "at-x0g") then
