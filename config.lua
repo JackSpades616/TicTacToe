@@ -26,7 +26,7 @@ local default = {
 	
 	size = {
 		width = 250,
-		height = 230,
+		height = 240,
 	},
 }
 
@@ -359,7 +359,7 @@ end
 function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplate");
 	MainFrame:ClearAllPoints();
-	MainFrame:SetSize(250, 230); -- width, height
+	MainFrame:SetSize(default.size.width, default.size.height); -- width, height
 	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
