@@ -353,6 +353,7 @@ end
 ---------------------------------
 function Config:CreateMenu() -- creates the Main Frame
 	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
+	MainFrame:ClearAllPoints();
 	MainFrame:SetSize(240, 240); -- width, height
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
