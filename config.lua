@@ -402,10 +402,10 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 		end
 
 
-		if (argsSnd[1] ~= UnitName("player")) then
+		if (senderName ~= UnitName("player")) then
 			if (#playerTwo > 0) then
 			else
-				playerTwo = argsSnd[1];
+				playerTwo = senderName;
 				MainFrame.title:SetText(playerOne .. " VS " .. playerTwo);
 			end
 
