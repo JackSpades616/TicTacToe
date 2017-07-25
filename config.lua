@@ -109,22 +109,22 @@ end
 
 -- this function disables all Buttons
 local function DisableFields()
-	for i = 1, #MainFrame.field do
-		MainFrame.field[i]:Disable();
+	for i = 1, #MainFrame.gameFrame.field do
+		MainFrame.gameFrame.field[i]:Disable();
 	end
 end
 
 local function DisableBlacklistedFields()
 	for i = 1, #blackList do
 		local c = blackList:sub(i,i)
-		MainFrame.field[tonumber(c)]:Disable();
+		MainFrame.gameFrame.field[tonumber(c)]:Disable();
 	end
 end
 
 -- this function enables all Buttons
 local function EnableFields()
-	for i = 1, #MainFrame.field do
-		MainFrame.field[i]:Enable();
+	for i = 1, #MainFrame.gameFrame.field do
+		MainFrame.gameFrame.field[i]:Enable();
 	end
 end
 
@@ -171,10 +171,10 @@ function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, y
 end
 
 local function checkIfWon(frst, scnd, thrd)
-	if ((MainFrame.field[frst]:GetText() == MainFrame.field[scnd]:GetText()) and (MainFrame.field[frst]:GetText() == MainFrame.field[thrd]:GetText()) and (MainFrame.field[frst]:GetText() ~= nil)) then
-		MainFrame.field[frst]:LockHighlight();
-		MainFrame.field[scnd]:LockHighlight();
-		MainFrame.field[thrd]:LockHighlight();
+	if ((MainFrame.gameFrame.field[frst]:GetText() == MainFrame.gameFrame.field[scnd]:GetText()) and (MainFrame.gameFrame.field[frst]:GetText() == MainFrame.gameFrame.field[thrd]:GetText()) and (MainFrame.gameFrame.field[frst]:GetText() ~= nil)) then
+		MainFrame.gameFrame.field[frst]:LockHighlight();
+		MainFrame.gameFrame.field[scnd]:LockHighlight();
+		MainFrame.gameFrame.field[thrd]:LockHighlight();
 		if (myTurn == true) and (singleplayer == false) then
 			SendChatMessage("won the game!", chatType);
 			DoEmote("DANCE", none);
@@ -192,13 +192,13 @@ end
 function SelectField(key)
 	if (string.find(blackList, tostring(key))) then
 	else
-		MainFrame.field[tonumber(key)]:Disable();
+		MainFrame.gameFrame.field[tonumber(key)]:Disable();
 		counter = counter + 1;
 		if (playerX == true) then
-			MainFrame.field[key]:SetText("X");
+			MainFrame.gameFrame.field[key]:SetText("X");
 			playerX = false;
 		else
-			MainFrame.field[key]:SetText("O");
+			MainFrame.gameFrame.field[key]:SetText("O");
 			playerX = true;
 		end
 
@@ -352,9 +352,9 @@ end
 -- Main Frame
 ---------------------------------
 function Config:CreateMainMenu() -- creates the Main Frame
-	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplateWithInset");
+	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplate");
 	MainFrame:ClearAllPoints();
-	MainFrame:SetSize(240, 240); -- width, height
+	MainFrame:SetSize(230, 240); -- width, height
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
@@ -385,6 +385,12 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	end)
 	MainFrame:SetScript("OnHide", function(self) ConfigFrame:Hide(); end)
 
+	MainFrame.gameFrame = CreateFrame("Frame", "TicTacToe_MainFrame_GameFrame", MainFrame, "InsetFrameTemplate");
+	MainFrame.gameFrame:ClearAllPoints();
+	MainFrame.gameFrame:SetSize(220, 205);
+	MainFrame.gameFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
+
+
 	MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
 	MainFrame.configBtn:ClearAllPoints();
 	MainFrame.configBtn:SetWidth(50); -- width, height
@@ -404,17 +410,17 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.resetBtn.title:SetText("Reset");
 
 	-- Creates the 9 Buttons in the MainFrame
-	MainFrame.field = {
-		self:CreateButton(1, "TOPLEFT",		MainFrame,	"TOPLEFT",		12,		-24, "");
-		self:CreateButton(2, "TOP", 		MainFrame,	"TOP",			0,		-24, "");
-		self:CreateButton(3, "TOPRIGHT", 	MainFrame,	"TOPRIGHT",		-12,	-24, "");
-		self:CreateButton(4, "LEFT",		MainFrame,	"LEFT",			12,		-6,	"");
-		self:CreateButton(5, "CENTER",		MainFrame,	"CENTER",		0,		-6, "");
-		self:CreateButton(6, "RIGHT",		MainFrame,	"RIGHT",		-12,	-6, "");
-		self:CreateButton(7, "BOTTOMLEFT", 	MainFrame,	"BOTTOMLEFT",	12,		12, "");
-		self:CreateButton(8, "BOTTOM", 		MainFrame,	"BOTTOM",		0,		12, "");
-		self:CreateButton(9, "BOTTOMRIGHT", MainFrame,	"BOTTOMRIGHT",	-12,	12, "");
-	}  
+	MainFrame.gameFrame.field = {
+		self:CreateButton(1, "TOPLEFT",		MainFrame.gameFrame,	"TOPLEFT",		4,	-2, "");
+		self:CreateButton(2, "TOP", 		MainFrame.gameFrame,	"TOP",			0,	-2, "");
+		self:CreateButton(3, "TOPRIGHT", 	MainFrame.gameFrame,	"TOPRIGHT",		-4,	-2, "");
+		self:CreateButton(4, "LEFT",		MainFrame.gameFrame,	"LEFT",			4,	0,	"");
+		self:CreateButton(5, "CENTER",		MainFrame.gameFrame,	"CENTER",		0,	0, "");
+		self:CreateButton(6, "RIGHT",		MainFrame.gameFrame,	"RIGHT",		-4,	0, "");
+		self:CreateButton(7, "BOTTOMLEFT", 	MainFrame.gameFrame,	"BOTTOMLEFT",	4,	2, "");
+		self:CreateButton(8, "BOTTOM", 		MainFrame.gameFrame,	"BOTTOM",		0,	2, "");
+		self:CreateButton(9, "BOTTOMRIGHT", MainFrame.gameFrame,	"BOTTOMRIGHT",	-4,	2, "");
+	}
 
 	Config.CreateConfigMenu();
 
