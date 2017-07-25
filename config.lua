@@ -183,14 +183,18 @@ local function Field_Onclick(self)
 		elseif (singleplayer) then
 			playerSelf = 2;
 		end
-	end
-	if (player[2].name == "") then
+	elseif (player[2].name == "") then
 		player[2].name = UnitName("player");
 		if (playerSelf == "") then
 			playerSelf = 2;
 		elseif (singleplayer) then
 			playerSelf = 1;
 		end
+	end
+	if (player[1].name == UnitName("player")) then
+		playerSelf = 1;
+	elseif (player[2].name == UnitName("player")) then
+		playerSelf = 2;
 	end
 
 	if (singleplayer == false) then
