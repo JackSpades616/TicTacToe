@@ -394,30 +394,16 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
 	MainFrame.ScrollFrame:SetClipsChildren(true);
 	
-	MainFrame.ScrollFrame.SpaceFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.SpaceFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame:GetWidth() - 10, 20);
-	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOPLEFT", MainFrame.gameFrame, "BOTTOMLEFT", 0, -5);
-	
-	
-
 	MainFrame.ScrollFrame.gameFrame = CreateFrame("Frame", "TicTacToe_MainFrame_GameFrame", MainFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.gameFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.gameFrame:SetSize(240, 205);
 	MainFrame.ScrollFrame.gameFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
 
-
-	MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate");
-	MainFrame.configBtn:ClearAllPoints();
-	MainFrame.configBtn:SetWidth(50); -- width, height
-	MainFrame.configBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
-	MainFrame.configBtn:SetScript("OnClick", function(self)
-			--[[if (MainFrame.ScrollFrame.ConfigFrame:IsShown()) then
-				MainFrame.ScrollFrame.ConfigFrame:Hide();
-			else
-				MainFrame.ScrollFrame.ConfigFrame:Show();
-			end]]
-			MainFrame.ScrollFrame.ConfigFrame:Show();
+	MainFrame.ScrollFrame.SpaceFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.SpaceFrame:ClearAllPoints();
+	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame:GetWidth() - 10, 30);
+	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOP", MainFrame.ScrollFrame.gameFrame, "BOTTOM", 0, -5);
+	
 			if (expandedMainFrame) then
 				MainFrame:SetHeight(default.size.height);
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
