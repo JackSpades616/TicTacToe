@@ -114,6 +114,13 @@ local function DisableFields()
 	end
 end
 
+local function DisableBlacklistedFields()
+	for i = 1, #blackList do
+		local c = blackList:sub(i,i)
+		MainFrame.field[tonumber(c)]:Disable();
+	end
+end
+
 -- this function enables all Buttons
 local function EnableFields()
 	for i = 1, #MainFrame.field do
