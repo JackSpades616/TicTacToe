@@ -36,8 +36,8 @@ local ConfigFrame;
 local xPosition = default.position.x;
 local yPosition = default.position.y;
 
-local playerOne = UnitName("player");
-local playerTwo = "";
+local curPlayerOne = UnitName("player");
+local curPlayerTwo = "";
 local myTurn = true;
 local playerX = true;
 local singleplayer = false;
@@ -53,11 +53,11 @@ local blackList = "";
 -- Config functions
 --------------------------------------
 function Config:Exit()
-	if (not singleplayer and playerTwo ~= "") then
+	if (not singleplayer and curPlayerTwo ~= "") then
 		SendChatMessage("has quit the game.", chatType);
 	end
 	myTurn = true;
-	playerTwo = "";
+	curPlayerTwo = "";
 	playerX = true;
 	--singleplayer = false;
 	blackList = "";
