@@ -620,6 +620,34 @@ function Config:CreateConfigMenu()
 	else
 		ConfigFrame.inviteButton:Enable();
 	end
+
+	ConfigFrame.targetButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate");
+	ConfigFrame.targetButton:ClearAllPoints();
+	ConfigFrame.targetButton:SetSize(90, 30);
+	ConfigFrame.targetButton:SetPoint("BOTTOM", ConfigFrame.whisperEditBox, "TOP", -2, 0);
+	ConfigFrame.targetButton.text = ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	ConfigFrame.targetButton.text:SetPoint("CENTER", ConfigFrame.targetButton, "CENTER", 0,0);
+	ConfigFrame.targetButton.text:SetText("Target");
+	ConfigFrame.targetButton:SetScript("OnEnter", function(self)
+			if (UnitName("target")) then
+				self.text:SetText(UnitName("target"));
+			end
+		end);
+	ConfigFrame.targetButton:SetScript("OnLeave", function(self)
+			self.text:SetText("Target");
+		end);
+	ConfigFrame.targetButton:SetScript("OnClick", function(self)
+			local target = UnitName("target")
+			if (target ~= UnitName("player")) then
+				if (target) then
+					ConfigFrame.whisperEditBox:SetText(target);
+					ConfigFrame.inviteEditBox:SetText(target);
+				else
+					ConfigFrame.whisperEditBox:SetText("");
+					ConfigFrame.inviteEditBox:SetText("");
+				end
+			end
+		end);
 end
 
 ---------------------------------
