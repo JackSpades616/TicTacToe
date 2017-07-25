@@ -116,6 +116,12 @@ local function EnableFields()
 	end
 end
 
+local function InvitePlayer()
+	if ConfigFrame.inviteEditBox ~= "" then
+		SendChatMessage("has invited " ..ConfigFrame.inviteEditBox:GetText().. " to play Tic Tac Toe", chatType, nil, whisperTarget);
+	end
+end
+
 -- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
 local function Field_Onclick(self)
 	if (singleplayer == false) then
