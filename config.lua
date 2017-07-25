@@ -260,6 +260,8 @@ local function checkIfWon(frst, scnd, thrd, curPlayer)
 		end
 		DisableFields();
 		return true;
+	else
+		return false;
 	end
 end
 
