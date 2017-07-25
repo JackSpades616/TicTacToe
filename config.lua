@@ -387,19 +387,18 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 
 		-- Check if the id is a valid number from 1 to 9.
 		-- To avoid errors it will not be converted into a number.
-		if (fieldId == ("1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9")) then
+		if (fieldId == "1" or fieldId == "2" or fieldId == "3" or fieldId == "4" or fieldId == "5" or fieldId == "6" or fieldId == "7" or fieldId == "8" or fieldId == "9") then
 			-- Senders name mustn't be the own player name.
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
 				if (player[1].name == "") then
-					player[1].name = senderName;
-				end
-				if (player[2].name == "") then
-					player[2].name = senderName;
+					SetPlayers(senderName, nil);
+				elseif (player[2].name == "") then
+					SetPlayers(nil, senderName);
 				end
 
 				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
-				if (senderName == (player[1].name or player[2].name)) then
+				if (senderName == player[1].name or senderName == player[2].name) then
 					EnableFields();
 					DisableBlacklistedFields();
 					
