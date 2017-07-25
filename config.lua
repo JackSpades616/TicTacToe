@@ -283,17 +283,14 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 	if (argsMsg[2] == "accepted") then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
-			local argsInviteSender = {};
+			local argsInv = {};
 			for _, arg in ipairs({ string.split('.', argsMsg[6]) }) do
 				if (#arg > 0) then
-					table.insert(argsInviteSender, arg);
+					table.insert(argsInv, arg);
 				end
 			end
-			local inviteSender = argsInviteSender[1];
-			player[1].name = inviteSender;
-			player[2].name = senderName;
-			print("Player 1: " .. player[1].name);
-			print("Player 2: " .. player[2].name);
+			local inviteSender = argsInv[1];
+			SetPlayers(inviteSender, senderName);
 		end
 	end
 	
@@ -343,11 +340,17 @@ end
 
 local function AcceptingInvitation()
 	SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType);
+	SetPlayers(invitationSender, UnitName("player"));
 	core.Config.Toggle()
 end
 
 local function DecliningInvitation()
 	SendChatMessage("has declined the invitation of" .. invitationSender .. ".", chatType);
+end
+
+local function SetPlayers(playerOne, playerTwo)
+	player[1].name = playerOne;
+	player[2].name = playerTwo;
 end
 
 ---------------------------------
