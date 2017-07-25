@@ -357,7 +357,7 @@ function Config:CreateMenu() -- creates the Main Frame
 	MainFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
-	MainFrame.title:SetText(Title);
+	MainFrame.title:SetText(default.title);
 	MainFrame:SetMovable(true)
 	MainFrame:EnableMouse(true)
 	MainFrame:SetScript("OnMouseDown", function(self, button)
