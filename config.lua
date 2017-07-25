@@ -234,9 +234,9 @@ function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, y
 end
 
 local function UpdatePlayerStats(playerNumber, played, win, lose)
-	if (win) 	then player[curPlayer].wins			= player[curPlayer].wins 			+ 1;	end
-	if (lose)	then player[curPlayer].loses			= player[curPlayer].loses 			+ 1;	end
-	if (played) then player[curPlayer].playedGames	= player[curPlayer].playedGames	+ 1;	end
+	if (win) 	then player[playerNumber].wins			= player[playerNumber].wins 			+ 1;	end
+	if (lose)	then player[playerNumber].loses			= player[playerNumber].loses 			+ 1;	end
+	if (played) then player[playerNumber].playedGames	= player[playerNumber].playedGames	+ 1;	end
 end
 
 local function checkIfWon(frst, scnd, thrd, curPlayer)
