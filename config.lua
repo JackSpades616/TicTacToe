@@ -394,9 +394,13 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 			table.insert(argsInvite, arg);
 		end
 	end
-	local nameInvite = argsInvite[3];
-	if (senderNamer ~= UnitName("player") and nameInvite == UnitName("player"))  then
-		StaticPopup_Show ("TICTACTOE_INVITATION");
+
+	-- Check if the second word is the keyword "invited".
+	if (argsInvite[2] == "invited") then
+		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
+		if (senderName ~= UnitName("player") and argsInvite[3] == UnitName("player")) then
+			StaticPopup_Show ("TICTACTOE_INVITATION");
+		end
 	end
 	
 	if (singleplayer == false) then
