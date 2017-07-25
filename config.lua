@@ -582,6 +582,21 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 	end
 end
 
+---------------------------------
+-- PopUps
+---------------------------------
+StaticPopupDialogs["TICTACTOE_INVITATION"] = {
+  text = "You have been invited to play Tic Tac Toe. Do you want to accept this invitation?",
+  button1 = "Accept",
+  button2 = "Decline",
+  OnAccept = function()
+      core.Config.Toggle();
+  end,
+  timeout = 0,
+  whileDead = true,
+  hideOnEscape = true,
+  preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+}
 
 ---------------------------------
 -- Events
