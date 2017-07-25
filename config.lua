@@ -470,8 +470,8 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame, "LEFT", 10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetText("Statistics");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetScript("OnClick", function(self)
-	MainFrame.ScrollFrame.StatsFrame:Show();
-	MainFrame.ScrollFrame.ConfigFrame:Hide();
+		MainFrame.ScrollFrame.StatsFrame:Show();
+		MainFrame.ScrollFrame.ConfigFrame:Hide();
 			if (expandedMainFrame) then
 				MainFrame:SetHeight(default.size.height);
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
@@ -479,7 +479,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
 				expandedMainFrame = false;
 			else
-				MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.StatFrame:GetHeight());
+				MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.StatsFrame:GetHeight());
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
 				MainFrame:ClearAllPoints();
 				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
@@ -495,8 +495,8 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetPoint("RIGHT", MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame, "RIGHT", -10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetText("Configuration");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetScript("OnClick", function(self)
-	MainFrame.ScrollFrame.ConfigFrame:Show();
-	MainFrame.ScrollFrame.StatsFrame:Hide();
+		MainFrame.ScrollFrame.ConfigFrame:Show();
+		MainFrame.ScrollFrame.StatsFrame:Hide();
 			if (expandedMainFrame) then
 				MainFrame:SetHeight(default.size.height);
 				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
@@ -548,7 +548,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 		self:CreateButton(8, "BOTTOM", 		MainFrame.ScrollFrame.gameFrame,	"BOTTOM",		0,	2, "");
 		self:CreateButton(9, "BOTTOMRIGHT", MainFrame.ScrollFrame.gameFrame,	"BOTTOMRIGHT",	-4,	2, "");
 	}
-
+	Config.CreateStatsMenu();
 	Config.CreateConfigMenu();
 
 	MainFrame:Hide();
