@@ -569,8 +569,19 @@ function Config:CreateStatsMenu()
 	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_MainFrame.ScrollFrame.StatFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
-
-
+	
+	MainFrame.ScrollFrame.StatsFrame = 
+	--[[print("Player 1: " .. player[1].name);
+	print("Wins: " .. player[1].wins);
+	print("Losts: " .. player[1].loses);
+	print("Played Games: " .. player[1].playedGames);
+	print("-------------------------");
+	print("Player 2: " .. player[2].name);
+	print("Wins: " .. player[2].wins);
+	print("Losts: " .. player[2].loses);
+	print("Played Games: " .. player[2].playedGames);
+	print("-------------------------");
+	]]
 end
 function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
