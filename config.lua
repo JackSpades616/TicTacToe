@@ -7,18 +7,23 @@ core.Config = {}; -- adds Config table to addon namespace
 --------------------------------------
 -- Defaults (usually a database!)
 --------------------------------------
-local defaults = {
+local xCenter, yCenter = UIParent:GetCenter();
+
+local default = {
+	title = "Tic Tac Toe",
+
 	theme = {
 		r = 0, 
 		g = 0.8, -- 204/255
 		b = 1,
-		hex = "00ccff"
-	} 
-}
+		hex = "00ccff",
+	},
 
-local xPositionDefault, yPositionDefault = UIParent:GetCenter();
-xPositionDefault = xPositionDefault * 1.5;
-yPositionDefault = yPositionDefault / 1.5;
+	position = {
+		x = xCenter * 1.5,
+		y = yCenter / 1.3,
+	},
+}
 
 
 --------------------------------------
@@ -28,9 +33,9 @@ local Config = core.Config;
 local MainFrame;
 local ConfigFrame;
 
-local Title = "Tic Tac Toe";
-local xPosition = xPositionDefault;
-local yPosition = yPositionDefault;
+local xPosition = default.position.x;
+local yPosition = default.position.y;
+
 local playerOne = UnitName("player");
 local playerTwo = "";
 local myTurn = true;
@@ -64,7 +69,7 @@ function Config:Exit()
 	MainFrame:Hide();
 	ConfigFrame:Hide();
 	ConfigFrame = nil;
-	MainFrame.title:SetText(Title);
+	MainFrame.title:SetText(default.title);
 	MainFrame = nil;
 end
 
@@ -74,8 +79,8 @@ function Config:Reset()
 end
 
 function Config:ResetPosition()
-	xPosition = xPositionDefault;
-	yPosition = yPositionDefault;
+	xPosition = default.position.x;
+	yPosition = default.position.y;
 end
 
 function Config:Singleplayer()
@@ -93,7 +98,7 @@ function Config:Singleplayer()
 end
 
 function Config:GetThemeColor()
-	local c = defaults.theme;
+	local c = default.theme;
 	return c.r, c.g, c.b, c.hex;
 end
 
