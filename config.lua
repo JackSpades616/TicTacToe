@@ -216,7 +216,7 @@ function Config:CreateConfigMenu()
 	
 	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
 			if ConfigFrame.inviteEditBox ~= "" then
-				InviteUnit(ConfigFrame.inviteEditBox:GetText())
+				SendChatMessage("has invited " ..ConfigFrame.inviteEditBox:GetText().. " to play Tic Tac Toe", chatType, nil, whisperTarget);
 			end
 		end);
 end
