@@ -300,8 +300,18 @@ function SelectField(key, curPlayer)
 end
 
 local function SetPlayers(playerOne, playerTwo)
-	player[1].name = playerOne;
-	player[2].name = playerTwo;
+	if (playerOne) then
+		player[1].name = playerOne;
+		player[1].wins = 0;
+		player[1].loses = 0;
+		player[1].playedGames = 0;
+	end
+	if (playerTwo) then
+		player[2].name = playerTwo;
+		player[2].wins = 0;
+		player[2].loses = 0;
+		player[2].playedGames = 0;
+	end
 end
 
 local function AcceptingInvitation()
