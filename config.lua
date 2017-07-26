@@ -475,53 +475,103 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 2, 30);
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.SpaceFrame, "TOPLEFT", 0, 0);
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame, "LEFT", 10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetText("Statistics");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetScript("OnClick", function(self)
-		MainFrame.ScrollFrame.StatsFrame:Show();
-		MainFrame.ScrollFrame.ConfigFrame:Hide();
-			if (expandedMainFrame) then
-				MainFrame:SetHeight(default.size.height);
-				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
-				MainFrame:ClearAllPoints();
-				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
-				expandedMainFrame = false;
-			else
-				MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.StatsFrame:GetHeight());
-				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
-				MainFrame:ClearAllPoints();
-				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
-				expandedMainFrame = true;
-			end
-		end);
+		if (expandedMainFrame and MainFrame.ScrollFrame.StatsFrame:IsShown()) then
+			local animation = CreateFrame("Frame");
+			animation:SetScript("OnUpdate", function()
+				local h = MainFrame:GetHeight();
+				if (h >= default.size.height) then
+					h = h - 4;
+					MainFrame:SetHeight(h);
+					MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30);
+				else
+					animation:SetScript("OnUpdate", nil);
+				end
+			end);
+			--MainFrame:SetHeight(default.size.height);
+			--MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
+			MainFrame:ClearAllPoints();
+			MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+			expandedMainFrame = false;
+		elseif (expandedMainFrame) then
+			MainFrame.ScrollFrame.StatsFrame:Show();
+			MainFrame.ScrollFrame.ConfigFrame:Hide();
+		else
+			MainFrame.ScrollFrame.StatsFrame:Show();
+			MainFrame.ScrollFrame.ConfigFrame:Hide();
+			local animation = CreateFrame("Frame");
+			animation:SetScript("OnUpdate", function()
+				local h = MainFrame:GetHeight();
+				if (h <= default.size.height + (MainFrame.ScrollFrame.StatsFrame:GetHeight())) then
+					h = h + 4;
+					MainFrame:SetHeight(h);
+					MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30);
+				else
+					animation:SetScript("OnUpdate", nil);
+				end
+			end);
+			-- MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.StatsFrame:GetHeight());
+			-- MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
+			MainFrame:ClearAllPoints();
+			MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+			expandedMainFrame = true;
+		end
+	end);
 	
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 2, 30);
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.SpaceFrame, "TOPRIGHT", 0, 0);
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle = MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetPoint("RIGHT", MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame, "RIGHT", -10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetText("Configuration");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetScript("OnClick", function(self)
-		MainFrame.ScrollFrame.ConfigFrame:Show();
-		MainFrame.ScrollFrame.StatsFrame:Hide();
-			if (expandedMainFrame) then
-				MainFrame:SetHeight(default.size.height);
-				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
-				MainFrame:ClearAllPoints();
-				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
-				expandedMainFrame = false;
-			else
-				MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.ConfigFrame:GetHeight());
-				MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
-				MainFrame:ClearAllPoints();
-				MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
-				expandedMainFrame = true;
-			end
-		end);
+		if (expandedMainFrame and MainFrame.ScrollFrame.ConfigFrame:IsShown()) then
+			local animation = CreateFrame("Frame");
+			animation:SetScript("OnUpdate", function()
+				local h = MainFrame:GetHeight();
+				if (h >= default.size.height) then
+					h = h - 4;
+					MainFrame:SetHeight(h);
+					MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30);
+				else
+					animation:SetScript("OnUpdate", nil);
+				end
+			end);
+			-- MainFrame:SetHeight(default.size.height);
+			-- MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
+			MainFrame:ClearAllPoints();
+			MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+			expandedMainFrame = false;
+		elseif (expandedMainFrame) then
+			MainFrame.ScrollFrame.ConfigFrame:Show();
+			MainFrame.ScrollFrame.StatsFrame:Hide();
+		else
+			MainFrame.ScrollFrame.ConfigFrame:Show();
+			MainFrame.ScrollFrame.StatsFrame:Hide();
+			local animation = CreateFrame("Frame");
+			animation:SetScript("OnUpdate", function()
+				local h = MainFrame:GetHeight();
+				if (h <= default.size.height + (MainFrame.ScrollFrame.StatsFrame:GetHeight())) then
+					h = h + 4;
+					MainFrame:SetHeight(h);
+					MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30);
+				else
+					animation:SetScript("OnUpdate", nil);
+				end
+			end);
+			-- MainFrame:SetHeight(MainFrame:GetHeight() + MainFrame.ScrollFrame.ConfigFrame:GetHeight());
+			-- MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
+			MainFrame:ClearAllPoints();
+			MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
+			expandedMainFrame = true;
+		end
+	end);
 
 	--[[MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate")
 	MainFrame.configBtn:ClearAllPoints();
