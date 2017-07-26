@@ -44,8 +44,9 @@ local default = {
 --------------------------------------
 -- Initializing Variables
 --------------------------------------
-local Config = core.Config;
-local MainFrame;
+local Config = core.Config
+local MainFrame
+local DropDownChatType
 
 local xPosition = default.position.x;
 local yPosition = default.position.y;
@@ -414,6 +415,9 @@ end
 -- this function runs by accepting an invitation of an other player
 local function AcceptingInvitation()
     chatType = invitationChatType
+    if (DropDownChatType) then
+        UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
+    end
     if (chatType == "WHISPER") then
        whisperTarget = invitationSender
     end
@@ -881,8 +885,8 @@ function Config:CreateConfigMenu()
 		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
 	end
 	
-	DropDownChatType = Config:CreateDropDownChatType()
-	
+	Config:CreateDropDownChatType()
+
 	
 --[[-- this CheckBox is if you want to play in whisper Mode
 	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
@@ -941,7 +945,7 @@ end
 function Config:CreateDropDownChatType()
 	-- this is for testing the DropDown Menu
 	if (not DropDownChatType) then
-		local DropDownChatType = CreateFrame("Button", "TicTacToe_DropDownChatType", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate")
+        DropDownChatType = CreateFrame("Button", "TicTacToe_DropDownChatType", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate")
 		DropDownChatType:ClearAllPoints()
 		DropDownChatType:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 
