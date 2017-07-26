@@ -644,7 +644,7 @@ function Config:CreateStatsMenu()
 	if (player[1].name == "") then
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        0");
 	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        " ..player[1].loses);
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        " ..player[2].loses);
 	end
 	
 	-- This gives the number of games from the first player
@@ -653,7 +653,7 @@ function Config:CreateStatsMenu()
 	if (player[1].name == "") then
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         0");
 	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         " ..player[1].playedGames);
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         " ..player[2].playedGames);
 	end
 	--[[print("Player 1: " .. player[1].name);
 	print("Wins: " .. player[1].wins);
