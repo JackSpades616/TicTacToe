@@ -453,7 +453,6 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
 		if (senderName ~= UnitName("player") and argsMsg[3] == UnitName("player")) then
 			invitationSender = senderName;
-			invitationChatType = chatType
 			StaticPopup_Show ("TICTACTOE_INVITATION");
 		end
 	end
@@ -470,7 +469,6 @@ local function ReceiveInput(event, _, message, sender, language, channelString, 
 			end
 			local inviteSender = argsInv[1];
 			SetPlayers(inviteSender, senderName);
-			chatType = invitationChatType
 		end
 	end
 	
