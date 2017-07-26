@@ -111,7 +111,9 @@ end
 local function UpdateSingleplayer(solo)
 	if (solo == nil) then solo = false end
 	singleplayer = solo
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(solo)
+    if (MainFrame.ScrollFrame.ConfigFrame.soloCheckBox) then
+	    MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(solo)
+    end
 end
 
 local function FirstLetterUp(str)
