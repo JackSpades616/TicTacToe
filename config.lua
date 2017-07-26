@@ -426,8 +426,8 @@ local function DecliningInvitation()
 end
 
 -- this function is for splitting the Emote Messages. The AddOn of the other player can take over the move of the first player
-local function ReceiveInput(event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
-	-- Getting the name of the sender without the addition of the realm
+local function ReceiveInput(sender, message, type) -- event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
+    -- Getting the name of the sender without the addition of the realm
 	local argsSnd = {};
 	for _, arg in ipairs({ string.split('-', sender) }) do
 		if (#arg > 0) then
@@ -989,17 +989,28 @@ StaticPopupDialogs["TICTACTOE_INVITATION"] = {
 ---------------------------------
 local msgEmote = CreateFrame("Frame");
 msgEmote:RegisterEvent("CHAT_MSG_EMOTE");
-msgEmote:SetScript("OnEvent", ReceiveInput);
+msgEmote:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "EMOTE") end);
 
 local msgWhisper = CreateFrame("Frame");
 msgWhisper:RegisterEvent("CHAT_MSG_WHISPER");
-msgWhisper:SetScript("OnEvent", ReceiveInput);
+msgWhisper:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end);
 
-local msgParty = CreateFrame("Frame");
-msgParty:RegisterEvent("CHAT_MSG_PARTY");
-msgParty:SetScript("OnEvent", ReceiveInput);
+local msgWhisperInform = CreateFrame("Frame");
+msgWhisperInform:RegisterEvent("CHAT_MSG_WHISPER_INFORM");
+msgWhisperInform:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end);
 
+local msgParty = CreateFrame("Frame")
+msgParty:RegisterEvent("CHAT_MSG_PARTY")
+msgParty:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "PARTY") end)
 
+local msgPartyLeader = CreateFrame("Frame")
+msgPartyLeader:RegisterEvent("CHAT_MSG_PARTY_LEADER")
+msgPartyLeader:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "PARTY") end)
 
+local msgGuild = CreateFrame("Frame")
+msgGuild:RegisterEvent("CHAT_MSG_GUILD")
+msgGuild:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "GUILD") end)
 
-
+local msgOfficer = CreateFrame("Frame")
+msgOfficer:RegisterEvent("CHAT_MSG_OFFICER")
+msgOfficer:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "GUILD") end)
