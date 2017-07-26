@@ -567,24 +567,28 @@ function Config:CreateMainMenu() -- creates the Main Frame
 end
 
 function Config:CreateStatsMenu()
-	-- Creates the MainFrame.ScrollFrame.StatFrame
+	-- Creates the MainFrame.ScrollFrame.StatsFrame
 	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 150); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
+	-- this creates the Frame for Player One
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 2, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT");
-		
+	
+	-- this sets the TextFrame for the Name of the first Player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame, "TOPLEFT", 10, -10);
-	if (player[1].name == "") then
+	if (player[1].name == "") then -- if Player One is not set then it puts the Text "Player One"
 		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText("Player One");
 	else
 		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
 	end
+	
+	-- This gives the number of victories from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10);
 	if (player[1].name == "") then
@@ -592,6 +596,8 @@ function Config:CreateStatsMenu()
 	else
 		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText("Wins:         " ..player[1].wins);
 	end
+	
+	-- This gives the number of defeats from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10);
 	if (player[1].name == "") then
@@ -604,14 +610,17 @@ function Config:CreateStatsMenu()
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 2, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.StatsFrame, "TOPRIGHT");
-		
+	
+	-- this sets the TextFrame for the Name of the second Player
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame, "TOPLEFT", 10, -10);
-	if (player[1].name == "") then
+	if (player[1].name == "") then -- if Player Two is not set then it puts the Text "Player Two"
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetText("Player Two");
 	else
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetText(player[2].name);
 	end
+	
+	-- This gives the number of victories from the second player
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo, "BOTTOMLEFT", 0, -10);
 	if (player[1].name == "") then
@@ -619,6 +628,8 @@ function Config:CreateStatsMenu()
 	else
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetText("Wins:         " ..player[2].wins);
 	end
+	
+	-- This gives the number of defeats from the second player
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo, "BOTTOMLEFT", 0, -10);
 	if (player[1].name == "") then
@@ -649,7 +660,7 @@ function Config:CreateConfigMenu()
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:ClearAllPoints();
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame, "TOPLEFT", 8, -32);
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame, "TOPLEFT", 5, -10);
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text = MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
 	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
@@ -698,7 +709,7 @@ function Config:CreateConfigMenu()
 		MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetChecked(false);
 	end
 
-
+	-- this creates the TextBox in which you can write the Targe Name for whispering
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:ClearAllPoints();
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetSize(80, 30);
