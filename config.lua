@@ -568,7 +568,7 @@ end
 
 function Config:CreateStatsMenu()
 	-- Creates the MainFrame.ScrollFrame.StatsFrame
-	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
+	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame)
 	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 110); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
