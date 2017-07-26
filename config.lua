@@ -25,7 +25,7 @@ local default = {
 	},
 	
 	size = {
-		width = 250,
+		width = 230,
 		height = 270,
 	},
 }
@@ -474,23 +474,23 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate");
 	MainFrame.ScrollFrame:ClearAllPoints();
 	MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
-	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
+	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", -2, -25);
 	MainFrame.ScrollFrame:SetClipsChildren(true);
 	
 	MainFrame.ScrollFrame.gameFrame = CreateFrame("Frame", "TicTacToe_GameFrame", MainFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.gameFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.gameFrame:SetSize(240, 205);
+	MainFrame.ScrollFrame.gameFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 205);
 	MainFrame.ScrollFrame.gameFrame:SetPoint("TOP", MainFrame, "TOP", 0, -25);
 
 	MainFrame.ScrollFrame.SpaceFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.SpaceFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame:GetWidth() - 10, 30);
+	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 30);
 	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOP", MainFrame.ScrollFrame.gameFrame, "BOTTOM", 0, -5);
 	
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.SpaceFrame, "TOPLEFT", 0, 0);
+	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame, "LEFT", -1, 0);
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame, "LEFT", 10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetText("Statistics");
@@ -540,7 +540,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "GameMenuButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.SpaceFrame, "TOPRIGHT", 0, 0);
+	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetPoint("RIGHT", MainFrame.ScrollFrame.SpaceFrame, "RIGHT", -1, 0);
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle = MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetPoint("RIGHT", MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame, "RIGHT", -10, 0);
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetText("Configuration");
@@ -634,7 +634,7 @@ function Config:CreateStatsMenu()
 	-- Creates the MainFrame.ScrollFrame.StatsFrame
 	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame)
 	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 110); -- width, height
+	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 110); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
 	-- this creates the Frame for Player One
@@ -747,7 +747,7 @@ function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.ConfigFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 110); -- width, height
+	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 110); -- width, height
 	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
 	-- this is for the CheckBox if you want to play a solo game
@@ -806,7 +806,7 @@ function Config:CreateConfigMenu()
 	-- this creates the TextBox in which you can write the Targe Name for whispering
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetSize(80, 30);
+	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetSize(75, 30);
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetAutoFocus(false);
 	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
@@ -834,7 +834,7 @@ function Config:CreateConfigMenu()
 	
 	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
 	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetSize(80, 30);
+	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetSize(75, 30);
 	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.whisperEditBox, "BOTTOMLEFT", 0, 0);
 	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetAutoFocus(false);
 	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); InvitePlayer(self); end);
@@ -861,7 +861,7 @@ function Config:CreateConfigMenu()
 
 	MainFrame.ScrollFrame.ConfigFrame.targetButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
 	MainFrame.ScrollFrame.ConfigFrame.targetButton:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetSize(90, 30);
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetSize(84, 30);
 	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetPoint("BOTTOM", MainFrame.ScrollFrame.ConfigFrame.whisperEditBox, "TOP", -2, 0);
 	MainFrame.ScrollFrame.ConfigFrame.targetButton.text = MainFrame.ScrollFrame.ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.targetButton, "CENTER", 0,0);
