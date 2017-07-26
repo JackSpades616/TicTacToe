@@ -407,6 +407,10 @@ end
 
 
 local function AcceptingInvitation()
+    chatType = invitationChatType
+    if (chatType == "WHISPER") then
+       whisperTarget = invitationSender
+    end
 	UpdateSingleplayer(false)
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 		SendSystemMessage("No whisper target chosen!")
@@ -453,7 +457,7 @@ local function ReceiveInput(sender, message, type) -- event, _, message, sender,
 		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
 		if (senderName ~= UnitName("player") and argsMsg[3] == UnitName("player")) then
 			invitationSender = senderName;
-			invitationChatType = chatType
+			invitationChatType = type
 			StaticPopup_Show ("TICTACTOE_INVITATION");
 		end
 	end
