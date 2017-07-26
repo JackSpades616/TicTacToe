@@ -64,8 +64,9 @@ local player = {
 	},
 }
 local playerSelf = "";
-local invitationSender = "";
 local singleplayer = false;
+local invitationChatType = ""
+local invitationSender = "";
 local chatType = "EMOTE";
 local whisperTarget = nil;
 local counter = 0;
