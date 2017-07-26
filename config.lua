@@ -475,7 +475,6 @@ local function ReceiveInput(sender, message, type) -- event, _, message, sender,
 			end
 			local inviteSender = argsInv[1];
 			SetPlayers(inviteSender, senderName);
-			chatType = invitationChatType
 		end
 	end
 	
