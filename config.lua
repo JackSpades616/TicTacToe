@@ -76,7 +76,7 @@ local lastMsg = "";
 
 local expandedMainFrame = false;
 
-
+-- this is for updating the statistics in the statistic Frame
 local function UpdateStatsFrame(id)
 	Config:CreateStats(id, "name", 			"Player Two");
 	Config:CreateStats(id, "wins", 			"Wins:         ");
@@ -132,6 +132,7 @@ end
 --------------------------------------
 -- Config functions
 --------------------------------------
+-- this function runs by exit Tic Tac Toe
 function Config:Exit()
 	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
@@ -151,6 +152,7 @@ function Config:Exit()
 	MainFrame.ScrollFrame.GameFrame = nil
 end
 
+-- this function runs by reseting Tic Tac Toe
 function Config:Reset()
 	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
@@ -163,6 +165,7 @@ function Config:Reset()
 	core.Config.Toggle();
 end
 
+-- this is for reseting the position to the default position
 function Config:ResetPosition()
 	xPosition = default.position.x;
 	yPosition = default.position.y;
@@ -186,7 +189,7 @@ function Config:CollapsingMainFrame()
 	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
 	expandedMainFrame = false;
 end
-
+-- this is for the expanding of the Main Frame
 function Config:ExpandingMainFrame()
 	local animation = CreateFrame("Frame")
 	animation:SetScript("OnUpdate", function()
@@ -251,7 +254,7 @@ local function DisableFields()
 		MainFrame.ScrollFrame.GameFrame.field[i]:Disable();
 	end
 end
-
+-- disables the black listed Fields
 local function DisableBlacklistedFields()
 	for i = 1, #blackList do
 		local c = blackList:sub(i,i)
@@ -266,6 +269,7 @@ local function EnableFields()
 	end
 end
 
+-- invites an other Player
 local function InvitePlayer(name)
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 			SendSystemMessage("No whisper target chosen!")
@@ -339,6 +343,7 @@ function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, y
 	return btn;
 end
 
+-- this is to check if a player has won
 local function checkIfWon(frst, scnd, thrd, curPlayer)
 	if ((MainFrame.ScrollFrame.GameFrame.field[frst]:GetText() == MainFrame.ScrollFrame.GameFrame.field[scnd]:GetText()) and (MainFrame.ScrollFrame.GameFrame.field[frst]:GetText() == MainFrame.ScrollFrame.GameFrame.field[thrd]:GetText()) and (MainFrame.ScrollFrame.GameFrame.field[frst]:GetText() ~= nil)) then
 		MainFrame.ScrollFrame.GameFrame.field[frst]:LockHighlight();
@@ -405,7 +410,7 @@ function SelectField(key, curPlayer)
 	end
 end
 
-
+-- this function runs by accepting an invitation of an other player
 local function AcceptingInvitation()
 	UpdateSingleplayer(false)
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
@@ -417,6 +422,7 @@ local function AcceptingInvitation()
 	core.Config.Toggle(true)
 end
 
+-- this function runs by declining an invitation of an other player
 local function DecliningInvitation()
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 		SendSystemMessage("No whisper target chosen!")
@@ -556,22 +562,26 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	end)
 	MainFrame:SetScript("OnHide", function(self) MainFrame.ScrollFrame.ConfigFrame:Hide(); end)
 	
+	-- this creates the scrollFrame. The ScrollFrame limits the visible area so that the ConfigFrame and StatsFrame are not displayed.
 	MainFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate");
 	MainFrame.ScrollFrame:ClearAllPoints();
 	MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
 	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", -2, -25);
 	MainFrame.ScrollFrame:SetClipsChildren(true);
 	
+	-- this creates the GameFrame. The GameFrame includes the buttons of the game.
 	MainFrame.ScrollFrame.GameFrame = CreateFrame("Frame", "TicTacToe_GameFrame", MainFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.GameFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.GameFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 205);
 	MainFrame.ScrollFrame.GameFrame:SetPoint("TOP", MainFrame, "TOP", 0, -23);
 
+	-- this creates the SpaceFrame which only contains the buttons for the statistics and configuration.
 	MainFrame.ScrollFrame.SpaceFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.SpaceFrame:ClearAllPoints();
 	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 30);
 	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOP", MainFrame.ScrollFrame.GameFrame, "BOTTOM", 0, -5);
 	
+	-- this creates the statistic button which opens the statistic Frame.
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "TabButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:ClearAllPoints();
 	-- MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
@@ -597,6 +607,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 		end
 	end);
 
+	-- this creates the configuration button which opens the configuration Frame.
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "TabButtonTemplate");
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:ClearAllPoints();
 	-- MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
@@ -637,6 +648,8 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.configBtn.title:SetPoint("LEFT", MainFrame.configBtn, "LEFT", 5, 0);
 	MainFrame.configBtn.title:SetText("Config");
 	]]
+	
+	-- this creates the reset button. The reset button resets the game.
 	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "MagicButtonTemplate");
 	MainFrame.resetBtn:ClearAllPoints();
 	MainFrame.resetBtn:SetWidth(50); -- width, height
