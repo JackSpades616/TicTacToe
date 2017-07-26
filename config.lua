@@ -44,13 +44,13 @@ local player = {
 	{
 		name = "",
 		wins = 0,
-		loses = 0,
+		defeats = 0,
 		playedGames = 0,
 	},
 	{
 		name = "",
 		wins = 0,
-		loses = 0,
+		defeats = 0,
 		playedGames = 0,
 	},
 }
@@ -70,6 +70,38 @@ local blackList = "";
 local lastMsg = "";
 
 local expandedMainFrame = false;
+
+
+local function UpdateStatsFrame(id)
+	Config:CreateStats(id, "name", 			"Player Two");
+	Config:CreateStats(id, "wins", 			"Wins:         ");
+	Config:CreateStats(id, "defeats", 		"Defeats:      ");
+	Config:CreateStats(id, "playedGames", 	"Total:        ");
+end
+
+local function UpdatePlayerStats(id, played, win, lose)
+	if (win) 	then player[id].wins				= player[id].wins 			+ 1;	end
+	if (lose)	then player[id].defeats			= player[id].defeats 			+ 1;	end
+	if (played) then player[id].playedGames	= player[id].playedGames	+ 1;	end
+	UpdateStatsFrame(id);
+end
+
+local function SetPlayers(playerOne, playerTwo)
+	if (playerOne) then
+		player[1].name = playerOne;
+		player[1].wins = 0;
+		player[1].defeats = 0;
+		player[1].playedGames = 0;
+		UpdateStatsFrame(1);
+	end
+	if (playerTwo) then
+		player[2].name = playerTwo;
+		player[2].wins = 0;
+		player[2].defeats = 0;
+		player[2].playedGames = 0;
+		UpdateStatsFrame(2);
+	end
+end
 
 
 --------------------------------------
@@ -93,6 +125,7 @@ function Config:Exit()
 	MainFrame.ScrollFrame.ConfigFrame:Hide();
 	MainFrame.ScrollFrame.ConfigFrame = nil;
 	MainFrame.title:SetText(default.title);
+	expandedMainFrame = false;
 	MainFrame = nil;
 end
 
@@ -137,12 +170,12 @@ function Config:PrintPlayerStats()
 	print("-------------------------");
 	print("Player 1: " .. player[1].name);
 	print("Wins: " .. player[1].wins);
-	print("Losts: " .. player[1].loses);
+	print("Defeats: " .. player[1].defeats);
 	print("Played Games: " .. player[1].playedGames);
 	print("-------------------------");
 	print("Player 2: " .. player[2].name);
 	print("Wins: " .. player[2].wins);
-	print("Losts: " .. player[2].loses);
+	print("Defeats: " .. player[2].defeats);
 	print("Played Games: " .. player[2].playedGames);
 	print("-------------------------");
 end
@@ -174,17 +207,18 @@ local function InvitePlayer()
 	end
 end
 
+
 -- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
 local function Field_Onclick(self)
 	if (player[1].name == "") then
-		player[1].name = UnitName("player");
+		SetPlayers(UnitName("player"), nil);
 		if (playerSelf == "") then
 			playerSelf = 1;
 		elseif (singleplayer) then
 			playerSelf = 2;
 		end
 	elseif (player[2].name == "") then
-		player[2].name = UnitName("player");
+		SetPlayers(nil, UnitName("player"));
 		if (playerSelf == "") then
 			playerSelf = 2;
 		elseif (singleplayer) then
@@ -231,12 +265,6 @@ function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, y
 	--btn:SetScript("OnClick", function(self));
 
 	return btn;
-end
-
-local function UpdatePlayerStats(playerNumber, played, win, lose)
-	if (win) 	then player[playerNumber].wins			= player[playerNumber].wins 			+ 1;	end
-	if (lose)	then player[playerNumber].loses			= player[playerNumber].loses 			+ 1;	end
-	if (played) then player[playerNumber].playedGames	= player[playerNumber].playedGames	+ 1;	end
 end
 
 local function checkIfWon(frst, scnd, thrd, curPlayer)
@@ -301,20 +329,6 @@ function SelectField(key, curPlayer)
 	end
 end
 
-local function SetPlayers(playerOne, playerTwo)
-	if (playerOne) then
-		player[1].name = playerOne;
-		player[1].wins = 0;
-		player[1].loses = 0;
-		player[1].playedGames = 0;
-	end
-	if (playerTwo) then
-		player[2].name = playerTwo;
-		player[2].wins = 0;
-		player[2].loses = 0;
-		player[2].playedGames = 0;
-	end
-end
 
 local function AcceptingInvitation()
 	SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType);
@@ -632,38 +646,22 @@ function Config:CreateStatsMenu()
 	-- this sets the TextFrame for the Name of the first Player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame, "TOPLEFT", 10, -10);
-	if (player[1].name == "") then -- if Player One is not set then it puts the Text "Player One"
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText("Player One");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
-	end
+	Config:CreateStats(1, "name", 			"Player Two");
 	
 	-- This gives the number of victories from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10);
-	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText("Wins:         0");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText("Wins:         " ..player[1].wins);
-	end
+	Config:CreateStats(1, "wins", 			"Wins:          ");
 	
 	-- This gives the number of defeats from the first player
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10);
-	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetText("Losts:        0");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetText("Losts:        " ..player[1].loses);
-	end
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10);
+	Config:CreateStats(1, "defeats", 		"Defeats:      ");
 	
 	-- This gives the number of games from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts, "BOTTOMLEFT", 0, -10);
-	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText("Total:         0");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText("Total:         " ..player[1].playedGames);
-	end
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats, "BOTTOMLEFT", 0, -10);
+	Config:CreateStats(1, "playedGames", 	"Total:          ");
 	
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
@@ -671,52 +669,80 @@ function Config:CreateStatsMenu()
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.StatsFrame, "TOPRIGHT");
 	
 	-- this sets the TextFrame for the Name of the second Player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame, "TOPLEFT", 10, -10);
-	if (player[1].name == "") then -- if Player Two is not set then it puts the Text "Player Two"
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetText("Player Two");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo:SetText(player[2].name);
-	end
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame, "TOPLEFT", 10, -10);
+	Config:CreateStats(2, "name", 			"Player Two");
 	
 	-- This gives the number of victories from the second player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPlTwo, "BOTTOMLEFT", 0, -10);
-	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetText("Wins:         0");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo:SetText("Wins:         " ..player[2].wins);
-	end
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl, "BOTTOMLEFT", 0, -10);
+	Config:CreateStats(2, "wins", 			"Wins:          ");
 	
 	-- This gives the number of defeats from the second player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWinsTwo, "BOTTOMLEFT", 0, -10);
-	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        0");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        " ..player[2].loses);
-	end
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins, "BOTTOMLEFT", 0, -10);
+	Config:CreateStats(2, "defeats", 		"Defeats:      ");
 	
 	-- This gives the number of games from the first player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo, "BOTTOMLEFT", 0, -10);
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats, "BOTTOMLEFT", 0, -10);
+	Config:CreateStats(2, "playedGames", 	"Total:          ");
+	--[[
 	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         0");
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText("Total:         0");
 	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         " ..player[2].playedGames);
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText("Total:         " ..player[2].playedGames);
 	end
+	]]
 	--[[print("Player 1: " .. player[1].name);
 	print("Wins: " .. player[1].wins);
-	print("Losts: " .. player[1].loses);
+	print("Defeats: " .. player[1].defeats);
 	print("Played Games: " .. player[1].playedGames);
 	print("-------------------------");
 	print("Player 2: " .. player[2].name);
 	print("Wins: " .. player[2].wins);
-	print("Losts: " .. player[2].loses);
+	print("Defeats: " .. player[2].defeats);
 	print("Played Games: " .. player[2].playedGames);
 	print("-------------------------");
 	]]
 end
+
+function Config:CreateStats(id, data, text)
+	if (data == "name") then
+		if (player[id].name == "") then
+			if (id == 1) then
+				MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(text);
+			elseif (id == 2) then
+				MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(text);
+			end
+		else
+			if (id == 1) then
+				MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
+			elseif (id == 2) then
+				MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(player[2].name);
+			end
+		end
+	elseif (data == "wins") then
+		if (id == 1) then
+			MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText(text .. player[1].wins);
+		elseif (id == 2) then
+			MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetText(text .. player[2].wins);
+		end
+	elseif (data == "defeats") then
+		if (id == 1) then
+			MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetText(text .. player[1].defeats);
+		elseif (id == 2) then
+			MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetText(text .. player[2].defeats);
+		end
+	elseif (data == "playedGames") then
+		if (id == 1) then
+			MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText(text .. player[1].playedGames);
+		elseif (id == 2) then
+			MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText(text .. player[2].playedGames);
+		end
+	end
+end
+
 function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
