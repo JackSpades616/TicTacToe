@@ -28,7 +28,7 @@ local default = {
 		width = 230,
 		height = 275,
 		expanded = {
-			height = 160,
+			height = 120,
 		},
 	},
 
@@ -263,14 +263,12 @@ local function EnableFields()
 	end
 end
 
-local function InvitePlayer()
-	if MainFrame.ScrollFrame.ConfigFrame.inviteEditBox ~= "" then
+local function InvitePlayer(name)
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 			SendSystemMessage("No whisper target chosen!")
 		else
-			SendChatMessage("has invited " ..MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:GetText().. " to play Tic Tac Toe.", chatType, nil, whisperTarget);
+			SendChatMessage("has invited " ..name.. " to play Tic Tac Toe.", chatType, nil, whisperTarget);
 		end
-	end
 end
 
 -- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
@@ -685,17 +683,17 @@ function Config:CreateStatsMenu()
 	-- This gives the number of victories from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(1, "wins", 			"Wins:          ");
+	Config:CreateStats(1, "wins", 			"Wins:            ");
 	
 	-- This gives the number of defeats from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(1, "defeats", 		"Defeats:      ");
+	Config:CreateStats(1, "defeats", 		"Defeats:       ");
 	
 	-- This gives the number of games from the first player
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(1, "playedGames", 	"Total:          ");
+	Config:CreateStats(1, "playedGames", 	"Total:            ");
 	
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
@@ -710,17 +708,17 @@ function Config:CreateStatsMenu()
 	-- This gives the number of victories from the second player
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(2, "wins", 			"Wins:          ");
+	Config:CreateStats(2, "wins", 			"Wins:            ");
 	
 	-- This gives the number of defeats from the second player
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(2, "defeats", 		"Defeats:      ");
+	Config:CreateStats(2, "defeats", 		"Defeats:       ");
 	
 	-- This gives the number of games from the first player
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(2, "playedGames", 	"Total:          ");
+	Config:CreateStats(2, "playedGames", 	"Total:            ");
 	--[[
 	if (player[1].name == "") then
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText("Total:         0");
@@ -784,29 +782,87 @@ function Config:CreateConfigMenu()
 	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), default.size.expanded.height); -- width, height
 	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM", 0, -5); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
-	-- this is for the CheckBox if you want to play a solo game
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame, "TOPLEFT", 5, -10);
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text = MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
-			if (self:GetChecked()) then
-				singleplayer = true;
-			else
-				singleplayer = false;
+	MainFrame.ScrollFrame.ConfigFrame.targetButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetSize(100, 30);
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame, "TOPLEFT", 5, -10);
+	MainFrame.ScrollFrame.ConfigFrame.targetButton.text = MainFrame.ScrollFrame.ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.targetButton, "CENTER", 0,0);
+	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetText("Target");
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnEnter", function(self)
+			if (UnitName("target")) then
+				self.text:SetText(UnitName("target"));
 			end
 		end);
-
-	if (singleplayer) then
-		MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(true);
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnLeave", function(self)
+			self.text:SetText("Target");
+		end);
+	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnClick", function(self)
+			local target = UnitName("target")
+			if (target ~= UnitName("player")) then
+				if (target) then
+					MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetText(target);
+				else
+					MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetText("");
+				end
+			end
+		end);
+	
+	-- this Button invites another Player to the game
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetSize(MainFrame.ScrollFrame.ConfigFrame.targetButton:GetWidth(), 30); -- width, height
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.targetButton, "BOTTOMLEFT", 0, -5);
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text = MainFrame.ScrollFrame.ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "CENTER", 0,0);
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text:SetText("Invite");
+	
+	-- this creates the TextBox in which you can write the Target Name for whispering
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetSize(100, 30);
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.ConfigFrame, "TOPRIGHT", -5, -10);
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetAutoFocus(false);
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetScript("OnTextChanged", function(self)
+			if (self:GetText() == "") then
+				whisperTarget = nil;
+				MainFrame.ScrollFrame.ConfigFrame.inviteButton:Disable();
+			else
+				whisperTarget = self:GetText();
+				MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
+			end
+		end);
+	if (chatType == "WHISPER") then
+		MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Enable();
 	else
-		MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(false);
+		MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Disable();
 	end
-
-	-- this CheckBox is if you want to play in whisper Mode
+	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetScript("OnEnterPressed", function(self)
+		local name = self:GetText()
+		self:ClearFocus();
+		if name ~= "" then
+			InvitePlayer(self);
+		end
+	end);
+	
+	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetScript("OnClick", function(self)
+		local name = MainFrame.ScrollFrame.ConfigFrame.targetEditBox:GetText()
+			if (name == "") then
+				name:SetFocus();
+			else
+				InvitePlayer(name);
+			end
+		end);
+	if (MainFrame.ScrollFrame.ConfigFrame.targetEditBox:GetText() == "") then
+		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Disable();
+	else
+		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
+	end
+	
+	DropDownChatType = Config:CreateDropDownChatType()
+	
+	
+--[[-- this CheckBox is if you want to play in whisper Mode
 	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
 	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:ClearAllPoints();
 	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetSize(30, 30); -- width, height
@@ -823,9 +879,9 @@ function Config:CreateConfigMenu()
 			end
 
 			if (chatType == "WHISPER") then
-				MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:Enable();
+				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Enable();
 			else
-				MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:Disable();
+				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Disable();
 			end
 		end);
 
@@ -834,92 +890,30 @@ function Config:CreateConfigMenu()
 	else
 		MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetChecked(false);
 	end
-
-	-- this creates the TextBox in which you can write the Targe Name for whispering
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetSize(75, 30);
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox.text, "RIGHT", 10, 0);
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetAutoFocus(false);
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetScript("OnTextChanged", function(self)
-			if (self:GetText() == "") then
-				whisperTarget = nil;
-			else
-				whisperTarget = self:GetText();
-			end
-		end);
-	if (chatType == "WHISPER") then
-		MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:Enable();
-	else
-		MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:Disable();
-	end
-	MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
-		
-	-- this Button invites another Player to the game
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetSize(120, 30); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox, "BOTTOMLEFT", 0,0);
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text = MainFrame.ScrollFrame.ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "CENTER", 0,0);
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text:SetText("Invite");
+	]]
 	
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetSize(75, 30);
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.whisperEditBox, "BOTTOMLEFT", 0, 0);
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetAutoFocus(false);
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); InvitePlayer(self); end);
-	MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetScript("OnTextChanged", function(self)
-			if (self:GetText() ~= "") then
-				MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
+	-- this is for the CheckBox if you want to play a solo game
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.targetEditBox, "BOTTOMLEFT", -10, -5);
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text = MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
+	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
+			if (self:GetChecked()) then
+				singleplayer = true;
 			else
-				MainFrame.ScrollFrame.ConfigFrame.inviteButton:Disable();
+				singleplayer = false;
 			end
 		end);
-	
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetScript("OnClick", function(self)
-			if (MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:GetText() == "") then
-				MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetFocus();
-			else
-				InvitePlayer();
-			end
-		end);
-	if (MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:GetText() == "") then
-		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Disable();
-	else
-		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
-	end
 
-	MainFrame.ScrollFrame.ConfigFrame.targetButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetSize(84, 30);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetPoint("BOTTOM", MainFrame.ScrollFrame.ConfigFrame.whisperEditBox, "TOP", -2, 0);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton.text = MainFrame.ScrollFrame.ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.targetButton, "CENTER", 0,0);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetText("Target");
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnEnter", function(self)
-			if (UnitName("target")) then
-				self.text:SetText(UnitName("target"));
-			end
-		end);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnLeave", function(self)
-			self.text:SetText("Target");
-		end);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnClick", function(self)
-			local target = UnitName("target")
-			if (target ~= UnitName("player")) then
-				if (target) then
-					MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetText(target);
-					MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetText(target);
-				else
-					MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:SetText("");
-					MainFrame.ScrollFrame.ConfigFrame.inviteEditBox:SetText("");
-				end
-			end
-		end);
-		
-	Config:CreateDropDownChatType()
+	if (singleplayer) then
+		MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(true);
+	else
+		MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(false);
+	end
+	
 end
 
 function Config:CreateDropDownChatType()
@@ -927,8 +921,7 @@ function Config:CreateDropDownChatType()
 	if (not DropDownChatType) then
 		local DropDownChatType = CreateFrame("Button", "TicTacToe_DropDownChatType", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate")
 		DropDownChatType:ClearAllPoints()
-		DropDownChatType:SetSize(100, 30)
-		DropDownChatType:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -17, -10)
+		DropDownChatType:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 
 
 		local function DropDownMenu_OnClick(self)
@@ -937,10 +930,10 @@ function Config:CreateDropDownChatType()
 			chatType = self.value
 
 			if (chatType == "WHISPER") then
-				MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:Enable()
-				whisperTarget = MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:GetText()
+				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Enable()
+				whisperTarget = MainFrame.ScrollFrame.ConfigFrame.targetEditBox:GetText()
 			else
-				MainFrame.ScrollFrame.ConfigFrame.whisperEditBox:Disable()
+				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Disable()
 				whisperTarget = nil
 			end
 		end
@@ -958,10 +951,12 @@ function Config:CreateDropDownChatType()
 		end
 
 		UIDropDownMenu_Initialize(DropDownChatType, initialize)
-		UIDropDownMenu_SetWidth(DropDownChatType, 100)
+		UIDropDownMenu_SetWidth(DropDownChatType, 82)
 		UIDropDownMenu_SetButtonWidth(DropDownChatType, 124)
 		UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
 		UIDropDownMenu_JustifyText(DropDownChatType, "LEFT")
+		
+		return DropDownChatType
 	end
 end
 
