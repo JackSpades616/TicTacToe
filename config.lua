@@ -428,7 +428,7 @@ local function AcceptingInvitation()
 		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
 	SetPlayers(invitationSender, UnitName("player"))
-	core.Config.Toggle(true)
+	core.Config:Toggle(true)
 end
 
 -- this function runs by declining an invitation of an other player
