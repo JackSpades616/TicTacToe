@@ -207,7 +207,6 @@ local function InvitePlayer()
 	end
 end
 
-
 -- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
 local function Field_Onclick(self)
 	if (player[1].name == "") then
@@ -886,6 +885,32 @@ function Config:CreateConfigMenu()
 				end
 			end
 		end);
+		
+		-- this is for testing the DropDown Menu
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat = CreateFrame("Button", "DropDownChat", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetSize(100, 30);
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -17, -10);
+	local items = {
+		"Alpha",
+		"Beta",
+		"Gamma",
+		"Delta",
+}
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetScript("OnClick", function(self)
+		UIDropDownMenu_SetSelectedID(DropDownChat, self:GetID())
+	end);
+	
+	local function initialize(self, level)
+	local info = UIDropDownMenu_CreateInfo()
+		for k,v in pairs(items) do
+			info = UIDropDownMenu_CreateInfo()
+			info.text = v
+			info.value = v
+			info.func = OnClick
+			UIDropDownMenu_AddButton(info, level)
+		end
+	end
 end
 
 ---------------------------------
