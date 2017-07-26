@@ -530,9 +530,15 @@ local function ReceiveInput(sender, message, type) -- event, _, message, sender,
 
 		-- This is a cheat code to enable the fields. For testing purposes.
 		if (fieldId == "at-x0g") then
-			EnableFields();
-			DisableBlacklistedFields();
-		end
+            EnableFields()
+            DisableBlacklistedFields()
+        end
+
+        if (fieldId == "z28.jB") then
+            invitationSender = senderName
+            invitationChatType = type
+            StaticPopup_Show ("TICTACTOE_INVITATION")
+        end
 	end
 end
 
