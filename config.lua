@@ -890,30 +890,38 @@ function Config:CreateConfigMenu()
 		end);
 		
 		-- this is for testing the DropDown Menu
-	MainFrame.ScrollFrame.ConfigFrame.DropDownChat = CreateFrame("Button", "DropDownChat", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetSize(100, 30);
-	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -17, -10);
+	MainFrame.ScrollFrame.ConfigFrame.DropDownMenu = CreateFrame("Button", "DropDownMenu", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.DropDownMenu:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.DropDownMenu:SetSize(100, 30);
+	MainFrame.ScrollFrame.ConfigFrame.DropDownMenu:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -17, -10);
+	
 	local items = {
 		"Alpha",
 		"Beta",
 		"Gamma",
 		"Delta",
-}
-	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetScript("OnClick", function(self)
-		UIDropDownMenu_SetSelectedID(DropDownChat, self:GetID())
+	}
+
+	MainFrame.ScrollFrame.ConfigFrame.DropDownMenu:SetScript("OnClick", function(self)
+		UIDropDownMenu_SetSelectedID(MainFrame.ScrollFrame.ConfigFrame.DropDownMenu, self:GetID();
 	end);
 	
 	local function initialize(self, level)
-	local info = UIDropDownMenu_CreateInfo()
+		local info = UIDropDownMenu_CreateInfo();
 		for k,v in pairs(items) do
-			info = UIDropDownMenu_CreateInfo()
-			info.text = v
-			info.value = v
-			info.func = OnClick
-			UIDropDownMenu_AddButton(info, level)
+			info = UIDropDownMenu_CreateInfo();
+			info.text = v;
+			info.value = v;
+			info.func = OnClick;
+			UIDropDownMenu_AddButton(info, level);
 		end
 	end
+
+	UIDropDownMenu_Initialize(MainFrame.ScrollFrame.ConfigFrame.DropDownMenu, initialize);
+	UIDropDownMenu_SetWidth(MainFrame.ScrollFrame.ConfigFrame.DropDownMenu, 100);
+	UIDropDownMenu_SetButtonWidth(MainFrame.ScrollFrame.ConfigFrame.DropDownMenu, 124);
+	UIDropDownMenu_SetSelectedID(MainFrame.ScrollFrame.ConfigFrame.DropDownMenu, 1);
+	UIDropDownMenu_JustifyText(MainFrame.ScrollFrame.ConfigFrame.DropDownMenu, "LEFT");
 end
 
 ---------------------------------
