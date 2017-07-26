@@ -36,6 +36,7 @@ local default = {
 		"EMOTE",
 		"WHISPER",
 		"PARTY",
+        "GUILD",
 	},
 }
 
