@@ -28,7 +28,7 @@ local default = {
 		width = 230,
 		height = 275,
 		expanded = {
-			height = 160,
+			height = 120,
 		},
 	},
 
