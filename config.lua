@@ -27,6 +27,9 @@ local default = {
 	size = {
 		width = 230,
 		height = 270,
+		expanded = {
+			height = 160,
+		},
 	},
 }
 
@@ -520,7 +523,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 			local animation = CreateFrame("Frame");
 			animation:SetScript("OnUpdate", function()
 				local h = MainFrame:GetHeight();
-				if (h <= default.size.height + (MainFrame.ScrollFrame.StatsFrame:GetHeight())) then
+				if (h <= (default.size.height + default.size.expanded.height)) then
 					h = h + 4;
 					MainFrame:SetHeight(h);
 					MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30);
@@ -570,7 +573,7 @@ function Config:CreateMainMenu() -- creates the Main Frame
 			local animation = CreateFrame("Frame");
 			animation:SetScript("OnUpdate", function()
 				local h = MainFrame:GetHeight();
-				if (h <= default.size.height + (MainFrame.ScrollFrame.StatsFrame:GetHeight())) then
+				if (h <= (default.size.height + default.size.expanded.height)) then
 					h = h + 4;
 					MainFrame:SetHeight(h);
 					MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30);
@@ -633,13 +636,13 @@ function Config:CreateStatsMenu()
 	-- Creates the MainFrame.ScrollFrame.StatsFrame
 	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame)
 	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 110); -- width, height
+	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), default.size.expanded.height); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
 	-- this creates the Frame for Player One
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight()); -- width, height
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT");
 	
 	-- this sets the TextFrame for the Name of the first Player
@@ -664,7 +667,7 @@ function Config:CreateStatsMenu()
 	
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight()); -- width, height
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.StatsFrame, "TOPRIGHT");
 	
 	-- this sets the TextFrame for the Name of the second Player
@@ -746,7 +749,7 @@ function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.ConfigFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 110); -- width, height
+	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), default.size.expanded.height); -- width, height
 	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
 	-- this is for the CheckBox if you want to play a solo game
