@@ -626,7 +626,7 @@ function Config:CreateStatsMenu()
 	-- this creates the Frame for Player One
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 2, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
 	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT");
 	
 	-- this sets the TextFrame for the Name of the first Player
@@ -656,9 +656,18 @@ function Config:CreateStatsMenu()
 		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts:SetText("Losts:        " ..player[1].loses);
 	end
 	
+	-- This gives the number of games from the first player
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textLosts, "BOTTOMLEFT", 0, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText("Total:         0");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText("Total:         " ..player[1].playedGames);
+	end
+	
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 2, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight() - 5); -- width, height
 	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.StatsFrame, "TOPRIGHT");
 	
 	-- this sets the TextFrame for the Name of the second Player
@@ -685,7 +694,16 @@ function Config:CreateStatsMenu()
 	if (player[1].name == "") then
 		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        0");
 	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        " ..player[1].loses);
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo:SetText("Losts:        " ..player[2].loses);
+	end
+	
+	-- This gives the number of games from the first player
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textLostsTwo, "BOTTOMLEFT", 0, -10);
+	if (player[1].name == "") then
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         0");
+	else
+		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGamesTwo:SetText("Total:         " ..player[2].playedGames);
 	end
 	--[[print("Player 1: " .. player[1].name);
 	print("Wins: " .. player[1].wins);
