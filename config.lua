@@ -148,14 +148,19 @@ function Config:Exit()
 	win = false;
 	MainFrame:Hide();
 	MainFrame.title:SetText(default.title);
-	if (expandedMainFrame) then
-        Config.CollapsingMainFrame()
-    end
-	MainFrame.ScrollFrame.GameFrame = nil
+	if (DropDownChatType) then
+		UIDropDownMenu_ClearAll(DropDownChatType)
+	end
+	if (MainFrame) then
+		MainFrame = nil
+	end
 end
 
 -- this function runs by reseting Tic Tac Toe
 function Config:Reset()
+	if (expandedMainFrame) then
+		Config.CollapsingMainFrame()
+	end
 	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 			SendSystemMessage("No whisper target chosen!")
@@ -232,8 +237,8 @@ function Config:GetThemeColor()
 end
 
 function Config:Toggle(show)
-	local menu = MainFrame or Config:CreateMainMenu();
-	menu:SetShown(not menu:IsShown() or show);
+	local menu = MainFrame or Config:CreateMainMenu()
+	menu:SetShown(not menu:IsShown() or show)
 end
 
 function Config:PrintPlayerStats()
@@ -570,13 +575,11 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	  end
 	end)
 	MainFrame:SetScript("OnHide", function(self)
-	  if On( self.isMoving ) then
+	  if (self.isMoving) then
 	   self:StopMovingOrSizing();
 	   self.isMoving = false;
 	  end
-	  core.Config.Exit();
 	end)
-	MainFrame:SetScript("OnHide", function(self) MainFrame.ScrollFrame.ConfigFrame:Hide(); end)
 	
 	-- this creates the scrollFrame. The ScrollFrame limits the visible area so that the ConfigFrame and StatsFrame are not displayed.
 	MainFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate");
