@@ -175,6 +175,8 @@ function Config:CollapsingMainFrame()
 			MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30)
 		else
 			animation:SetScript("OnUpdate", nil)
+            MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:UnlockHighlight()
+            MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:UnlockHighlight()
 		end
 	end)
 	MainFrame:ClearAllPoints()
@@ -580,7 +582,6 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetScript("OnClick", function(self)
 		if (expandedMainFrame and MainFrame.ScrollFrame.StatsFrame:IsShown()) then
 			Config.CollapsingMainFrame()
-            self:UnlockHighlight()
 		elseif (expandedMainFrame) then
             self:LockHighlight()
 			MainFrame.ScrollFrame.StatsFrame:Show();
@@ -606,7 +607,6 @@ function Config:CreateMainMenu() -- creates the Main Frame
 	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetScript("OnClick", function(self)
 		if (expandedMainFrame and MainFrame.ScrollFrame.ConfigFrame:IsShown()) then
 			Config.CollapsingMainFrame()
-            self:UnlockHighlight()
 		elseif (expandedMainFrame) then
             self:LockHighlight()
 			MainFrame.ScrollFrame.ConfigFrame:Show();
