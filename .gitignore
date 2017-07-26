@@ -1,2 +1,6 @@
 test.lua
 *.orig
+.idea/TicTacToe.iml
+.idea/copyright/
+.idea/modules.xml
+.idea/workspace.xml
