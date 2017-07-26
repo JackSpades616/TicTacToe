@@ -411,7 +411,7 @@ local function AcceptingInvitation()
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 		SendSystemMessage("No whisper target chosen!")
 	else
-		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType)
+		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
 	SetPlayers(invitationSender, UnitName("player"))
 	core.Config.Toggle(true)
