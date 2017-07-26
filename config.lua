@@ -113,7 +113,7 @@ end
 local function UpdateSingleplayer(solo)
 	if (solo == nil) then solo = false end
 	singleplayer = solo
-    if (MainFrame.ScrollFrame.ConfigFrame.soloCheckBox) then
+    if (MainFrame) then
 	    MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(solo)
     end
 end
@@ -766,39 +766,41 @@ function Config:CreateStatsMenu()
 end
 
 function Config:CreateStats(id, data, text)
-	if (data == "name") then
-		if (player[id].name == "") then
-			if (id == 1) then
-				MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(text);
-			elseif (id == 2) then
-				MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(text);
-			end
-		else
-			if (id == 1) then
-				MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
-			elseif (id == 2) then
-				MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(player[2].name);
-			end
-		end
-	elseif (data == "wins") then
-		if (id == 1) then
-			MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText(text .. player[1].wins);
-		elseif (id == 2) then
-			MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetText(text .. player[2].wins);
-		end
-	elseif (data == "defeats") then
-		if (id == 1) then
-			MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetText(text .. player[1].defeats);
-		elseif (id == 2) then
-			MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetText(text .. player[2].defeats);
-		end
-	elseif (data == "playedGames") then
-		if (id == 1) then
-			MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText(text .. player[1].playedGames);
-		elseif (id == 2) then
-			MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText(text .. player[2].playedGames);
-		end
-	end
+    if (MainFrame) then
+        if (data == "name") then
+            if (player[id].name == "") then
+                if (id == 1) then
+                    MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(text);
+                elseif (id == 2) then
+                    MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(text);
+                end
+            else
+                if (id == 1) then
+                    MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
+                elseif (id == 2) then
+                    MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(player[2].name);
+                end
+            end
+        elseif (data == "wins") then
+            if (id == 1) then
+                MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText(text .. player[1].wins);
+            elseif (id == 2) then
+                MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetText(text .. player[2].wins);
+            end
+        elseif (data == "defeats") then
+            if (id == 1) then
+                MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetText(text .. player[1].defeats);
+            elseif (id == 2) then
+                MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetText(text .. player[2].defeats);
+            end
+        elseif (data == "playedGames") then
+            if (id == 1) then
+                MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText(text .. player[1].playedGames);
+            elseif (id == 2) then
+                MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText(text .. player[2].playedGames);
+            end
+        end
+    end
 end
 
 function Config:CreateConfigMenu()
