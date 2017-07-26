@@ -154,7 +154,7 @@ function Config:Exit()
 	MainFrame.ScrollFrame.GameFrame = nil
 end
 
--- this function runs by reseting Tic Tac Toe
+-- this function runs by resetting Tic Tac Toe
 function Config:Reset()
 	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
@@ -167,7 +167,7 @@ function Config:Reset()
 	core.Config.Toggle();
 end
 
--- this is for reseting the position to the default position
+-- this is for resetting the position to the default position
 function Config:ResetPosition()
 	xPosition = default.position.x;
 	yPosition = default.position.y;
