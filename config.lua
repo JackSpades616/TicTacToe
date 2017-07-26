@@ -620,7 +620,7 @@ function Config:CreateStatsMenu()
 	-- Creates the MainFrame.ScrollFrame.StatsFrame
 	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame)
 	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 110); -- width, height
+	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 160); -- width, height
 	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
 	-- this creates the Frame for Player One
@@ -721,7 +721,7 @@ function Config:CreateConfigMenu()
 	-- Creates the MainFrame.ScrollFrame.ConfigFrame
 	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
 	MainFrame.ScrollFrame.ConfigFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 110); -- width, height
+	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame.gameFrame:GetWidth(), 200); -- width, height
 	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM"); -- point, relativeFrame, relativePoint, xOffset, yOffset
 
 	-- this is for the CheckBox if you want to play a solo game
@@ -860,7 +860,36 @@ function Config:CreateConfigMenu()
 				end
 			end
 		end);
+		
+		-- this is for testing the DropDown Menu
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat = CreateFrame("Button", "DropDownChat", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate");
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:ClearAllPoints();
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetSize(100, 30);
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -17, -10);
+	local items = {
+		"Alpha",
+		"Beta",
+		"Gamma",
+		"Delta",
+}
+	MainFrame.ScrollFrame.ConfigFrame.DropDownChat:SetScript("OnClick", function(self)
+		UIDropDownMenu_SetSelectedID(DropDownChat, self:GetID())
+	end);
+	
+	local function initialize(self, level)
+	local info = UIDropDownMenu_CreateInfo()
+		for k,v in pairs(items) do
+			info = UIDropDownMenu_CreateInfo()
+			info.text = v
+			info.value = v
+			info.func = OnClick
+			UIDropDownMenu_AddButton(info, level)
+		end
+	end
 end
+
+
+	
 
 ---------------------------------
 -- PopUps
