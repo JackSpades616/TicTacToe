@@ -135,23 +135,29 @@ end
 
 -- Disables all buttons.
 local function DisableFields()
-	for i = 1, #GameFrame.field do
-		GameFrame.field[i]:Disable()
+	if (GameFrame) then
+		for i = 1, #GameFrame.field do
+			GameFrame.field[i]:Disable()
+		end
 	end
 end
 
 -- Disables the black listed Fields.
 local function DisableBlacklistedFields()
-	for i = 1, #blackList do
-		local c = blackList:sub(i,i)
-		GameFrame.field[tonumber(c)]:Disable()
+	if (GameFrame) then
+		for i = 1, #blackList do
+			local c = blackList:sub(i,i)
+			GameFrame.field[tonumber(c)]:Disable()
+		end
 	end
 end
 
 -- Enables all buttons.
 local function EnableFields()
-	for i = 1, #GameFrame.field do
-		GameFrame.field[i]:Enable()
+	if (GameFrame) then
+		for i = 1, #GameFrame.field do
+			GameFrame.field[i]:Enable()
+		end
 	end
 end
 
