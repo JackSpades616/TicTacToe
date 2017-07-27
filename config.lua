@@ -185,6 +185,50 @@ local function checkIfWon(frst, scnd, thrd, curPlayer)
 	end
 end
 
+-- Procedure after clicking a game field or getting a move message. For own and others inputs.
+local function SelectField(key, curPlayer)
+	if (not string.find(blackList, tostring(key))) then
+		GameFrame.field[tonumber(key)]:Disable()
+		counter = counter + 1
+		if (curPlayer == 1) then
+			GameFrame.field[key]:SetText("X")
+		elseif (curPlayer == 2) then
+			GameFrame.field[key]:SetText("O")
+		end
+
+		blackList = blackList .. key
+
+		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
+		if (counter >= 5) then
+			win =  checkIfWon(1, 2, 3, curPlayer)
+					or checkIfWon(4, 5, 6, curPlayer)
+					or checkIfWon(7, 8, 9, curPlayer)
+					or checkIfWon(1, 4, 7, curPlayer)
+					or checkIfWon(2, 5, 8, curPlayer)
+					or checkIfWon(3, 6, 9, curPlayer)
+					or checkIfWon(1, 5, 9, curPlayer)
+					or checkIfWon(3, 5, 7, curPlayer)
+		end
+	end
+
+	if (win) then
+		if (curPlayer == 1) then
+			UpdatePlayerStats(1, true, true, false)
+			UpdatePlayerStats(2, true, false, true)
+		elseif (curPlayer == 2) then
+			UpdatePlayerStats(1, true, false, true)
+			UpdatePlayerStats(2, true, true, false)
+		end
+	elseif (counter >= 9) then
+		UpdatePlayerStats(1, true, false, false)
+		UpdatePlayerStats(2, true, false, false)
+		if (singleplayer == false) then
+			-- If it is undecided, both player applaud.
+			DoEmote("APPLAUD")
+		end
+	end
+end
+
 -- Procedure after clicking a game field. Prints the move message for other players. For own input only.
 local function Field_Onclick(self)
 	if (player[1].name == "") then
@@ -229,50 +273,6 @@ local function Field_Onclick(self)
 		playerSelf = 2
 	else
 		playerSelf = 1
-	end
-end
-
--- Procedure after clicking a game field or getting a move message. For own and others inputs.
-local function SelectField(key, curPlayer)
-	if (not string.find(blackList, tostring(key))) then
-		GameFrame.field[tonumber(key)]:Disable()
-		counter = counter + 1
-		if (curPlayer == 1) then
-			GameFrame.field[key]:SetText("X")
-		elseif (curPlayer == 2) then
-			GameFrame.field[key]:SetText("O")
-		end
-
-		blackList = blackList .. key
-
-		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
-		if (counter >= 5) then
-			win =  checkIfWon(1, 2, 3, curPlayer)
-					or checkIfWon(4, 5, 6, curPlayer)
-					or checkIfWon(7, 8, 9, curPlayer)
-					or checkIfWon(1, 4, 7, curPlayer)
-					or checkIfWon(2, 5, 8, curPlayer)
-					or checkIfWon(3, 6, 9, curPlayer)
-					or checkIfWon(1, 5, 9, curPlayer)
-					or checkIfWon(3, 5, 7, curPlayer)
-		end
-	end
-
-	if (win) then
-		if (curPlayer == 1) then
-			UpdatePlayerStats(1, true, true, false)
-			UpdatePlayerStats(2, true, false, true)
-		elseif (curPlayer == 2) then
-			UpdatePlayerStats(1, true, false, true)
-			UpdatePlayerStats(2, true, true, false)
-		end
-	elseif (counter >= 9) then
-		UpdatePlayerStats(1, true, false, false)
-		UpdatePlayerStats(2, true, false, false)
-		if (singleplayer == false) then
-			-- If it is undecided, both player applaud.
-			DoEmote("APPLAUD")
-		end
 	end
 end
 
