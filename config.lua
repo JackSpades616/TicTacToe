@@ -196,7 +196,7 @@ end
 
 -- Procedure after clicking a game field or getting a move message. For own and others inputs.
 local function SelectField(key, curPlayer)
-	if (not string.find(blackList, tostring(key))) then
+	if (not string.find(blackList, tostring(key)) and GameFrame) then
 		GameFrame.field[tonumber(key)]:Disable()
 		counter = counter + 1
 		if (curPlayer == 1) then
