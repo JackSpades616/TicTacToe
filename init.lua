@@ -72,7 +72,7 @@ end
 
 function core:Print(...)
     local hex = select(4, self.Config:GetThemeColor())
-    local prefix = string.format("|cff%s%s|r", hex:upper(), "TicTacToe")
+    local prefix = string.format("|cff%s%s|r", hex:upper(), "TicTacToe:")
     DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...))
 end
 
