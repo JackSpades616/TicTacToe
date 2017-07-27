@@ -183,8 +183,14 @@ local function checkIfWon(frst, scnd, thrd, curPlayer)
 				SendChatMessage("won the game!", chatType, nil, whisperTarget)
 			end
 			DoEmote("LAUGH", "none")
-		elseif (curPlayer ~= playerSelf) and (singleplayer == false) then
-			DoEmote("CRY", "none")
+		elseif (curPlayer ~= playerSelf) and (singleplayer == false) and playerSelf then
+			if (player[playerSelf].name == UnitName("player")) then
+				DoEmote("CRY", "none")
+			end
+		end
+
+		if (player[1].name ~= UnitName("player") and player[2].name ~= UnitName("player")) then
+			DoEmote("APPLAUD", "none")
 		end
 
 		DisableFields()
