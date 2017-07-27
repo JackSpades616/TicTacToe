@@ -360,9 +360,8 @@ local function ReceiveInput(sender, message, type) -- event, _, message, sender,
 	end
 
 	if (singleplayer == false) then
-		local mark
-		if ((argsMessage[2] == "put") and (argsMessage[4] == "X" or "O")) then
-			mark = argsMessage[4]
+		if (argsMessage[2] == "reset" and (senderName == player[1].name or senderName == player[2].name) and senderName ~= UnitName("player")) then
+			Config:ResetGame()
 		end
 
 		local fieldId = core.Lib:SplitString(message, " : ", "#")
