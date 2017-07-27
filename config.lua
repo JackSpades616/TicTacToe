@@ -92,6 +92,12 @@ local expandedMainFrame = false
 
 -- Updates the statistics in the statistic frame.
 local function UpdateStatsFrame(id)
+<<<<<<< HEAD
+	Config:CreateStats(id, "name", 			"Player Two")
+	Config:CreateStats(id, "wins", 			"Wins:                 ")
+	Config:CreateStats(id, "defeats", 		"Defeats:      ")
+	Config:CreateStats(id, "playedGames", 	"Total:                 ")
+=======
 	if (id == 1) then
 		Config:CreateStats(id, "name", 			"Player One")
 	elseif (id == 2) then
@@ -100,6 +106,7 @@ local function UpdateStatsFrame(id)
 	Config:CreateStats(id, "wins", 			"Wins:            ")
 	Config:CreateStats(id, "defeats", 		"Defeats:        ")
 	Config:CreateStats(id, "playedGames", 	"Total:            ")
+>>>>>>> 3ee91fa761ee536cfef0488791ca2763a85573cb
 end
 
 -- Updates the players statistics by adding 1 to any of the fields.
