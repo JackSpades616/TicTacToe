@@ -544,17 +544,17 @@ end
 
 -- Prints the player statistics
 function Config:PrintPlayerStats()
-	print("-------------------------")
-	print("Player 1: " .. player[1].name)
-	print("Wins: " .. player[1].wins)
-	print("Defeats: " .. player[1].defeats)
-	print("Played Games: " .. player[1].playedGames)
-	print("-------------------------")
-	print("Player 2: " .. player[2].name)
-	print("Wins: " .. player[2].wins)
-	print("Defeats: " .. player[2].defeats)
-	print("Played Games: " .. player[2].playedGames)
-	print("-------------------------")
+	core:PrintLine()
+	core:Print("Player 1: " .. player[1].name)
+	core:Print("Wins: " .. player[1].wins)
+	core:Print("Defeats: " .. player[1].defeats)
+	core:Print("Played Games: " .. player[1].playedGames)
+	core:PrintLine()
+	core:Print("Player 2: " .. player[2].name)
+	core:Print("Wins: " .. player[2].wins)
+	core:Print("Defeats: " .. player[2].defeats)
+	core:Print("Played Games: " .. player[2].playedGames)
+	core:PrintLine()
 end
 
 
