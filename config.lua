@@ -416,14 +416,6 @@ end
 
 -- Resets the game area
 function Config:ResetGame()
-	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
-		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-			core:Print("No whisper target chosen!")
-		else
-			SendChatMessage("has reset the game.", chatType, nil, whisperTarget)
-		end
-	end
-
 	invitationChatType = ""
 	invitationSender = ""
 	lastMsg = ""
@@ -615,7 +607,16 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	MainFrame.resetBtn:ClearAllPoints()
 	MainFrame.resetBtn:SetWidth(55) -- width, height
 	MainFrame.resetBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0)
-	MainFrame.resetBtn:SetScript("OnClick", Config.ResetGame)
+	MainFrame.resetBtn:SetScript("OnClick", function(self)
+		Config.ResetGame()
+		if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
+			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+				core:Print("No whisper target chosen!")
+			else
+				SendChatMessage("has reset the game.", chatType, nil, whisperTarget)
+			end
+		end
+	end)
 	MainFrame.resetBtn.text = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	MainFrame.resetBtn.text:SetPoint("CENTER", MainFrame.resetBtn, "CENTER", 0, 0)
 	MainFrame.resetBtn.text:SetText("Reset")
