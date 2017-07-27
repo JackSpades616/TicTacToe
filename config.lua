@@ -6,8 +6,9 @@ core.Config = {} -- adds Config table to addon namespace
 local Config = core.Config
 
 --------------------------------------
--- Defaults (usually a database!)
+-- Defaults
 --------------------------------------
+
 local xCenter, yCenter = UIParent:GetCenter()
 
 local default = {
@@ -45,6 +46,7 @@ local default = {
 --------------------------------------
 -- Initializing Variables
 --------------------------------------
+
 local MainFrame
 local ScrollFrame
 local GameFrame
@@ -77,6 +79,7 @@ local invitationSender = ""
 local chatType = "EMOTE"
 local whisperTarget = nil
 local lastMsg = ""
+
 local counter = 0
 local win = false
 local blackList = ""
@@ -307,7 +310,7 @@ end
 
 -- Repeats the last sent message.
 local function RepeatMessage()
-	if (lastMsg) then
+	if (lastMsg and not singleplayer) then
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 			core:Print("No whisper target chosen!")
 		else
@@ -317,7 +320,7 @@ local function RepeatMessage()
 end
 
 -- Extracting information out of incomming messages. The AddOn can thus take over the move of the other player.
-local function ReceiveInput(sender, message, type) -- event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
+local function ReceiveInput(sender, message, type)
 	-- Getting the name of the sender without the addition of the realm
 	local senderName = core.Lib:SplitString(sender, "-", 1) -- Setting the sendername in its variable for further processing.
 
@@ -417,7 +420,7 @@ function Config:ResetGame()
 		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 			core:Print("No whisper target chosen!")
 		else
-			SendChatMessage("has quit the game.", chatType, nil, whisperTarget)
+			SendChatMessage("has reset the game.", chatType, nil, whisperTarget)
 		end
 	end
 
@@ -439,6 +442,13 @@ end
 
 -- Resets the whole AddOn
 function Config:ResetAddon()
+	MainFrame:Hide()
+--	ScrollFrame = nil
+--	GameFrame = nil
+--	SpaceFrame = nil
+--	StatsFrame = nil
+--	ConfigFrame = nil
+
 	MainFrame = nil
 	ScrollFrame = nil
 	GameFrame = nil
@@ -546,6 +556,11 @@ function Config:PrintPlayerStats()
 	print("Played Games: " .. player[2].playedGames)
 	print("-------------------------")
 end
+
+
+--------------------------------------
+-- Frame creation functions
+--------------------------------------
 
 ---------------------------------
 -- All Frames
@@ -897,19 +912,14 @@ function Config:CreateConfigFrame()
 	ConfigFrame.targetEditBox:SetPoint("TOPRIGHT", ConfigFrame, "TOPRIGHT", -5, -10)
 	ConfigFrame.targetEditBox:SetAutoFocus(false)
 	ConfigFrame.targetEditBox:SetScript("OnTextChanged", function(self)
-			if (self:GetText() == "") then
-				whisperTarget = nil
-				ConfigFrame.inviteButton:Disable()
-			else
-				whisperTarget = self:GetText()
-				ConfigFrame.inviteButton:Enable()
-			end
-		end)
-	if (chatType == "WHISPER") then
-		ConfigFrame.targetEditBox:Enable()
-	else
-		ConfigFrame.targetEditBox:Disable()
-	end
+		if (self:GetText() == "") then
+			whisperTarget = nil
+			ConfigFrame.inviteButton:Disable()
+		else
+			whisperTarget = self:GetText()
+			ConfigFrame.inviteButton:Enable()
+		end
+	end)
 	ConfigFrame.targetEditBox:SetScript("OnEnterPressed", function(self)
 		local name = self:GetText()
 		self:ClearFocus()
@@ -917,23 +927,20 @@ function Config:CreateConfigFrame()
 			InvitePlayer(self)
 		end
 	end)
-	
+
 	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
 		local name = ConfigFrame.targetEditBox:GetText()
-			if (name == "") then
-				name:SetFocus()
-			else
-				InvitePlayer(name)
-			end
-		end)
+		if (name == "") then
+			name:SetFocus()
+		else
+			InvitePlayer(name)
+		end
+	end)
 	if (ConfigFrame.targetEditBox:GetText() == "") then
 		ConfigFrame.inviteButton:Disable()
 	else
 		ConfigFrame.inviteButton:Enable()
 	end
-	
-	Config:CreateDropDownChatType()
-
 	
 	-- the CheckBox if you want to play a solo game
 	ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate")
@@ -944,19 +951,19 @@ function Config:CreateConfigFrame()
 	ConfigFrame.soloCheckBox.text:SetPoint("LEFT", ConfigFrame.soloCheckBox, "RIGHT", 0, 0)
 	ConfigFrame.soloCheckBox.text:SetText("Singleplayer")
 	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
-			if (self:GetChecked()) then
-				singleplayer = true
-			else
-				singleplayer = false
-			end
-		end)
-
+		if (self:GetChecked()) then
+			singleplayer = true
+		else
+			singleplayer = false
+		end
+	end)
 	if (singleplayer) then
 		ConfigFrame.soloCheckBox:SetChecked(true)
 	else
 		ConfigFrame.soloCheckBox:SetChecked(false)
 	end
-	
+
+	Config:CreateDropDownChatType()
 end
 
 ---------------------------------
@@ -967,6 +974,7 @@ function Config:CreateDropDownChatType()
 	if (not DropDownChatType) then
         DropDownChatType = CreateFrame("Button", "TicTacToe_DropDownChatType", ConfigFrame, "UIDropDownMenuTemplate")
 		DropDownChatType:ClearAllPoints()
+		DropDownChatType:SetPoint("TOPLEFT", ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 
 
 		local function DropDownMenu_OnClick(self)
@@ -1000,19 +1008,22 @@ function Config:CreateDropDownChatType()
 		UIDropDownMenu_SetButtonWidth(DropDownChatType, 124)
 		UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
 		UIDropDownMenu_JustifyText(DropDownChatType, "LEFT")
-
-		Config:SetDropDownChatType()
 	else
 		Config:SetDropDownChatType()
 	end
 end
 function Config:SetDropDownChatType()
+	DropDownChatType:ClearAllPoints()
+	DropDownChatType:SetParent(ConfigFrame)
 	DropDownChatType:SetPoint("TOPLEFT", ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
+	UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
 end
 
----------------------------------
+
+--------------------------------------
 -- PopUps
----------------------------------
+--------------------------------------
+
 StaticPopupDialogs["TICTACTOE_INVITATION"] = {
 	text = "You have been invited to play Tic Tac Toe. Do you want to accept this invitation?",
 	button1 = "Accept",
@@ -1029,33 +1040,36 @@ StaticPopupDialogs["TICTACTOE_INVITATION"] = {
 	preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
 }
 
----------------------------------
+
+--------------------------------------
 -- Events
----------------------------------
+--------------------------------------
+
+-- event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter
 local msgEmote = CreateFrame("Frame")
 msgEmote:RegisterEvent("CHAT_MSG_EMOTE")
-msgEmote:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "EMOTE") end)
+msgEmote:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "EMOTE") end)
 
 local msgWhisper = CreateFrame("Frame")
 msgWhisper:RegisterEvent("CHAT_MSG_WHISPER")
-msgWhisper:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end)
+msgWhisper:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "WHISPER") end)
 
 local msgWhisperInform = CreateFrame("Frame")
 msgWhisperInform:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-msgWhisperInform:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end)
+msgWhisperInform:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "WHISPER") end)
 
 local msgParty = CreateFrame("Frame")
 msgParty:RegisterEvent("CHAT_MSG_PARTY")
-msgParty:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "PARTY") end)
+msgParty:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "PARTY") end)
 
 local msgPartyLeader = CreateFrame("Frame")
 msgPartyLeader:RegisterEvent("CHAT_MSG_PARTY_LEADER")
-msgPartyLeader:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "PARTY") end)
+msgPartyLeader:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "PARTY") end)
 
 local msgGuild = CreateFrame("Frame")
 msgGuild:RegisterEvent("CHAT_MSG_GUILD")
-msgGuild:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "GUILD") end)
+msgGuild:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "GUILD") end)
 
 local msgOfficer = CreateFrame("Frame")
 msgOfficer:RegisterEvent("CHAT_MSG_OFFICER")
-msgOfficer:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "GUILD") end)
+msgOfficer:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "GUILD") end)

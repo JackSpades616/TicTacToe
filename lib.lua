@@ -34,7 +34,6 @@ function Lib:SplitString(str, separator, index)
     end
 end
 
-
 function Lib:IsNumeric(str)
     local rtn
     if (str) then

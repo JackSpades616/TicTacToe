@@ -4,7 +4,7 @@
 local _, core = ...
 
 --------------------------------------
--- Custom Slash Command
+-- Custom Slash Commands
 --------------------------------------
 core.commands = {
 	["help"] = core.CommandList,
