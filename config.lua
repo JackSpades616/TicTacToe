@@ -1051,10 +1051,6 @@ local msgWhisper = CreateFrame("Frame")
 msgWhisper:RegisterEvent("CHAT_MSG_WHISPER")
 msgWhisper:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "WHISPER") end)
 
-local msgWhisperInform = CreateFrame("Frame")
-msgWhisperInform:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-msgWhisperInform:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "WHISPER") end)
-
 local msgParty = CreateFrame("Frame")
 msgParty:RegisterEvent("CHAT_MSG_PARTY")
 msgParty:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "PARTY") end)
