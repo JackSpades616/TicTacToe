@@ -84,6 +84,7 @@ end
 
 -- WARNING: self automatically becomes events frame!
 function core:init(event, name)
+	if (name ~= "TicTacToe") then return end
 
 	-- allows using left and right buttons to move through chat 'edit' box
 	for i = 1, NUM_CHAT_WINDOWS do
