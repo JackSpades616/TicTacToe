@@ -1,8 +1,8 @@
 ## Interface: 70200
 ## Title: |cffff7d00TicTacToe|r
 ## Version: 2.3.0beta
-## Notes: Version 2.3.0beta: This is Tic Tac Toe. Self explanatory...
-## Notes-deDE: Version 2.3.0beta: Dies ist Tic Tac Toe. Selbsterklärend...
+## Notes: Version 2.3.0beta: This is Tic Tac Toe. Self explanatory... Help: /ttt help
+## Notes-deDE: Version 2.3.0beta: Dies ist Tic Tac Toe. Selbsterklärend... Hilfe: /ttt help
 ## DefaultState: enabled
 ## Author: JackSpades
 
