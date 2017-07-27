@@ -63,13 +63,13 @@ local player = {
 		name = "",
 		wins = 0,
 		defeats = 0,
-		playedGames = 0,
+		total = 0,
 	},
 	{
 		name = "",
 		wins = 0,
 		defeats = 0,
-		playedGames = 0,
+		total = 0,
 	},
 }
 local playerSelf = ""
@@ -92,21 +92,17 @@ local expandedMainFrame = false
 
 -- Updates the statistics in the statistic frame.
 local function UpdateStatsFrame(id)
-	if (id == 1) then
-		Config:CreateStats(id, "name", 			"Player One")
-	elseif (id == 2) then
-		Config:CreateStats(id, "name", 			"Player Two")
-	end
-	Config:CreateStats(id, "wins", 			"Wins:            ")
-	Config:CreateStats(id, "defeats", 		"Defeats:        ")
-	Config:CreateStats(id, "playedGames", 	"Total:            ")
+	Config:CreateStats(id, "name", StatsFrame.player[id].name)
+	Config:CreateStats(id, "wins", StatsFrame.player[id].wins)
+	Config:CreateStats(id, "defeats", StatsFrame.player[id].defeats)
+	Config:CreateStats(id, "total", StatsFrame.player[id].total)
 end
 
 -- Updates the players statistics by adding 1 to any of the fields.
-local function UpdatePlayerStats(id, played, win, lose)
-	if (win) 	then player[id].wins				= player[id].wins 			+ 1	end
-	if (lose)	then player[id].defeats			= player[id].defeats 			+ 1	end
-	if (played) then player[id].playedGames	= player[id].playedGames	+ 1	end
+local function UpdatePlayerStats(id, total, win, lose)
+	if (win) 	then player[id].wins		= player[id].wins 			+ 1	end
+	if (lose)	then player[id].defeats		= player[id].defeats 		+ 1	end
+	if (total) then player[id].total	= player[id].total	+ 1	end
 	UpdateStatsFrame(id)
 end
 
@@ -116,14 +112,14 @@ local function SetPlayers(playerOne, playerTwo)
 		player[1].name = playerOne
 		player[1].wins = 0
 		player[1].defeats = 0
-		player[1].playedGames = 0
+		player[1].total = 0
 		UpdateStatsFrame(1)
 	end
 	if (playerTwo) then
 		player[2].name = playerTwo
 		player[2].wins = 0
 		player[2].defeats = 0
-		player[2].playedGames = 0
+		player[2].total = 0
 		UpdateStatsFrame(2)
 	end
 end
@@ -463,13 +459,13 @@ function Config:ResetAddon()
 			name = "",
 			wins = 0,
 			defeats = 0,
-			playedGames = 0,
+			total = 0,
 		},
 		{
 			name = "",
 			wins = 0,
 			defeats = 0,
-			playedGames = 0,
+			total = 0,
 		},
 	}
 	playerSelf = ""
@@ -550,12 +546,12 @@ function Config:PrintPlayerStats()
 	core:Print("Player 1: " .. player[1].name)
 	core:Print("Wins: " .. player[1].wins)
 	core:Print("Defeats: " .. player[1].defeats)
-	core:Print("Played Games: " .. player[1].playedGames)
+	core:Print("Played Games: " .. player[1].total)
 	core:PrintLine()
 	core:Print("Player 2: " .. player[2].name)
 	core:Print("Wins: " .. player[2].wins)
 	core:Print("Defeats: " .. player[2].defeats)
-	core:Print("Played Games: " .. player[2].playedGames)
+	core:Print("Played Games: " .. player[2].total)
 	core:PrintLine()
 end
 
@@ -777,119 +773,77 @@ function Config:CreateStatsFrame()
 	StatsFrame:ClearAllPoints()
 	StatsFrame:SetSize(ScrollFrame:GetWidth(), default.size.expanded.height) -- width, height
 	StatsFrame:SetPoint("TOP", SpaceFrame, "BOTTOM", 0, -5) -- point, relativeFrame, relativePoint, xOffset, yOffset
-	
-	-- this creates the Frame for Player One
-	StatsFrame.plOneFrame = CreateFrame("Frame", nil, StatsFrame, "InsetFrameTemplate")
-	StatsFrame.plOneFrame:ClearAllPoints()
-	StatsFrame.plOneFrame:SetSize(StatsFrame:GetWidth() / 2 - 1, StatsFrame:GetHeight()) -- width, height
-	StatsFrame.plOneFrame:SetPoint("TOPLEFT", StatsFrame, "TOPLEFT")
-	
-	-- this sets the TextFrame for the Name of the first Player
-	StatsFrame.plOneFrame.textPl = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", StatsFrame.plOneFrame, "TOPLEFT", 10, -10)
-	Config:CreateStats(1, "name", 			"Player One")
-	
-	-- This gives the number of victories from the first player
-	StatsFrame.plOneFrame.textWins = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(1, "wins", 			"Wins:            ")
-	
-	-- This gives the number of defeats from the first player
-	StatsFrame.plOneFrame.textDefeats = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plOneFrame.textDefeats:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(1, "defeats", 		"Defeats:        ")
-	
-	-- This gives the number of games from the first player
-	StatsFrame.plOneFrame.textGames = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textDefeats, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(1, "playedGames", 	"Total:            ")
 
-	StatsFrame.plOneFrame.resetBtn = CreateFrame("Button", nil, StatsFrame.plOneFrame, "GameMenuButtonTemplate")
-	StatsFrame.plOneFrame.resetBtn:ClearAllPoints()
-	StatsFrame.plOneFrame.resetBtn:SetWidth(StatsFrame.plOneFrame:GetWidth())
-	StatsFrame.plOneFrame.resetBtn:SetPoint("BOTTOM", StatsFrame.plOneFrame, "BOTTOM")
-	StatsFrame.plOneFrame.resetBtn.text = StatsFrame.plOneFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plOneFrame.resetBtn.text:SetPoint("CENTER", StatsFrame.plOneFrame.resetBtn, "CENTER", 0, 0)
-	StatsFrame.plOneFrame.resetBtn.text:SetText("Clear")
-	StatsFrame.plOneFrame.resetBtn:SetScript("OnClick", function(self)
-		SetPlayers("", nil)
-	end)
+	StatsFrame.player = {
+		Config:CreateStatsSubs(StatsFrame, 1, "TOPLEFT"), -- Creates the Frame for Player One
+		Config:CreateStatsSubs(StatsFrame, 2, "TOPRIGHT"),
+	}
+end
 
-	
-	StatsFrame.plTwoFrame = CreateFrame("Frame", nil, StatsFrame, "InsetFrameTemplate")
-	StatsFrame.plTwoFrame:ClearAllPoints()
-	StatsFrame.plTwoFrame:SetSize(StatsFrame:GetWidth() / 2 - 1, StatsFrame:GetHeight()) -- width, height
-	StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", StatsFrame, "TOPRIGHT")
-	
-	-- this sets the TextFrame for the Name of the second Player
-	StatsFrame.plTwoFrame.textPl = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plTwoFrame.textPl:SetPoint("TOPLEFT", StatsFrame.plTwoFrame, "TOPLEFT", 10, -10)
-	Config:CreateStats(2, "name", 			"Player Two")
-	
-	-- This gives the number of victories from the second player
-	StatsFrame.plTwoFrame.textWins = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plTwoFrame.textWins:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textPl, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(2, "wins", 			"Wins:            ")
-	
-	-- This gives the number of defeats from the second player
-	StatsFrame.plTwoFrame.textDefeats = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plTwoFrame.textDefeats:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textWins, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(2, "defeats", 		"Defeats:        ")
-	
-	-- This gives the number of games from the first player
-	StatsFrame.plTwoFrame.textGames = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plTwoFrame.textGames:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textDefeats, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(2, "playedGames", 	"Total:            ")
+function Config:CreateStatsSubs(frame, id, point)
+	local player = CreateFrame("Frame", nil, frame, "InsetFrameTemplate")
+	player:ClearAllPoints()
+	player:SetSize(frame:GetWidth() / 2 - 1, frame:GetHeight()) -- width, height
+	player:SetPoint(point, frame, point)
+	player.name = Config:CreateStatsFrameData(player, id, "name", nil, "TOPLEFT", "TOPLEFT", player, 10, -10) -- Sets the text/value frame with the name.
 
-	StatsFrame.plTwoFrame.resetBtn = CreateFrame("Button", nil, StatsFrame.plTwoFrame, "GameMenuButtonTemplate")
-	StatsFrame.plTwoFrame.resetBtn:ClearAllPoints()
-	StatsFrame.plTwoFrame.resetBtn:SetWidth(StatsFrame.plTwoFrame:GetWidth())
-	StatsFrame.plTwoFrame.resetBtn:SetPoint("BOTTOM", StatsFrame.plTwoFrame, "BOTTOM")
-	StatsFrame.plTwoFrame.resetBtn.text = StatsFrame.plTwoFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	StatsFrame.plTwoFrame.resetBtn.text:SetPoint("CENTER", StatsFrame.plTwoFrame.resetBtn, "CENTER", 0, 0)
-	StatsFrame.plTwoFrame.resetBtn.text:SetText("Clear")
-	StatsFrame.plTwoFrame.resetBtn:SetScript("OnClick", function(self)
-		SetPlayers(nil, "")
-	end)
+	player.wins = Config:CreateStatsFrameData(player, id, "wins", nil, "TOPRIGHT", "TOPRIGHT", player, -10, -30) -- Sets the value frame with the amount of victories.
+	player.defeats = Config:CreateStatsFrameData(player, id, "defeats", nil, "TOPRIGHT", "BOTTOMRIGHT", player.wins, 0, -10) -- Sets the value frame with the amount of defeats.
+	player.total = Config:CreateStatsFrameData(player, id, "total", nil, "TOPRIGHT", "BOTTOMRIGHT", player.defeats, 0, -10) -- Sets the value frame with the amount of total played games.
+
+	player.winsText = Config:CreateStatsFrameData(player, id, "text", "Wins:", "TOPLEFT", "TOPLEFT", player, 10, -30) -- Sets the text frame for wins.
+	player.defeatsText = Config:CreateStatsFrameData(player, id, "text", "Defeats:", "TOPLEFT", "BOTTOMLEFT", player.winsText, 0, -10) -- Sets the text frame for defeats.
+	player.totalText = Config:CreateStatsFrameData(player, id, "text", "Total:", "TOPLEFT", "BOTTOMLEFT", player.defeatsText, 0, -10) -- Sets the text frame for total played games.
+
+	player.resetBtn = CreateFrame("Button", nil, player, "GameMenuButtonTemplate")
+	player.resetBtn:ClearAllPoints()
+	player.resetBtn:SetWidth(player:GetWidth() - 4)
+	player.resetBtn:SetPoint("BOTTOM", player, "BOTTOM", 0, 2)
+	player.resetBtn.text = player.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	player.resetBtn.text:SetPoint("CENTER", player.resetBtn, "CENTER", 0, 0)
+	player.resetBtn.text:SetText("Clear")
+	if (id == 1) then
+		player.resetBtn:SetScript("OnClick", function(self) SetPlayers("", nil) end)
+	elseif (id == 2) then
+		player.resetBtn:SetScript("OnClick", function(self) SetPlayers(nil, "") end)
+	end
+
+	return player
+end
+
+function Config:CreateStatsFrameData(self, id, data, text, point, relativePoint, relativeFrame, xOffset, yOffset)
+	local rtn = self:CreateFontString(data..id, "OVERLAY", "GameFontHighlight")
+	rtn:SetPoint(point, relativeFrame, relativePoint, xOffset, yOffset)
+	if (data == "text") then
+		rtn:SetText(text)
+	else
+		Config:CreateStats(id, data, rtn)
+	end
+
+	return rtn
 end
 
 ---------------------------------
 -- Stats Frame Text
 ---------------------------------
-function Config:CreateStats(id, data, text)
+function Config:CreateStats(id, data, frame)
     if (MainFrame) then
         if (data == "name") then
             if (player[id].name == "") then
                 if (id == 1) then
-                    StatsFrame.plOneFrame.textPl:SetText(text)
+					frame:SetText("Player One")
                 elseif (id == 2) then
-                    StatsFrame.plTwoFrame.textPl:SetText(text)
+					frame:SetText("Player Two")
                 end
             else
-                if (id == 1) then
-                    StatsFrame.plOneFrame.textPl:SetText(player[1].name)
-                elseif (id == 2) then
-                    StatsFrame.plTwoFrame.textPl:SetText(player[2].name)
-                end
+				frame:SetText(player[id].name)
             end
         elseif (data == "wins") then
-            if (id == 1) then
-                StatsFrame.plOneFrame.textWins:SetText(text .. player[1].wins)
-            elseif (id == 2) then
-                StatsFrame.plTwoFrame.textWins:SetText(text .. player[2].wins)
-            end
+			frame:SetText(player[id].wins)
         elseif (data == "defeats") then
-            if (id == 1) then
-                StatsFrame.plOneFrame.textDefeats:SetText(text .. player[1].defeats)
-            elseif (id == 2) then
-                StatsFrame.plTwoFrame.textDefeats:SetText(text .. player[2].defeats)
-            end
-        elseif (data == "playedGames") then
-            if (id == 1) then
-                StatsFrame.plOneFrame.textGames:SetText(text .. player[1].playedGames)
-            elseif (id == 2) then
-                StatsFrame.plTwoFrame.textGames:SetText(text .. player[2].playedGames)
-            end
+			frame:SetText(player[id].defeats)
+        elseif (data == "total") then
+			frame:SetText(player[id].total)
         end
     end
 end
