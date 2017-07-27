@@ -9,12 +9,6 @@ local _, core = ...
 
 core.commands = {
 	["help"] = core.CommandList,
-	
-	["example"] = {
-		["test"] = function(...)
-			core:Print("My Value:", tostringall(...))
-		end
-	},
 
 	["reset"] = core.Config.ResetAddon,
 
