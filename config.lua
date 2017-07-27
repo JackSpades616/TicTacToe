@@ -924,7 +924,7 @@ function Config:CreateConfigFrame()
 		local name = self:GetText()
 		self:ClearFocus()
 		if name ~= "" then
-			InvitePlayer(self)
+			InvitePlayer(name)
 		end
 	end)
 
