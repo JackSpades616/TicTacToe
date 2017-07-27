@@ -374,6 +374,11 @@ local function ReceiveInput(sender, message, type)
 			Config:ResetGame()
 		end
 
+		local mark
+		if ((argsMessage[2] == "put") and (argsMessage[4] == "X" or "O")) then
+			mark = argsMessage[4]
+		end
+
 		local fieldId = core.Lib:SplitString(message, " : ", "#")
 
 		-- Check if the id is a valid number from 1 to 9.
@@ -382,9 +387,9 @@ local function ReceiveInput(sender, message, type)
 			-- Senders name mustn't be the own player name.
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
-				if (player[1].name == "") then
+				if (player[1].name == "" and mark == "X") then
 					SetPlayers(senderName, nil)
-				elseif (player[2].name == "") then
+				elseif (player[2].name == "" and mark == "O") then
 					SetPlayers(nil, senderName)
 				end
 
