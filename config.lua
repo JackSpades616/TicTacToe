@@ -140,24 +140,18 @@ local function SetBothPlayers(newOne, newTwo)
 	}
 
 	if (newOne == oldOne.name) then
-		print("player 1 is the same")
 		SetPlayer(1, oldOne.name, oldOne.wins, oldOne.defeats, oldOne.total)
 	elseif (newOne == oldTwo.name) then
-		print("player 1 is new")
 		SetPlayer(1, oldTwo.name, oldTwo.wins, oldTwo.defeats, oldTwo.total)
 	else
-		print("player 1 is ENTIRELY new")
 		SetPlayer(1, newOne)
 	end
 
 	if (newTwo == oldOne.name) then
-		print("player 2 is new")
 		SetPlayer(2, oldOne.name, oldOne.wins, oldOne.defeats, oldOne.total)
 	elseif (newTwo == oldTwo.name) then
-		print("player 2 is the same")
 		SetPlayer(2, oldTwo.name, oldTwo.wins, oldTwo.defeats, oldTwo.total)
 	else
-		print("player 2 is ENTIRELY new")
 		SetPlayer(2, newTwo)
 	end
 end
