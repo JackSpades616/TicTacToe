@@ -301,6 +301,7 @@ local function AcceptingInvitation()
 	end
 	UpdateSingleplayer(false)
 	SetPlayers(invitationSender, UnitName("player"))
+	playerSelf = 2
 	Config:Toggle(true)
 	Config:ResetGame()
 end
@@ -354,6 +355,9 @@ local function ReceiveInput(sender, message, type)
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
 			UpdateSingleplayer(false)
 			SetPlayers(inviteSender, senderName)
+			if (inviteSender == UnitName("player")) then
+				playerSelf = 1
+			end
 			Config:Toggle(true)
 			Config:ResetGame()
 		end
