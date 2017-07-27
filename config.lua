@@ -92,7 +92,11 @@ local expandedMainFrame = false
 
 -- Updates the statistics in the statistic frame.
 local function UpdateStatsFrame(id)
-	Config:CreateStats(id, "name", 			"Player Two")
+	if (id == 1) then
+		Config:CreateStats(id, "name", 			"Player One")
+	elseif (id == 2) then
+		Config:CreateStats(id, "name", 			"Player Two")
+	end
 	Config:CreateStats(id, "wins", 			"Wins:            ")
 	Config:CreateStats(id, "defeats", 		"Defeats:        ")
 	Config:CreateStats(id, "playedGames", 	"Total:            ")
