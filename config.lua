@@ -180,7 +180,9 @@ local function checkIfWon(frst, scnd, thrd, curPlayer)
 		GameFrame.field[frst]:LockHighlight()
 		GameFrame.field[scnd]:LockHighlight()
 		GameFrame.field[thrd]:LockHighlight()
-		if (curPlayer == playerSelf) and (singleplayer == false) then
+		if (player[1].name ~= UnitName("player") and player[2].name ~= UnitName("player")) then
+			DoEmote("APPLAUD", "none")
+		elseif (curPlayer == playerSelf) and (singleplayer == false) then
 			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 				core:Print("No whisper target chosen!")
 			else
@@ -193,9 +195,6 @@ local function checkIfWon(frst, scnd, thrd, curPlayer)
 			end
 		end
 
-		if (player[1].name ~= UnitName("player") and player[2].name ~= UnitName("player")) then
-			DoEmote("APPLAUD", "none")
-		end
 
 		DisableFields()
 		return true
