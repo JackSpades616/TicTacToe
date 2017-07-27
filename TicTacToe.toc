@@ -3,6 +3,7 @@
 ## Version: 2.3.0beta
 ## Notes: Version 2.3.0beta: This is Tic Tac Toe. Self explanatory...
 ## Notes-deDE: Version 2.3.0beta: Dies is Tic Tac Toe. Selbsterklärend...
+## DefaultState: enabled
 ## Author: JackSpades
 
 
