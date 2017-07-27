@@ -92,10 +92,21 @@ local expandedMainFrame = false
 
 -- Updates the statistics in the statistic frame.
 local function UpdateStatsFrame(id)
+<<<<<<< HEAD
 	Config:CreateStats(id, "name", 			"Player Two")
 	Config:CreateStats(id, "wins", 			"Wins:                 ")
 	Config:CreateStats(id, "defeats", 		"Defeats:      ")
 	Config:CreateStats(id, "playedGames", 	"Total:                 ")
+=======
+	if (id == 1) then
+		Config:CreateStats(id, "name", 			"Player One")
+	elseif (id == 2) then
+		Config:CreateStats(id, "name", 			"Player Two")
+	end
+	Config:CreateStats(id, "wins", 			"Wins:            ")
+	Config:CreateStats(id, "defeats", 		"Defeats:        ")
+	Config:CreateStats(id, "playedGames", 	"Total:            ")
+>>>>>>> 3ee91fa761ee536cfef0488791ca2763a85573cb
 end
 
 -- Updates the players statistics by adding 1 to any of the fields.
@@ -800,6 +811,18 @@ function Config:CreateStatsFrame()
 	StatsFrame.plOneFrame.textGames = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textDefeats, "BOTTOMLEFT", 0, -10)
 	Config:CreateStats(1, "playedGames", 	"Total:            ")
+
+	StatsFrame.plOneFrame.resetBtn = CreateFrame("Button", nil, StatsFrame.plOneFrame, "GameMenuButtonTemplate")
+	StatsFrame.plOneFrame.resetBtn:ClearAllPoints()
+	StatsFrame.plOneFrame.resetBtn:SetWidth(StatsFrame.plOneFrame:GetWidth())
+	StatsFrame.plOneFrame.resetBtn:SetPoint("BOTTOM", StatsFrame.plOneFrame, "BOTTOM")
+	StatsFrame.plOneFrame.resetBtn.text = StatsFrame.plOneFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plOneFrame.resetBtn.text:SetPoint("CENTER", StatsFrame.plOneFrame.resetBtn, "CENTER", 0, 0)
+	StatsFrame.plOneFrame.resetBtn.text:SetText("Clear")
+	StatsFrame.plOneFrame.resetBtn:SetScript("OnClick", function(self)
+		SetPlayers("", nil)
+	end)
+
 	
 	StatsFrame.plTwoFrame = CreateFrame("Frame", nil, StatsFrame, "InsetFrameTemplate")
 	StatsFrame.plTwoFrame:ClearAllPoints()
@@ -825,6 +848,17 @@ function Config:CreateStatsFrame()
 	StatsFrame.plTwoFrame.textGames = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	StatsFrame.plTwoFrame.textGames:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textDefeats, "BOTTOMLEFT", 0, -10)
 	Config:CreateStats(2, "playedGames", 	"Total:            ")
+
+	StatsFrame.plTwoFrame.resetBtn = CreateFrame("Button", nil, StatsFrame.plTwoFrame, "GameMenuButtonTemplate")
+	StatsFrame.plTwoFrame.resetBtn:ClearAllPoints()
+	StatsFrame.plTwoFrame.resetBtn:SetWidth(StatsFrame.plTwoFrame:GetWidth())
+	StatsFrame.plTwoFrame.resetBtn:SetPoint("BOTTOM", StatsFrame.plTwoFrame, "BOTTOM")
+	StatsFrame.plTwoFrame.resetBtn.text = StatsFrame.plTwoFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plTwoFrame.resetBtn.text:SetPoint("CENTER", StatsFrame.plTwoFrame.resetBtn, "CENTER", 0, 0)
+	StatsFrame.plTwoFrame.resetBtn.text:SetText("Clear")
+	StatsFrame.plTwoFrame.resetBtn:SetScript("OnClick", function(self)
+		SetPlayers(nil, "")
+	end)
 end
 
 ---------------------------------
