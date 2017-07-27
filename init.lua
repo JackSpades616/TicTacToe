@@ -6,6 +6,7 @@ local _, core = ...
 --------------------------------------
 -- Custom Slash Commands
 --------------------------------------
+
 core.commands = {
 	["help"] = core.CommandList,
 	
@@ -17,22 +18,9 @@ core.commands = {
 
 	["reset"] = core.Config.ResetAddon,
 
-	["solo"] = core.Config.Singleplayer,
-
 	["stats"] = core.Config.PrintPlayerStats,
 }
 
-local function CommandList()
-	local color = "fffb00"
-	core:PrintLine()
-	core:Print("List of slash commands:")
-	core:Print("|cff"..color.."/ttt|r - start the game")
-	core:Print("|cff"..color.."/ttt reset|r - reset the AddOn configuration")
-	core:Print("|cff"..color.."/ttt solo|r  - enables singleplayer mode")
-	core:Print("|cff"..color.."/ttt help|r  - shows help info")
-	core:Print("|cff"..color.."/ttt stats|r - shows the player statistics")
-	core:PrintLine()
-end
 
 local function HandleSlashCommands(str)	
 	if (#str == 0) then	
@@ -63,11 +51,22 @@ local function HandleSlashCommands(str)
 				end
 			else
 				-- does not exist!
-				core.commands.help()
+				core:CommandList()
 				return
 			end
 		end
 	end
+end
+
+function core:CommandList()
+	local color = "fffb00"
+	core:PrintLine()
+	core:Print("List of slash commands:")
+	core:Print("|cff"..color.."/ttt|r - start the game")
+	core:Print("|cff"..color.."/ttt reset|r - reset the AddOn configuration")
+	core:Print("|cff"..color.."/ttt help|r  - shows help info")
+	core:Print("|cff"..color.."/ttt stats|r - shows the player statistics")
+	core:PrintLine()
 end
 
 function core:Print(...)
@@ -76,7 +75,7 @@ function core:Print(...)
     DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...))
 end
 
-function core:PrintLine(...)
+function core:PrintLine()
 	local hex = select(4, self.Config:GetThemeColor())
 	local prefix = string.format("|cff%s%s|r", hex:upper(), "---------------------------------------------------------------")
 	DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix))
@@ -97,9 +96,8 @@ function core:init(event, name)
 	SLASH_TicTacToe1 = "/ttt"
 	SlashCmdList.TicTacToe = HandleSlashCommands
 
-	local color = "fffb00"
 	core:PrintLine()
-	core:Print("|cff"..color.."/ttt|r - start the game")
+	core:Print("|cfffffb00/ttt|r - start the game")
 	core:PrintLine()
 
 	-- Needs to be removed, once developing is finished!
