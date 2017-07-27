@@ -1,10 +1,12 @@
-## Interface: 70205
+## Interface: 70200
 ## Title: |cff00ccffTicTacToe|r
-## Version: 1.0alpha
+## Version: 2.3.0beta
 ## Notes: Alpha: This is Tic Tac Toe. Self explanatory...
 ## Notes-deDE: Alpha: Dies is Tic Tac Toe. Selbsterklärend...
 ## DefaultState: enaled
 ## Author: JackSpades
 
+
+lib.lua
 config.lua
 init.lua

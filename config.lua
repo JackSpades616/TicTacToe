@@ -1,13 +1,14 @@
 --------------------------------------
 -- Namespaces
 --------------------------------------
-local _, core = ...;
-core.Config = {}; -- adds Config table to addon namespace
+local _, core = ...
+core.Config = {} -- adds Config table to addon namespace
+local Config = core.Config
 
 --------------------------------------
 -- Defaults (usually a database!)
 --------------------------------------
-local xCenter, yCenter = UIParent:GetCenter();
+local xCenter, yCenter = UIParent:GetCenter()
 
 local default = {
 	title = "Tic Tac Toe",
@@ -16,7 +17,7 @@ local default = {
 		r = 0, 
 		g = 0.8, -- 204/255
 		b = 1,
-		hex = "00ccff",
+		hex = "ff7d00",
 	},
 
 	position = {
@@ -44,12 +45,16 @@ local default = {
 --------------------------------------
 -- Initializing Variables
 --------------------------------------
-local Config = core.Config
 local MainFrame
+local ScrollFrame
+local GameFrame
+local SpaceFrame
+local StatsFrame
+local ConfigFrame
 local DropDownChatType
 
-local xPosition = default.position.x;
-local yPosition = default.position.y;
+local xPosition = default.position.x
+local yPosition = default.position.y
 
 local player = {
 	{
@@ -65,370 +70,224 @@ local player = {
 		playedGames = 0,
 	},
 }
-local playerSelf = "";
-local singleplayer = false;
+local playerSelf = ""
+local singleplayer = false
 local invitationChatType = ""
-local invitationSender = "";
-local chatType = "EMOTE";
-local whisperTarget = nil;
-local counter = 0;
-local win = false;
-local blackList = "";
-local lastMsg = "";
+local invitationSender = ""
+local chatType = "EMOTE"
+local whisperTarget = nil
+local lastMsg = ""
+local counter = 0
+local win = false
+local blackList = ""
 
-local expandedMainFrame = false;
-
--- this is for updating the statistics in the statistic Frame
-local function UpdateStatsFrame(id)
-	Config:CreateStats(id, "name", 			"Player Two");
-	Config:CreateStats(id, "wins", 			"Wins:         ");
-	Config:CreateStats(id, "defeats", 		"Defeats:      ");
-	Config:CreateStats(id, "playedGames", 	"Total:        ");
-end
-
-local function UpdatePlayerStats(id, played, win, lose)
-	if (win) 	then player[id].wins				= player[id].wins 			+ 1;	end
-	if (lose)	then player[id].defeats			= player[id].defeats 			+ 1;	end
-	if (played) then player[id].playedGames	= player[id].playedGames	+ 1;	end
-	UpdateStatsFrame(id);
-end
-
-local function SetPlayers(playerOne, playerTwo)
-	if (playerOne) then
-		player[1].name = playerOne;
-		player[1].wins = 0;
-		player[1].defeats = 0;
-		player[1].playedGames = 0;
-		UpdateStatsFrame(1);
-	end
-	if (playerTwo) then
-		player[2].name = playerTwo;
-		player[2].wins = 0;
-		player[2].defeats = 0;
-		player[2].playedGames = 0;
-		UpdateStatsFrame(2);
-	end
-end
-
-local function UpdateSingleplayer(solo)
-	if (solo == nil) then solo = false end
-	singleplayer = solo
-    if (MainFrame) then
-	    MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(solo)
-    end
-end
-
-local function FirstLetterUp(str)
-	local rtn = ""
-	for i = 1, #str do
-		local c = str:sub(i,i)
-		if (i == 1) then
-			rtn = rtn .. string.upper(c)
-		else
-			rtn = rtn .. string.lower(c)
-		end
-	end
-	return rtn
-end
-
---------------------------------------
--- Config functions
---------------------------------------
--- this function runs by exit Tic Tac Toe
-function Config:Exit()
-	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
-		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-			SendSystemMessage("No whisper target chosen!")
-		else
-			SendChatMessage("has quit the game.", chatType, nil, whisperTarget);
-		end
-	end
-	blackList = "";
-	counter = 0;
-	win = false;
-	MainFrame:Hide();
-	MainFrame.title:SetText(default.title);
-	if (DropDownChatType) then
-		UIDropDownMenu_ClearAll(DropDownChatType)
-	end
-	if (MainFrame) then
-		MainFrame = nil
-	end
-end
-
--- this function runs by resetting Tic Tac Toe
-function Config:Reset()
-	if (expandedMainFrame) then
-		Config.CollapsingMainFrame()
-	end
-	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
-		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-			SendSystemMessage("No whisper target chosen!")
-		else
-			SendChatMessage("has reset the game.", chatType, nil, whisperTarget);
-		end
-	end
-	core.Config.Exit();
-	core.Config.Toggle();
-end
-
--- this is for resetting the position to the default position
-function Config:ResetPosition()
-	xPosition = default.position.x;
-	yPosition = default.position.y;
-end
-
-function Config:CollapsingMainFrame()
-	local animation = CreateFrame("Frame")
-	animation:SetScript("OnUpdate", function()
-		local h = MainFrame:GetHeight()
-		if (h >= default.size.height) then
-			h = h - 5
-			MainFrame:SetHeight(h)
-			MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30)
-		else
-			animation:SetScript("OnUpdate", nil)
-            MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:UnlockHighlight()
-            MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:UnlockHighlight()
-		end
-	end)
-	MainFrame:ClearAllPoints()
-	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
-	expandedMainFrame = false;
-end
--- this is for the expanding of the Main Frame
-function Config:ExpandingMainFrame()
-	local animation = CreateFrame("Frame")
-	animation:SetScript("OnUpdate", function()
-		local h = MainFrame:GetHeight()
-		if (h <= (default.size.height + default.size.expanded.height)) then
-			h = h + 5
-			MainFrame:SetHeight(h)
-			MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30)
-		else
-			animation:SetScript("OnUpdate", nil)
-		end
-	end);
-	MainFrame:ClearAllPoints()
-	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
-	expandedMainFrame = true
-end
-
--- Unused function
---[[
-function Config:Singleplayer()
-	if (singleplayer == false) then
-		if (MainFrame.ScrollFrame.ConfigFrame) then
-			MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(true);
-		end
-		singleplayer = true;
-	else
-		if (MainFrame.ScrollFrame.ConfigFrame) then
-			MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(false);
-		end
-		singleplayer = false;
-	end
-end
-]]
-
-function Config:GetThemeColor()
-	local c = default.theme;
-	return c.r, c.g, c.b, c.hex;
-end
-
-function Config:Toggle(show)
-	local menu = MainFrame or Config:CreateMainMenu()
-	menu:SetShown(not menu:IsShown() or show)
-end
-
-function Config:PrintPlayerStats()
-	print("-------------------------");
-	print("Player 1: " .. player[1].name);
-	print("Wins: " .. player[1].wins);
-	print("Defeats: " .. player[1].defeats);
-	print("Played Games: " .. player[1].playedGames);
-	print("-------------------------");
-	print("Player 2: " .. player[2].name);
-	print("Wins: " .. player[2].wins);
-	print("Defeats: " .. player[2].defeats);
-	print("Played Games: " .. player[2].playedGames);
-	print("-------------------------");
-end
-
--- this function disables all Buttons
-local function DisableFields()
-	for i = 1, #MainFrame.ScrollFrame.GameFrame.field do
-		MainFrame.ScrollFrame.GameFrame.field[i]:Disable();
-	end
-end
--- disables the black listed Fields
-local function DisableBlacklistedFields()
-	for i = 1, #blackList do
-		local c = blackList:sub(i,i)
-		MainFrame.ScrollFrame.GameFrame.field[tonumber(c)]:Disable();
-	end
-end
-
--- this function enables all Buttons
-local function EnableFields()
-	for i = 1, #MainFrame.ScrollFrame.GameFrame.field do
-		MainFrame.ScrollFrame.GameFrame.field[i]:Enable();
-	end
-end
-
--- invites an other Player
-local function InvitePlayer(name)
-		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-			SendSystemMessage("No whisper target chosen!")
-		else
-			SendChatMessage("has invited " ..name.. " to play Tic Tac Toe.", chatType, nil, whisperTarget);
-		end
-end
-
--- this function is for multiplayer. It sends a Message which Button the player has clicked as an emote.
-local function Field_Onclick(self)
-	if (player[1].name == "") then
-		SetPlayers(UnitName("player"), nil);
-		if (playerSelf == "") then
-			playerSelf = 1;
-		elseif (singleplayer) then
-			playerSelf = 2;
-		end
-	elseif (player[2].name == "") then
-		SetPlayers(nil, UnitName("player"));
-		if (playerSelf == "") then
-			playerSelf = 2;
-		elseif (singleplayer) then
-			playerSelf = 1;
-		end
-	end
-	if (player[1].name == UnitName("player")) then
-		playerSelf = 1;
-	elseif (player[2].name == UnitName("player")) then
-		playerSelf = 2;
-	end
-
-	if (singleplayer == false) then
-		if (playerSelf == 1) then
-			lastMsg = "has put an X on the field : " .. self:GetID();
-
-			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-				SendSystemMessage("No whisper target chosen!")
-			else
-				SendChatMessage(lastMsg, chatType, nil, whisperTarget);
-			end
-		elseif (playerSelf == 2) then
-			lastMsg = "has put an O on the field : " .. self:GetID();
-
-			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-				SendSystemMessage("No whisper target chosen!")
-			else
-				SendChatMessage(lastMsg, chatType, nil, whisperTarget);
-			end
-		end
-	end
-	
-	-- if it is not your turn, this disables for you the Buttons
-	SelectField(self:GetID(), playerSelf);
-	if (singleplayer == false) then
-		DisableFields();
-	end
-end
-
-function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, yOffset, text)
-	local btn = CreateFrame("Button", nil, relativeFrame, "GameMenuButtonTemplate");
-	btn:SetID(id);
-	btn:SetPoint(point, relativeFrame, relativePoint, xOffset, yOffset);
-	btn:SetSize(70, 70);
-	btn:SetText(text);
-	btn:SetNormalFontObject("GameFontNormalLarge");
-	btn:SetHighlightFontObject("GameFontHighlightLarge");
-	btn:SetScript("OnClick", function(self) Field_Onclick(self) end);
-
-	--btn:SetScript("OnClick", function(self));
-
-	return btn;
-end
-
--- this is to check if a player has won
-local function checkIfWon(frst, scnd, thrd, curPlayer)
-	if ((MainFrame.ScrollFrame.GameFrame.field[frst]:GetText() == MainFrame.ScrollFrame.GameFrame.field[scnd]:GetText()) and (MainFrame.ScrollFrame.GameFrame.field[frst]:GetText() == MainFrame.ScrollFrame.GameFrame.field[thrd]:GetText()) and (MainFrame.ScrollFrame.GameFrame.field[frst]:GetText() ~= nil)) then
-		MainFrame.ScrollFrame.GameFrame.field[frst]:LockHighlight();
-		MainFrame.ScrollFrame.GameFrame.field[scnd]:LockHighlight();
-		MainFrame.ScrollFrame.GameFrame.field[thrd]:LockHighlight();
-		if (curPlayer == playerSelf) and (singleplayer == false) then
-			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-				SendSystemMessage("No whisper target chosen!")
-			else
-				SendChatMessage("won the game!", chatType, nil, whisperTarget);
-			end
-			DoEmote("DANCE", none);
-		elseif (curPlayer ~= playerSelf) and (singleplayer == false) then
-			DoEmote("CRY");
-		end
-
-		if (curPlayer == 1) then
-			UpdatePlayerStats(1, true, true, false);
-			UpdatePlayerStats(2, true, false, true);
-		elseif (curPlayer == 2) then
-			UpdatePlayerStats(2, true, true, false);
-			UpdatePlayerStats(1, true, false, true);
-		end
-		DisableFields();
-		return true;
-	else
-		return false;
-	end
-end
+local expandedMainFrame = false
 
 --------------------------------------
 -- Functions
 --------------------------------------
-function SelectField(key, curPlayer)
-	if (not string.find(blackList, tostring(key))) then
-		MainFrame.ScrollFrame.GameFrame.field[tonumber(key)]:Disable();
-		counter = counter + 1;
-		if (curPlayer == 1) then
-			MainFrame.ScrollFrame.GameFrame.field[key]:SetText("X");
-		elseif (curPlayer == 2) then
-			MainFrame.ScrollFrame.GameFrame.field[key]:SetText("O");
+
+-- Updates the statistics in the statistic frame.
+local function UpdateStatsFrame(id)
+	Config:CreateStats(id, "name", 			"Player Two")
+	Config:CreateStats(id, "wins", 			"Wins:         ")
+	Config:CreateStats(id, "defeats", 		"Defeats:      ")
+	Config:CreateStats(id, "playedGames", 	"Total:        ")
+end
+
+-- Updates the players statistics by adding 1 to any of the fields.
+local function UpdatePlayerStats(id, played, win, lose)
+	if (win) 	then player[id].wins				= player[id].wins 			+ 1	end
+	if (lose)	then player[id].defeats			= player[id].defeats 			+ 1	end
+	if (played) then player[id].playedGames	= player[id].playedGames	+ 1	end
+	UpdateStatsFrame(id)
+end
+
+-- Initializes the players.
+local function SetPlayers(playerOne, playerTwo)
+	if (playerOne) then
+		player[1].name = playerOne
+		player[1].wins = 0
+		player[1].defeats = 0
+		player[1].playedGames = 0
+		UpdateStatsFrame(1)
+	end
+	if (playerTwo) then
+		player[2].name = playerTwo
+		player[2].wins = 0
+		player[2].defeats = 0
+		player[2].playedGames = 0
+		UpdateStatsFrame(2)
+	end
+end
+
+-- Updates the state of the singleplayer checkbox.
+local function UpdateSingleplayer(solo)
+	if (solo == nil) then solo = false end
+	singleplayer = solo
+    if (MainFrame) then
+	    ConfigFrame.soloCheckBox:SetChecked(solo)
+    end
+end
+
+-- Disables all buttons.
+local function DisableFields()
+	for i = 1, #GameFrame.field do
+		GameFrame.field[i]:Disable()
+	end
+end
+
+-- Disables the black listed Fields.
+local function DisableBlacklistedFields()
+	for i = 1, #blackList do
+		local c = blackList:sub(i,i)
+		GameFrame.field[tonumber(c)]:Disable()
+	end
+end
+
+-- Enables all buttons.
+local function EnableFields()
+	for i = 1, #GameFrame.field do
+		GameFrame.field[i]:Enable()
+	end
+end
+
+-- Invites an other player.
+local function InvitePlayer(name)
+	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+		core:Print("No whisper target chosen!")
+	else
+		SendChatMessage("has invited " ..name.. " to play Tic Tac Toe.", chatType, nil, whisperTarget)
+	end
+end
+
+-- Check if a player has won.
+local function checkIfWon(frst, scnd, thrd, curPlayer)
+	if ((GameFrame.field[frst]:GetText() == GameFrame.field[scnd]:GetText()) and (GameFrame.field[frst]:GetText() == GameFrame.field[thrd]:GetText()) and (GameFrame.field[frst]:GetText() ~= nil)) then
+		GameFrame.field[frst]:LockHighlight()
+		GameFrame.field[scnd]:LockHighlight()
+		GameFrame.field[thrd]:LockHighlight()
+		if (curPlayer == playerSelf) and (singleplayer == false) then
+			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+				core:Print("No whisper target chosen!")
+			else
+				SendChatMessage("won the game!", chatType, nil, whisperTarget)
+			end
+			DoEmote("DANCE", none)
+		elseif (curPlayer ~= playerSelf) and (singleplayer == false) then
+			DoEmote("CRY")
 		end
 
-		blackList = blackList .. key;
+		DisableFields()
+		return true
+	else
+		return false
+	end
+end
 
-		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
-		if (counter >= 5) then
-			win = checkIfWon(1, 2, 3, curPlayer);
-			win = checkIfWon(4, 5, 6, curPlayer);
-			win = checkIfWon(7, 8, 9, curPlayer);
-			win = checkIfWon(1, 4, 7, curPlayer);
-			win = checkIfWon(2, 5, 8, curPlayer);
-			win = checkIfWon(3, 6, 9, curPlayer);
-			win = checkIfWon(1, 5, 9, curPlayer);
-			win = checkIfWon(3, 5, 7, curPlayer);
+-- Procedure after clicking a game field. Prints the move message for other players. For own input only.
+local function Field_Onclick(self)
+	if (player[1].name == "") then
+		SetPlayers(UnitName("player"), nil)
+		playerSelf = 1
+	elseif (player[2].name == "") then
+		if (player[1].name == UnitName("player")) then
+			SetPlayers(nil, UnitName("player") .. " 2")
+			playerSelf = 2
+		else
+			SetPlayers(nil, UnitName("player"))
+			playerSelf = 2
 		end
 	end
 
-	-- If it is undecided, both player applaud.
-	if (counter >= 9) and (win == false) then
+	if (singleplayer == false) then
+		if (playerSelf == 1) then
+			lastMsg = "has put an X on the field : " .. self:GetID()
+
+			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+				core:Print("No whisper target chosen!")
+			else
+				SendChatMessage(lastMsg, chatType, nil, whisperTarget)
+			end
+		elseif (playerSelf == 2) then
+			lastMsg = "has put an O on the field : " .. self:GetID()
+
+			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+				core:Print("No whisper target chosen!")
+			else
+				SendChatMessage(lastMsg, chatType, nil, whisperTarget)
+			end
+		end
+	end
+
+	-- if it is not your turn, this disables for you the Buttons
+	SelectField(self:GetID(), playerSelf)
+
+	if (singleplayer == false or singleplayer == nil) then
+		DisableFields()
+	elseif (playerSelf == 1) then
+		playerSelf = 2
+	else
+		playerSelf = 1
+	end
+end
+
+-- Procedure after clicking a game field or getting a move message. For own and others inputs.
+local function SelectField(key, curPlayer)
+	if (not string.find(blackList, tostring(key))) then
+		GameFrame.field[tonumber(key)]:Disable()
+		counter = counter + 1
+		if (curPlayer == 1) then
+			GameFrame.field[key]:SetText("X")
+		elseif (curPlayer == 2) then
+			GameFrame.field[key]:SetText("O")
+		end
+
+		blackList = blackList .. key
+
+		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
+		if (counter >= 5) then
+			win =  checkIfWon(1, 2, 3, curPlayer)
+					or checkIfWon(4, 5, 6, curPlayer)
+					or checkIfWon(7, 8, 9, curPlayer)
+					or checkIfWon(1, 4, 7, curPlayer)
+					or checkIfWon(2, 5, 8, curPlayer)
+					or checkIfWon(3, 6, 9, curPlayer)
+					or checkIfWon(1, 5, 9, curPlayer)
+					or checkIfWon(3, 5, 7, curPlayer)
+		end
+	end
+
+	if (win) then
+		if (curPlayer == 1) then
+			UpdatePlayerStats(1, true, true, false)
+			UpdatePlayerStats(2, true, false, true)
+		elseif (curPlayer == 2) then
+			UpdatePlayerStats(1, true, false, true)
+			UpdatePlayerStats(2, true, true, false)
+		end
+	elseif (counter >= 9) then
+		UpdatePlayerStats(1, true, false, false)
+		UpdatePlayerStats(2, true, false, false)
 		if (singleplayer == false) then
-			DoEmote("APPLAUD");
+			-- If it is undecided, both player applaud.
+			DoEmote("APPLAUD")
 		end
 	end
 end
 
--- this function runs by accepting an invitation of an other player
+-- Runs by accepting an invitation of an other player.
 local function AcceptingInvitation()
-    chatType = invitationChatType
-    if (DropDownChatType) then
-        UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
-    end
-    if (chatType == "WHISPER") then
-       whisperTarget = invitationSender
-    end
+	chatType = invitationChatType
+	if (DropDownChatType) then
+		UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
+	end
+	if (chatType == "WHISPER") then
+		whisperTarget = invitationSender
+	end
 	UpdateSingleplayer(false)
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-		SendSystemMessage("No whisper target chosen!")
+		core:Print("No whisper target chosen!")
 	else
 		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
@@ -436,98 +295,95 @@ local function AcceptingInvitation()
 	core.Config:Toggle(true)
 end
 
--- this function runs by declining an invitation of an other player
+-- Runs by declining an invitation of an other player.
 local function DecliningInvitation()
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-		SendSystemMessage("No whisper target chosen!")
+		core:Print("No whisper target chosen!")
 	else
-		SendChatMessage("has declined the invitation of " .. invitationSender .. ".", chatType);
+		SendChatMessage("has declined the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
 end
 
--- this function is for splitting the Emote Messages. The AddOn of the other player can take over the move of the first player
-local function ReceiveInput(sender, message, type) -- event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
-    -- Getting the name of the sender without the addition of the realm
-	local argsSnd = {};
-	for _, arg in ipairs({ string.split('-', sender) }) do
-		if (#arg > 0) then
-			table.insert(argsSnd, arg);
+-- Repeats the last sent message.
+local function RepeatMessage()
+	if (lastMsg) then
+		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+			core:Print("No whisper target chosen!")
+		else
+			SendChatMessage(lastMsg, chatType, nil, whisperTarget)
 		end
 	end
-	local senderName = argsSnd[1]; -- Setting the sendername in its variable for further processing.
-	
+end
+
+-- Extracting information out of incomming messages. The AddOn can thus take over the move of the other player.
+local function ReceiveInput(sender, message, type) -- event, _, message, sender, language, channelString, target, flags, unknown, channelNumber, channelName, unknown, counter)
+	-- Getting the name of the sender without the addition of the realm
+	local senderName = core.Lib:SplitString(sender, "-", 1) -- Setting the sendername in its variable for further processing.
+
 	-- The invitation looks like this: "ABC has invited XYZ to play Tic Tac Toe."
 	-- ABC is the senders name.
 	-- XYZ is the recipients name.
 	-- The message-string ("has invited XZY to play Tic Tac Toe.") is split by the spaces (" ").
-	-- the recipients name becomes index three of the array (argsMsg[3]).
-	local argsMsg = {};
+	-- the recipients name becomes index three of the array (argsMessage[3]).
+	local argsMessage = core.Lib:SplitString(message, " ")
+
+	--[[
+	local argsMessage = {}
 	for _, arg in ipairs({ string.split(' ', message) }) do
 		if (#arg > 0) then
-			table.insert(argsMsg, arg);
+			table.insert(argsMessage, arg)
 		end
 	end
+	]]
 
 	-- Check if the second word is the keyword "invited".
-	if (argsMsg[2] == "invited") then
+	if (argsMessage[2] == "invited") then
 		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
-		if (senderName ~= UnitName("player") and argsMsg[3] == UnitName("player")) then
-			invitationSender = senderName;
+		if (senderName ~= UnitName("player") and argsMessage[3] == UnitName("player")) then
+			invitationSender = senderName
 			invitationChatType = type
-			StaticPopup_Show ("TICTACTOE_INVITATION");
+			StaticPopup_Show ("TICTACTOE_INVITATION")
 		end
 	end
-	
+
 	-- Check if the second word is the keyword "accepted".
-	if (argsMsg[2] == "accepted") then
+	if (argsMessage[2] == "accepted") then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
-			local argsInv = {};
-			for _, arg in ipairs({ string.split('.', argsMsg[6]) }) do
-				if (#arg > 0) then
-					table.insert(argsInv, arg);
-				end
-			end
-			local inviteSender = argsInv[1];
-			SetPlayers(inviteSender, senderName);
+			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
+			SetPlayers(inviteSender, senderName)
 		end
 	end
-	
+
 	if (singleplayer == false) then
 		local mark
-		if ((argsMsg[2] == "put") and (argsMsg[4] == "X" or "O")) then
-			mark = argsMsg[4];
+		if ((argsMessage[2] == "put") and (argsMessage[4] == "X" or "O")) then
+			mark = argsMessage[4]
 		end
 
-		local argsFieldId = {};
-		for _, arg in ipairs({ string.split(' : ', message) }) do
-			if (#arg > 0) then
-				table.insert(argsFieldId, arg);
-			end
-		end
-		local fieldId = argsFieldId[#argsFieldId];
+		local fieldId = core.Lib:SplitString(message, " : ", "#")
 
 		-- Check if the id is a valid number from 1 to 9.
 		-- To avoid errors it will not be converted into a number.
-		if (fieldId == "1" or fieldId == "2" or fieldId == "3" or fieldId == "4" or fieldId == "5" or fieldId == "6" or fieldId == "7" or fieldId == "8" or fieldId == "9") then
+		if (core.Lib:IsNumeric(fieldId) and #fieldId == 1) then
 			-- Senders name mustn't be the own player name.
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
 				if (player[1].name == "") then
-					SetPlayers(senderName, nil);
+					SetPlayers(senderName, nil)
 				elseif (player[2].name == "") then
-					SetPlayers(nil, senderName);
+					SetPlayers(nil, senderName)
 				end
 
 				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
 				if (senderName == player[1].name or senderName == player[2].name) then
-					EnableFields();
-					DisableBlacklistedFields();
-					
+					EnableFields()
+					DisableBlacklistedFields()
+
 					if (senderName == player[1].name) then
-						SelectField(tonumber(fieldId), 1);
+						SelectField(tonumber(fieldId), 1)
 					else
-						SelectField(tonumber(fieldId), 2);
+						SelectField(tonumber(fieldId), 2)
 					end
 				end
 			end
@@ -535,430 +391,579 @@ local function ReceiveInput(sender, message, type) -- event, _, message, sender,
 
 		-- This is a cheat code to enable the fields. For testing purposes.
 		if (fieldId == "at-x0g") then
-            EnableFields()
-            DisableBlacklistedFields()
-        end
+			EnableFields()
+			DisableBlacklistedFields()
+		end
 
-        if (fieldId == "z28.jB") then
-            invitationSender = senderName
-            invitationChatType = type
-            StaticPopup_Show ("TICTACTOE_INVITATION")
-        end
+		if (fieldId == "z28.jB") then
+			invitationSender = senderName
+			invitationChatType = type
+			StaticPopup_Show ("TICTACTOE_INVITATION")
+		end
 	end
+end
+
+
+--------------------------------------
+-- Config functions
+--------------------------------------
+
+-- Resets the game area
+function Config:ResetGame()
+	if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
+		if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+			core:Print("No whisper target chosen!")
+		else
+			SendChatMessage("has quit the game.", chatType, nil, whisperTarget)
+		end
+	end
+
+	invitationChatType = ""
+	invitationSender = ""
+	lastMsg = ""
+	counter = 0
+	win = false
+	blackList = ""
+
+	MainFrame.title:SetText(default.title)
+
+	for i = 1, 9 do
+		GameFrame.field[i]:UnlockHighlight()
+		GameFrame.field[i]:SetText("")
+		GameFrame.field[i]:Enable()
+	end
+end
+
+-- Resets the whole AddOn
+function Config:ResetAddon()
+	MainFrame = nil
+	ScrollFrame = nil
+	GameFrame = nil
+	SpaceFrame = nil
+	StatsFrame = nil
+	ConfigFrame = nil
+
+	player = {
+		{
+			name = "",
+			wins = 0,
+			defeats = 0,
+			playedGames = 0,
+		},
+		{
+			name = "",
+			wins = 0,
+			defeats = 0,
+			playedGames = 0,
+		},
+	}
+	playerSelf = ""
+	singleplayer = false
+	invitationChatType = ""
+	invitationSender = ""
+	chatType = "EMOTE"
+	whisperTarget = nil
+	lastMsg = ""
+	counter = 0
+	win = false
+	blackList = ""
+
+	expandedMainFrame = false
+	xPosition = default.position.x
+	yPosition = default.position.y
+end
+
+-- Resets the position to the default position
+function Config:ResetPosition()
+	xPosition = default.position.x
+	yPosition = default.position.y
+end
+
+-- Collapses the Main Frame
+function Config:CollapsingMainFrame()
+	local animation = CreateFrame("Frame")
+	animation:SetScript("OnUpdate", function()
+		local h = MainFrame:GetHeight()
+		if (h >= default.size.height) then
+			h = h - 5
+			MainFrame:SetHeight(h)
+			ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30)
+		else
+			animation:SetScript("OnUpdate", nil)
+			SpaceFrame.StatsBtn:UnlockHighlight()
+			SpaceFrame.ConfigBtn:UnlockHighlight()
+		end
+	end)
+	MainFrame:ClearAllPoints()
+	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
+	expandedMainFrame = false
+end
+
+-- Expand the Main Frame
+function Config:ExpandingMainFrame()
+	local animation = CreateFrame("Frame")
+	animation:SetScript("OnUpdate", function()
+		local h = MainFrame:GetHeight()
+		if (h <= (default.size.height + default.size.expanded.height)) then
+			h = h + 5
+			MainFrame:SetHeight(h)
+			ScrollFrame:SetSize(MainFrame:GetWidth() - 10, h - 30)
+		else
+			animation:SetScript("OnUpdate", nil)
+		end
+	end)
+	MainFrame:ClearAllPoints()
+	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
+	expandedMainFrame = true
+end
+
+-- Reads the default theme color
+function Config:GetThemeColor()
+	local c = default.theme
+	return c.r, c.g, c.b, c.hex
+end
+
+-- Toggles or creates the Main Frame
+function Config:Toggle(show)
+	local menu = MainFrame or Config:CreateAll()
+	menu:SetShown(not menu:IsShown() or show)
+end
+
+-- Prints the player statistics
+function Config:PrintPlayerStats()
+	print("-------------------------")
+	print("Player 1: " .. player[1].name)
+	print("Wins: " .. player[1].wins)
+	print("Defeats: " .. player[1].defeats)
+	print("Played Games: " .. player[1].playedGames)
+	print("-------------------------")
+	print("Player 2: " .. player[2].name)
+	print("Wins: " .. player[2].wins)
+	print("Defeats: " .. player[2].defeats)
+	print("Played Games: " .. player[2].playedGames)
+	print("-------------------------")
+end
+
+---------------------------------
+-- All Frames
+---------------------------------
+function Config:CreateAll()
+	Config.CreateMainFrame()
+	Config.CreateScrollFrame()
+	Config.CreateGameFrame()
+	Config.CreateSpaceFrame()
+	Config.CreateStatsFrame()
+	Config.CreateConfigFrame()
+
+	return MainFrame
 end
 
 ---------------------------------
 -- Main Frame
 ---------------------------------
-function Config:CreateMainMenu() -- creates the Main Frame
-	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplate");
-	MainFrame:ClearAllPoints();
-	MainFrame:SetSize(default.size.width, default.size.height); -- width, height
-	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition); -- point, relativeFrame, relativePoint, xOffset, yOffset
-	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0);
-	MainFrame.title:SetText(default.title);
+function Config:CreateMainFrame() -- creates the Main Frame
+	MainFrame = CreateFrame("Frame", "TicTacToe_MainFrame", UIParent, "BasicFrameTemplate")
+	MainFrame:ClearAllPoints()
+	MainFrame:SetSize(default.size.width, default.size.height) -- width, height
+	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition) -- point, relativeFrame, relativePoint, xOffset, yOffset
+	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0)
+	MainFrame.title:SetText(default.title)
 	MainFrame:SetMovable(true)
 	MainFrame:EnableMouse(true)
 	MainFrame:SetScript("OnMouseDown", function(self, button)
 	  if button == "LeftButton" and not self.isMoving then
-	   self:StartMoving();
-	   self.isMoving = true;
+	   self:StartMoving()
+	   self.isMoving = true
 	  end
 	end)
 	MainFrame:SetScript("OnMouseUp", function(self, button)
 	  if button == "LeftButton" and self.isMoving then
-	   self:StopMovingOrSizing();
-	   self.isMoving = false;
-	   xPosition = self:GetLeft();
-	   yPosition = self:GetTop();
+	   self:StopMovingOrSizing()
+	   self.isMoving = false
+	   xPosition = self:GetLeft()
+	   yPosition = self:GetTop()
 	  end
 	end)
 	MainFrame:SetScript("OnHide", function(self)
 	  if (self.isMoving) then
-	   self:StopMovingOrSizing();
-	   self.isMoving = false;
+	   self:StopMovingOrSizing()
+	   self.isMoving = false
 	  end
 	end)
-	
-	-- this creates the scrollFrame. The ScrollFrame limits the visible area so that the ConfigFrame and StatsFrame are not displayed.
-	MainFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, MainFrame, "UIPanelScrollFrameTemplate");
-	MainFrame.ScrollFrame:ClearAllPoints();
-	MainFrame.ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30);
-	MainFrame.ScrollFrame:SetPoint("TOP", MainFrame, "TOP", -2, -25);
-	MainFrame.ScrollFrame:SetClipsChildren(true);
-	
-	-- this creates the GameFrame. The GameFrame includes the buttons of the game.
-	MainFrame.ScrollFrame.GameFrame = CreateFrame("Frame", "TicTacToe_GameFrame", MainFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.GameFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.GameFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 205);
-	MainFrame.ScrollFrame.GameFrame:SetPoint("TOP", MainFrame, "TOP", 0, -23);
 
+	-- this creates the reset button. The reset button resets the game.
+	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "MagicButtonTemplate")
+	MainFrame.resetBtn:ClearAllPoints()
+	MainFrame.resetBtn:SetWidth(55) -- width, height
+	MainFrame.resetBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0)
+	MainFrame.resetBtn:SetScript("OnClick", Config.ResetGame)
+	MainFrame.resetBtn.text = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	MainFrame.resetBtn.text:SetPoint("CENTER", MainFrame.resetBtn, "CENTER", 0, 0)
+	MainFrame.resetBtn.text:SetText("Reset")
+
+	MainFrame.repeatBtn = CreateFrame("Button", nil, MainFrame, "MagicButtonTemplate")
+	MainFrame.repeatBtn:ClearAllPoints()
+	MainFrame.repeatBtn:SetWidth(55)
+	MainFrame.repeatBtn:SetPoint("RIGHT", MainFrame.resetBtn, "LEFT")
+	MainFrame.repeatBtn:SetScript("OnClick", RepeatMessage)
+	MainFrame.repeatBtn.text = MainFrame.repeatBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	MainFrame.repeatBtn.text:SetPoint("CENTER", MainFrame.repeatBtn, "CENTER", 0, 0)
+	MainFrame.repeatBtn.text:SetText("Repeat")
+
+	MainFrame:Hide()
+	return MainFrame
+end
+
+---------------------------------
+-- Scroll Frame
+---------------------------------
+function Config:CreateScrollFrame()
+	-- this creates the scrollFrame. The ScrollFrame limits the visible area so that the ConfigFrame and StatsFrame are not displayed.
+	ScrollFrame = CreateFrame("ScrollFrame", "TicTacToe_ScrollFrame", MainFrame, "UIPanelScrollFrameTemplate")
+	ScrollFrame:ClearAllPoints()
+	ScrollFrame:SetSize(MainFrame:GetWidth() - 10, MainFrame:GetHeight() - 30)
+	ScrollFrame:SetPoint("TOP", MainFrame, "TOP", -2, -22)
+	ScrollFrame:SetClipsChildren(true)
+end
+
+---------------------------------
+-- Game Frame
+---------------------------------
+function Config:CreateGameFrame()
+	-- this creates the GameFrame. The GameFrame includes the buttons of the game.
+	GameFrame = CreateFrame("Frame", "TicTacToe_GameFrame", ScrollFrame, "InsetFrameTemplate")
+	GameFrame:ClearAllPoints()
+	GameFrame:SetSize(ScrollFrame:GetWidth(), 205)
+	GameFrame:SetPoint("TOP", ScrollFrame, "TOP", 0, 0)
+
+	-- Creates the 9 Buttons in the GameFrame
+	GameFrame.field = Config:CreateFields(GameFrame)
+end
+
+---------------------------------
+-- Fields
+---------------------------------
+function Config:CreateFields(frame)
+	local field
+	field = {
+		Config:CreateButton(1, "TOPLEFT",		frame,	"TOPLEFT",		4,	-2, ""),
+		Config:CreateButton(2, "TOP", 			frame,	"TOP",			0,	-2, ""),
+		Config:CreateButton(3, "TOPRIGHT", 		frame,	"TOPRIGHT",		-4,	-2, ""),
+		Config:CreateButton(4, "LEFT",			frame,	"LEFT",			4,	0,	""),
+		Config:CreateButton(5, "CENTER",		frame,	"CENTER",		0,	0, ""),
+		Config:CreateButton(6, "RIGHT",			frame,	"RIGHT",		-4,	0, ""),
+		Config:CreateButton(7, "BOTTOMLEFT", 	frame,	"BOTTOMLEFT",	4,	2, ""),
+		Config:CreateButton(8, "BOTTOM", 		frame,	"BOTTOM",		0,	2, ""),
+		Config:CreateButton(9, "BOTTOMRIGHT", 	frame,	"BOTTOMRIGHT",	-4,	2, ""),
+	}
+
+	return field
+end
+
+---------------------------------
+-- Field Buttons
+---------------------------------
+function Config:CreateButton(id, point, relativeFrame, relativePoint, xOffset, yOffset, text)
+	local btn = CreateFrame("Button", "button"..id, relativeFrame, "GameMenuButtonTemplate")
+	btn:SetID(id)
+	btn:SetPoint(point, relativeFrame, relativePoint, xOffset, yOffset)
+	btn:SetSize(70, 70)
+	btn:SetText(text)
+	btn:SetNormalFontObject("GameFontNormalLarge")
+	btn:SetHighlightFontObject("GameFontHighlightLarge")
+	btn:SetScript("OnClick", function(self) Field_Onclick(self) end)
+	return btn
+end
+
+---------------------------------
+-- Space Frame
+---------------------------------
+function Config:CreateSpaceFrame()
 	-- this creates the SpaceFrame which only contains the buttons for the statistics and configuration.
-	MainFrame.ScrollFrame.SpaceFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.SpaceFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.SpaceFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), 30);
-	MainFrame.ScrollFrame.SpaceFrame:SetPoint("TOP", MainFrame.ScrollFrame.GameFrame, "BOTTOM", 0, -5);
+	SpaceFrame = CreateFrame("Frame", nil, ScrollFrame, "InsetFrameTemplate")
+	SpaceFrame:ClearAllPoints()
+	SpaceFrame:SetSize(ScrollFrame:GetWidth(), 30)
+	SpaceFrame:SetPoint("TOP", GameFrame, "BOTTOM", 0, -5)
 	
 	-- this creates the statistic button which opens the statistic Frame.
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "TabButtonTemplate");
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:ClearAllPoints();
-	-- MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
-    PanelTemplates_TabResize(MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame, MainFrame:GetWidth() / 3.3)
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetPoint("LEFT", MainFrame.ScrollFrame.SpaceFrame, "LEFT", 5, 0);
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle = MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetPoint("CENTER", MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame, "CENTER", 0, -5);
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame.statTitle:SetText("Statistics");
-	MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:SetScript("OnClick", function(self)
-		if (expandedMainFrame and MainFrame.ScrollFrame.StatsFrame:IsShown()) then
+	SpaceFrame.StatsBtn = CreateFrame("Button", nil, SpaceFrame, "TabButtonTemplate")
+	SpaceFrame.StatsBtn:ClearAllPoints()
+	-- SpaceFrame.StatsBtn:SetSize(MainFrame:GetWidth() / 2 - 4, 30)
+    PanelTemplates_TabResize(SpaceFrame.StatsBtn, MainFrame:GetWidth() / 3.3)
+	SpaceFrame.StatsBtn:SetPoint("LEFT", SpaceFrame, "LEFT", 5, 0)
+	SpaceFrame.StatsBtn.statTitle = SpaceFrame.StatsBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	SpaceFrame.StatsBtn.statTitle:SetPoint("CENTER", SpaceFrame.StatsBtn, "CENTER", 0, -5)
+	SpaceFrame.StatsBtn.statTitle:SetText("Statistics")
+	SpaceFrame.StatsBtn:SetScript("OnClick", function(self)
+		if (expandedMainFrame and StatsFrame:IsShown()) then
 			Config.CollapsingMainFrame()
 		elseif (expandedMainFrame) then
             self:LockHighlight()
-			MainFrame.ScrollFrame.StatsFrame:Show();
-            MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:UnlockHighlight()
-			MainFrame.ScrollFrame.ConfigFrame:Hide();
+			StatsFrame:Show()
+            SpaceFrame.ConfigBtn:UnlockHighlight()
+			ConfigFrame:Hide()
 		else
             self:LockHighlight()
-			MainFrame.ScrollFrame.StatsFrame:Show();
-            MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:UnlockHighlight()
-			MainFrame.ScrollFrame.ConfigFrame:Hide();
+			StatsFrame:Show()
+            SpaceFrame.ConfigBtn:UnlockHighlight()
+			ConfigFrame:Hide()
 			Config.ExpandingMainFrame()
 		end
-	end);
+	end)
 
 	-- this creates the configuration button which opens the configuration Frame.
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame = CreateFrame("Button", nil, MainFrame.ScrollFrame.SpaceFrame, "TabButtonTemplate");
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:ClearAllPoints();
-	-- MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetSize(MainFrame:GetWidth() / 2 - 4, 30);
-    PanelTemplates_TabResize(MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame, MainFrame:GetWidth() / 3.3)
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetPoint("RIGHT", MainFrame.ScrollFrame.SpaceFrame, "RIGHT", -5, 0);
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle = MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetPoint("CENTER", MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame, "CENTER", 0, -5);
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame.configTitle:SetText("Configuration");
-	MainFrame.ScrollFrame.SpaceFrame.ConfigBtnFrame:SetScript("OnClick", function(self)
-		if (expandedMainFrame and MainFrame.ScrollFrame.ConfigFrame:IsShown()) then
+	SpaceFrame.ConfigBtn = CreateFrame("Button", nil, SpaceFrame, "TabButtonTemplate")
+	SpaceFrame.ConfigBtn:ClearAllPoints()
+	-- SpaceFrame.ConfigBtn:SetSize(MainFrame:GetWidth() / 2 - 4, 30)
+    PanelTemplates_TabResize(SpaceFrame.ConfigBtn, MainFrame:GetWidth() / 3.3)
+	SpaceFrame.ConfigBtn:SetPoint("RIGHT", SpaceFrame, "RIGHT", -5, 0)
+	SpaceFrame.ConfigBtn.configTitle = SpaceFrame.ConfigBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	SpaceFrame.ConfigBtn.configTitle:SetPoint("CENTER", SpaceFrame.ConfigBtn, "CENTER", 0, -5)
+	SpaceFrame.ConfigBtn.configTitle:SetText("Configuration")
+	SpaceFrame.ConfigBtn:SetScript("OnClick", function(self)
+		if (expandedMainFrame and ConfigFrame:IsShown()) then
 			Config.CollapsingMainFrame()
 		elseif (expandedMainFrame) then
             self:LockHighlight()
-			MainFrame.ScrollFrame.ConfigFrame:Show();
-            MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:UnlockHighlight()
-			MainFrame.ScrollFrame.StatsFrame:Hide();
+			ConfigFrame:Show()
+            SpaceFrame.StatsBtn:UnlockHighlight()
+			StatsFrame:Hide()
 		else
             self:LockHighlight()
-			MainFrame.ScrollFrame.ConfigFrame:Show();
-            MainFrame.ScrollFrame.SpaceFrame.StatsBtnFrame:UnlockHighlight()
-			MainFrame.ScrollFrame.StatsFrame:Hide();
+			ConfigFrame:Show()
+            SpaceFrame.StatsBtn:UnlockHighlight()
+			StatsFrame:Hide()
             Config.ExpandingMainFrame()
 		end
-	end);
-
-	--[[MainFrame.configBtn = CreateFrame("Button", nil, MainFrame, "GameMenuButtonTemplate")
-	MainFrame.configBtn:ClearAllPoints();
-	MainFrame.configBtn:SetWidth(50); -- width, height
-	MainFrame.configBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
-	MainFrame.configBtn:SetScript("OnClick", function(self)
-			if (MainFrame.ScrollFrame.ConfigFrame:IsShown()) then
-				MainFrame.ScrollFrame.ConfigFrame:Hide();
-			else
-				MainFrame.ScrollFrame.ConfigFrame:Show();
-			end
-			
-	MainFrame.configBtn.title = MainFrame.configBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.configBtn.title:SetPoint("LEFT", MainFrame.configBtn, "LEFT", 5, 0);
-	MainFrame.configBtn.title:SetText("Config");
-	]]
-	
-	-- this creates the reset button. The reset button resets the game.
-	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "MagicButtonTemplate");
-	MainFrame.resetBtn:ClearAllPoints();
-	MainFrame.resetBtn:SetWidth(50); -- width, height
-	MainFrame.resetBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0);
-	MainFrame.resetBtn:SetScript("OnClick", Config.Reset);
-	MainFrame.resetBtn.title = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.resetBtn.title:SetPoint("LEFT", MainFrame.resetBtn, "LEFT", 5, 0);
-	MainFrame.resetBtn.title:SetText("Reset");
-
-	-- Creates the 9 Buttons in the MainFrame.ScrollFrame
-	MainFrame.ScrollFrame.GameFrame.field = {
-		self:CreateButton(1, "TOPLEFT",		MainFrame.ScrollFrame.GameFrame,	"TOPLEFT",		4,	-2, "");
-		self:CreateButton(2, "TOP", 		MainFrame.ScrollFrame.GameFrame,	"TOP",			0,	-2, "");
-		self:CreateButton(3, "TOPRIGHT", 	MainFrame.ScrollFrame.GameFrame,	"TOPRIGHT",		-4,	-2, "");
-		self:CreateButton(4, "LEFT",		MainFrame.ScrollFrame.GameFrame,	"LEFT",			4,	0,	"");
-		self:CreateButton(5, "CENTER",		MainFrame.ScrollFrame.GameFrame,	"CENTER",		0,	0, "");
-		self:CreateButton(6, "RIGHT",		MainFrame.ScrollFrame.GameFrame,	"RIGHT",		-4,	0, "");
-		self:CreateButton(7, "BOTTOMLEFT", 	MainFrame.ScrollFrame.GameFrame,	"BOTTOMLEFT",	4,	2, "");
-		self:CreateButton(8, "BOTTOM", 		MainFrame.ScrollFrame.GameFrame,	"BOTTOM",		0,	2, "");
-		self:CreateButton(9, "BOTTOMRIGHT", MainFrame.ScrollFrame.GameFrame,	"BOTTOMRIGHT",	-4,	2, "");
-	}
-	Config.CreateStatsMenu();
-	Config.CreateConfigMenu();
-
-	MainFrame:Hide();
-	return MainFrame;
+	end)
 end
 
-function Config:CreateStatsMenu()
-	-- Creates the MainFrame.ScrollFrame.StatsFrame
-	MainFrame.ScrollFrame.StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", MainFrame.ScrollFrame)
-	MainFrame.ScrollFrame.StatsFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), default.size.expanded.height); -- width, height
-	MainFrame.ScrollFrame.StatsFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM", 0, -5); -- point, relativeFrame, relativePoint, xOffset, yOffset
+---------------------------------
+-- Stats Frame
+---------------------------------
+function Config:CreateStatsFrame()
+	-- Creates the StatsFrame
+	StatsFrame = CreateFrame("Frame", "TicTacToe_StatsFrame", ScrollFrame)
+	StatsFrame:ClearAllPoints()
+	StatsFrame:SetSize(ScrollFrame:GetWidth(), default.size.expanded.height) -- width, height
+	StatsFrame:SetPoint("TOP", SpaceFrame, "BOTTOM", 0, -5) -- point, relativeFrame, relativePoint, xOffset, yOffset
 	
 	-- this creates the Frame for Player One
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight()); -- width, height
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame, "TOPLEFT");
+	StatsFrame.plOneFrame = CreateFrame("Frame", nil, StatsFrame, "InsetFrameTemplate")
+	StatsFrame.plOneFrame:ClearAllPoints()
+	StatsFrame.plOneFrame:SetSize(StatsFrame:GetWidth() / 2 - 1, StatsFrame:GetHeight()) -- width, height
+	StatsFrame.plOneFrame:SetPoint("TOPLEFT", StatsFrame, "TOPLEFT")
 	
 	-- this sets the TextFrame for the Name of the first Player
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame, "TOPLEFT", 10, -10);
-	Config:CreateStats(1, "name", 			"Player Two");
+	StatsFrame.plOneFrame.textPl = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", StatsFrame.plOneFrame, "TOPLEFT", 10, -10)
+	Config:CreateStats(1, "name", 			"Player Two")
 	
 	-- This gives the number of victories from the first player
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(1, "wins", 			"Wins:            ");
+	StatsFrame.plOneFrame.textWins = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plOneFrame.textWins:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textPl, "BOTTOMLEFT", 0, -10)
+	Config:CreateStats(1, "wins", 			"Wins:            ")
 	
 	-- This gives the number of defeats from the first player
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(1, "defeats", 		"Defeats:       ");
+	StatsFrame.plOneFrame.textDefeats = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plOneFrame.textDefeats:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10)
+	Config:CreateStats(1, "defeats", 		"Defeats:       ")
 	
 	-- This gives the number of games from the first player
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(1, "playedGames", 	"Total:            ");
+	StatsFrame.plOneFrame.textGames = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plOneFrame.textGames:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textDefeats, "BOTTOMLEFT", 0, -10)
+	Config:CreateStats(1, "playedGames", 	"Total:            ")
 	
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame = CreateFrame("Frame", nil, MainFrame.ScrollFrame.StatsFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetSize(MainFrame.ScrollFrame.StatsFrame:GetWidth() / 2 - 1, MainFrame.ScrollFrame.StatsFrame:GetHeight()); -- width, height
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.StatsFrame, "TOPRIGHT");
+	StatsFrame.plTwoFrame = CreateFrame("Frame", nil, StatsFrame, "InsetFrameTemplate")
+	StatsFrame.plTwoFrame:ClearAllPoints()
+	StatsFrame.plTwoFrame:SetSize(StatsFrame:GetWidth() / 2 - 1, StatsFrame:GetHeight()) -- width, height
+	StatsFrame.plTwoFrame:SetPoint("TOPRIGHT", StatsFrame, "TOPRIGHT")
 	
 	-- this sets the TextFrame for the Name of the second Player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame, "TOPLEFT", 10, -10);
-	Config:CreateStats(2, "name", 			"Player Two");
+	StatsFrame.plTwoFrame.textPl = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plTwoFrame.textPl:SetPoint("TOPLEFT", StatsFrame.plTwoFrame, "TOPLEFT", 10, -10)
+	Config:CreateStats(2, "name", 			"Player Two")
 	
 	-- This gives the number of victories from the second player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(2, "wins", 			"Wins:            ");
+	StatsFrame.plTwoFrame.textWins = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plTwoFrame.textWins:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textPl, "BOTTOMLEFT", 0, -10)
+	Config:CreateStats(2, "wins", 			"Wins:            ")
 	
 	-- This gives the number of defeats from the second player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(2, "defeats", 		"Defeats:       ");
+	StatsFrame.plTwoFrame.textDefeats = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plTwoFrame.textDefeats:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textWins, "BOTTOMLEFT", 0, -10)
+	Config:CreateStats(2, "defeats", 		"Defeats:       ")
 	
 	-- This gives the number of games from the first player
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames = MainFrame.ScrollFrame.StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetPoint("TOPLEFT", MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats, "BOTTOMLEFT", 0, -10);
-	Config:CreateStats(2, "playedGames", 	"Total:            ");
-	--[[
-	if (player[1].name == "") then
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText("Total:         0");
-	else
-		MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText("Total:         " ..player[2].playedGames);
-	end
-	]]
-	--[[print("Player 1: " .. player[1].name);
-	print("Wins: " .. player[1].wins);
-	print("Defeats: " .. player[1].defeats);
-	print("Played Games: " .. player[1].playedGames);
-	print("-------------------------");
-	print("Player 2: " .. player[2].name);
-	print("Wins: " .. player[2].wins);
-	print("Defeats: " .. player[2].defeats);
-	print("Played Games: " .. player[2].playedGames);
-	print("-------------------------");
-	]]
+	StatsFrame.plTwoFrame.textGames = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	StatsFrame.plTwoFrame.textGames:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textDefeats, "BOTTOMLEFT", 0, -10)
+	Config:CreateStats(2, "playedGames", 	"Total:            ")
 end
 
+---------------------------------
+-- Stats Frame Text
+---------------------------------
 function Config:CreateStats(id, data, text)
     if (MainFrame) then
         if (data == "name") then
             if (player[id].name == "") then
                 if (id == 1) then
-                    MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(text);
+                    StatsFrame.plOneFrame.textPl:SetText(text)
                 elseif (id == 2) then
-                    MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(text);
+                    StatsFrame.plTwoFrame.textPl:SetText(text)
                 end
             else
                 if (id == 1) then
-                    MainFrame.ScrollFrame.StatsFrame.plOneFrame.textPl:SetText(player[1].name);
+                    StatsFrame.plOneFrame.textPl:SetText(player[1].name)
                 elseif (id == 2) then
-                    MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textPl:SetText(player[2].name);
+                    StatsFrame.plTwoFrame.textPl:SetText(player[2].name)
                 end
             end
         elseif (data == "wins") then
             if (id == 1) then
-                MainFrame.ScrollFrame.StatsFrame.plOneFrame.textWins:SetText(text .. player[1].wins);
+                StatsFrame.plOneFrame.textWins:SetText(text .. player[1].wins)
             elseif (id == 2) then
-                MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textWins:SetText(text .. player[2].wins);
+                StatsFrame.plTwoFrame.textWins:SetText(text .. player[2].wins)
             end
         elseif (data == "defeats") then
             if (id == 1) then
-                MainFrame.ScrollFrame.StatsFrame.plOneFrame.textDefeats:SetText(text .. player[1].defeats);
+                StatsFrame.plOneFrame.textDefeats:SetText(text .. player[1].defeats)
             elseif (id == 2) then
-                MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textDefeats:SetText(text .. player[2].defeats);
+                StatsFrame.plTwoFrame.textDefeats:SetText(text .. player[2].defeats)
             end
         elseif (data == "playedGames") then
             if (id == 1) then
-                MainFrame.ScrollFrame.StatsFrame.plOneFrame.textGames:SetText(text .. player[1].playedGames);
+                StatsFrame.plOneFrame.textGames:SetText(text .. player[1].playedGames)
             elseif (id == 2) then
-                MainFrame.ScrollFrame.StatsFrame.plTwoFrame.textGames:SetText(text .. player[2].playedGames);
+                StatsFrame.plTwoFrame.textGames:SetText(text .. player[2].playedGames)
             end
         end
     end
 end
 
-function Config:CreateConfigMenu()
-	-- Creates the MainFrame.ScrollFrame.ConfigFrame
-	MainFrame.ScrollFrame.ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", MainFrame.ScrollFrame, "InsetFrameTemplate");
-	MainFrame.ScrollFrame.ConfigFrame:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame:SetSize(MainFrame.ScrollFrame:GetWidth(), default.size.expanded.height); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame:SetPoint("TOP", MainFrame.ScrollFrame.SpaceFrame, "BOTTOM", 0, -5); -- point, relativeFrame, relativePoint, xOffset, yOffset
+---------------------------------
+-- Config Frame
+---------------------------------
+function Config:CreateConfigFrame()
+	-- Creates the ConfigFrame
+	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", ScrollFrame, "InsetFrameTemplate")
+	ConfigFrame:ClearAllPoints()
+	ConfigFrame:SetSize(ScrollFrame:GetWidth(), default.size.expanded.height) -- width, height
+	ConfigFrame:SetPoint("TOP", SpaceFrame, "BOTTOM", 0, -5) -- point, relativeFrame, relativePoint, xOffset, yOffset
 
-	MainFrame.ScrollFrame.ConfigFrame.targetButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetSize(100, 30);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame, "TOPLEFT", 5, -10);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton.text = MainFrame.ScrollFrame.ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.targetButton, "CENTER", 0,0);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton.text:SetText("Target");
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnEnter", function(self)
+	ConfigFrame.targetButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate")
+	ConfigFrame.targetButton:ClearAllPoints()
+	ConfigFrame.targetButton:SetSize(100, 30)
+	ConfigFrame.targetButton:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 5, -10)
+	ConfigFrame.targetButton.text = ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	ConfigFrame.targetButton.text:SetPoint("CENTER", ConfigFrame.targetButton, "CENTER", 0,0)
+	ConfigFrame.targetButton.text:SetText("Target")
+	ConfigFrame.targetButton:SetScript("OnEnter", function(self)
 			if (UnitName("target")) then
-				self.text:SetText(UnitName("target"));
+				self.text:SetText(UnitName("target"))
 			end
-		end);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnLeave", function(self)
-			self.text:SetText("Target");
-		end);
-	MainFrame.ScrollFrame.ConfigFrame.targetButton:SetScript("OnClick", function(self)
+		end)
+	ConfigFrame.targetButton:SetScript("OnLeave", function(self)
+			self.text:SetText("Target")
+		end)
+	ConfigFrame.targetButton:SetScript("OnClick", function(self)
 			local target = UnitName("target")
 			if (target ~= UnitName("player")) then
 				if (target) then
-					MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetText(target);
+					ConfigFrame.targetEditBox:SetText(target)
 				else
-					MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetText("");
+					ConfigFrame.targetEditBox:SetText("")
 				end
 			end
-		end);
+		end)
 	
 	-- this Button invites another Player to the game
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton = CreateFrame("Button", nil, MainFrame.ScrollFrame.ConfigFrame, "GameMenuButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetSize(MainFrame.ScrollFrame.ConfigFrame.targetButton:GetWidth(), 30); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.targetButton, "BOTTOMLEFT", 0, -5);
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text = MainFrame.ScrollFrame.ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text:SetPoint("CENTER", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "CENTER", 0,0);
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton.text:SetText("Invite");
+	ConfigFrame.inviteButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate")
+	ConfigFrame.inviteButton:ClearAllPoints()
+	ConfigFrame.inviteButton:SetSize(ConfigFrame.targetButton:GetWidth(), 30) -- width, height
+	ConfigFrame.inviteButton:SetPoint("TOPLEFT", ConfigFrame.targetButton, "BOTTOMLEFT", 0, -5)
+	ConfigFrame.inviteButton.text = ConfigFrame.inviteButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	ConfigFrame.inviteButton.text:SetPoint("CENTER", ConfigFrame.inviteButton, "CENTER", 0,0)
+	ConfigFrame.inviteButton.text:SetText("Invite")
 	
 	-- this creates the TextBox in which you can write the Target Name for whispering
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox = CreateFrame("EditBox", nil, MainFrame.ScrollFrame.ConfigFrame, "InputBoxTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetSize(100, 30);
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetPoint("TOPRIGHT", MainFrame.ScrollFrame.ConfigFrame, "TOPRIGHT", -5, -10);
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetAutoFocus(false);
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetScript("OnTextChanged", function(self)
+	ConfigFrame.targetEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate")
+	ConfigFrame.targetEditBox:ClearAllPoints()
+	ConfigFrame.targetEditBox:SetSize(100, 30)
+	ConfigFrame.targetEditBox:SetPoint("TOPRIGHT", ConfigFrame, "TOPRIGHT", -5, -10)
+	ConfigFrame.targetEditBox:SetAutoFocus(false)
+	ConfigFrame.targetEditBox:SetScript("OnTextChanged", function(self)
 			if (self:GetText() == "") then
-				whisperTarget = nil;
-				MainFrame.ScrollFrame.ConfigFrame.inviteButton:Disable();
+				whisperTarget = nil
+				ConfigFrame.inviteButton:Disable()
 			else
-				whisperTarget = self:GetText();
-				MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
+				whisperTarget = self:GetText()
+				ConfigFrame.inviteButton:Enable()
 			end
-		end);
+		end)
 	if (chatType == "WHISPER") then
-		MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Enable();
+		ConfigFrame.targetEditBox:Enable()
 	else
-		MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Disable();
+		ConfigFrame.targetEditBox:Disable()
 	end
-	MainFrame.ScrollFrame.ConfigFrame.targetEditBox:SetScript("OnEnterPressed", function(self)
+	ConfigFrame.targetEditBox:SetScript("OnEnterPressed", function(self)
 		local name = self:GetText()
-		self:ClearFocus();
+		self:ClearFocus()
 		if name ~= "" then
-			InvitePlayer(self);
+			InvitePlayer(self)
 		end
-	end);
+	end)
 	
-	MainFrame.ScrollFrame.ConfigFrame.inviteButton:SetScript("OnClick", function(self)
-		local name = MainFrame.ScrollFrame.ConfigFrame.targetEditBox:GetText()
+	ConfigFrame.inviteButton:SetScript("OnClick", function(self)
+		local name = ConfigFrame.targetEditBox:GetText()
 			if (name == "") then
-				name:SetFocus();
+				name:SetFocus()
 			else
-				InvitePlayer(name);
+				InvitePlayer(name)
 			end
-		end);
-	if (MainFrame.ScrollFrame.ConfigFrame.targetEditBox:GetText() == "") then
-		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Disable();
+		end)
+	if (ConfigFrame.targetEditBox:GetText() == "") then
+		ConfigFrame.inviteButton:Disable()
 	else
-		MainFrame.ScrollFrame.ConfigFrame.inviteButton:Enable();
+		ConfigFrame.inviteButton:Enable()
 	end
 	
 	Config:CreateDropDownChatType()
 
 	
---[[-- this CheckBox is if you want to play in whisper Mode
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetSize(30, 30); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetPoint("TOP", MainFrame.ScrollFrame.ConfigFrame.soloCheckBox, "BOTTOM", 0, 0);
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox.text = MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox.text:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox, "RIGHT", 0, 0);
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox.text:SetText("Whisper Mode");
-	-- MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox.text, "RIGHT", 0, 0);
-	MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetScript("OnClick", function(self)
+	-- the CheckBox if you want to play a solo game
+	ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, ConfigFrame, "UICheckButtonTemplate")
+	ConfigFrame.soloCheckBox:ClearAllPoints()
+	ConfigFrame.soloCheckBox:SetSize(30, 30) -- width, height
+	ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", ConfigFrame.targetEditBox, "BOTTOMLEFT", -10, -5)
+	ConfigFrame.soloCheckBox.text = ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	ConfigFrame.soloCheckBox.text:SetPoint("LEFT", ConfigFrame.soloCheckBox, "RIGHT", 0, 0)
+	ConfigFrame.soloCheckBox.text:SetText("Singleplayer")
+	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
 			if (self:GetChecked()) then
-				chatType = "WHISPER";
+				singleplayer = true
 			else
-				chatType = "EMOTE";
+				singleplayer = false
 			end
-
-			if (chatType == "WHISPER") then
-				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Enable();
-			else
-				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Disable();
-			end
-		end);
-
-	if (chatType == "WHISPER") then
-		MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetChecked(true);
-	else
-		MainFrame.ScrollFrame.ConfigFrame.whisperCheckBox:SetChecked(false);
-	end
-	]]
-	
-	-- this is for the CheckBox if you want to play a solo game
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox = CreateFrame("CheckButton", nil, MainFrame.ScrollFrame.ConfigFrame, "UICheckButtonTemplate");
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:ClearAllPoints();
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetSize(30, 30); -- width, height
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.targetEditBox, "BOTTOMLEFT", -10, -5);
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text = MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetPoint("LEFT", MainFrame.ScrollFrame.ConfigFrame.soloCheckBox, "RIGHT", 0, 0);
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox.text:SetText("Singleplayer");
-	MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
-			if (self:GetChecked()) then
-				singleplayer = true;
-			else
-				singleplayer = false;
-			end
-		end);
+		end)
 
 	if (singleplayer) then
-		MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(true);
+		ConfigFrame.soloCheckBox:SetChecked(true)
 	else
-		MainFrame.ScrollFrame.ConfigFrame.soloCheckBox:SetChecked(false);
+		ConfigFrame.soloCheckBox:SetChecked(false)
 	end
 	
 end
 
+---------------------------------
+-- Drop Down Chat Type
+---------------------------------
 function Config:CreateDropDownChatType()
-	-- this is for testing the DropDown Menu
+	-- testing the DropDown Menu
 	if (not DropDownChatType) then
-        DropDownChatType = CreateFrame("Button", "TicTacToe_DropDownChatType", MainFrame.ScrollFrame.ConfigFrame, "UIDropDownMenuTemplate")
+        DropDownChatType = CreateFrame("Button", "TicTacToe_DropDownChatType", ConfigFrame, "UIDropDownMenuTemplate")
 		DropDownChatType:ClearAllPoints()
-		DropDownChatType:SetPoint("TOPLEFT", MainFrame.ScrollFrame.ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 
 
 		local function DropDownMenu_OnClick(self)
@@ -967,10 +972,10 @@ function Config:CreateDropDownChatType()
 			chatType = self.value
 
 			if (chatType == "WHISPER") then
-				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Enable()
-				whisperTarget = MainFrame.ScrollFrame.ConfigFrame.targetEditBox:GetText()
+				ConfigFrame.targetEditBox:Enable()
+				whisperTarget = ConfigFrame.targetEditBox:GetText()
 			else
-				MainFrame.ScrollFrame.ConfigFrame.targetEditBox:Disable()
+				ConfigFrame.targetEditBox:Disable()
 				whisperTarget = nil
 			end
 		end
@@ -979,7 +984,7 @@ function Config:CreateDropDownChatType()
 			local info
 			for _,v in pairs(default.chatTypes) do
 				info = UIDropDownMenu_CreateInfo()
-				info.text = FirstLetterUp(v)
+				info.text = core.Lib:FirstLetterUp(v)
 				info.value = v
 				info.func = DropDownMenu_OnClick
 				UIDropDownMenu_AddButton(info, level)
@@ -992,9 +997,14 @@ function Config:CreateDropDownChatType()
 		UIDropDownMenu_SetButtonWidth(DropDownChatType, 124)
 		UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
 		UIDropDownMenu_JustifyText(DropDownChatType, "LEFT")
-		
-		return DropDownChatType
+
+		Config:SetDropDownChatType()
+	else
+		Config:SetDropDownChatType()
 	end
+end
+function Config:SetDropDownChatType()
+	DropDownChatType:SetPoint("TOPLEFT", ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 end
 
 ---------------------------------
@@ -1005,31 +1015,31 @@ StaticPopupDialogs["TICTACTOE_INVITATION"] = {
 	button1 = "Accept",
 	button2 = "Decline",
 	OnAccept = function()
-		AcceptingInvitation();
+		AcceptingInvitation()
 	end,
 	OnCancel = function()
-		DecliningInvitation();
+		DecliningInvitation()
 	end,
 	timeout = 0,
 	whileDead = true,
 	hideOnEscape = true,
 	preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
 }
-	
+
 ---------------------------------
 -- Events
 ---------------------------------
-local msgEmote = CreateFrame("Frame");
-msgEmote:RegisterEvent("CHAT_MSG_EMOTE");
-msgEmote:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "EMOTE") end);
+local msgEmote = CreateFrame("Frame")
+msgEmote:RegisterEvent("CHAT_MSG_EMOTE")
+msgEmote:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "EMOTE") end)
 
-local msgWhisper = CreateFrame("Frame");
-msgWhisper:RegisterEvent("CHAT_MSG_WHISPER");
-msgWhisper:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end);
+local msgWhisper = CreateFrame("Frame")
+msgWhisper:RegisterEvent("CHAT_MSG_WHISPER")
+msgWhisper:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end)
 
-local msgWhisperInform = CreateFrame("Frame");
-msgWhisperInform:RegisterEvent("CHAT_MSG_WHISPER_INFORM");
-msgWhisperInform:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end);
+local msgWhisperInform = CreateFrame("Frame")
+msgWhisperInform:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
+msgWhisperInform:SetScript("OnEvent", function(self, event, sender, message) ReceiveInput(message, sender, "WHISPER") end)
 
 local msgParty = CreateFrame("Frame")
 msgParty:RegisterEvent("CHAT_MSG_PARTY")
