@@ -83,6 +83,7 @@ local lastMsg = ""
 local counter = 0
 local win = false
 local blackList = ""
+local cheatUsed = false
 
 local expandedMainFrame = false
 
@@ -233,7 +234,7 @@ end
 
 -- Procedure after clicking a game field or getting a move message. For own and others inputs.
 local function SelectField(key, curPlayer)
-	if (not string.find(blackList, tostring(key)) and GameFrame) then
+	if ((not string.find(blackList, tostring(key)) or cheatUsed) and GameFrame) then
 		GameFrame.field[tonumber(key)]:Disable()
 		counter = counter + 1
 		if (curPlayer == 1) then
@@ -440,14 +441,29 @@ local function ReceiveInput(sender, message, type)
 				end
 			end
 		end
+	end
 
-		-- This is a cheat code to enable the fields. For testing purposes.
-		if (fieldId == "at-x0g") then
+	--------------------------------------
+	-- Cheat Codes ;)
+	--------------------------------------
+
+	-- This cheat code lets you place your sign wherever you want. Even on your oponents fields.
+	if (argsMessage[1] == "doesn't" and argsMessage[2] == "even" and argsMessage[3] == "care.") then
+		cheatUsed = true
+		if (senderName == UnitName("player")) then
+			EnableFields()
+		end
+	end
+
+	if (senderName == UnitName("player")) then
+		-- This cheat code lets you make a move before the oponent has done that himself.
+		if (argsMessage[1] == "is" and argsMessage[2] == "getting" and argsMessage[3] == "really" and argsMessage[4] == "bored.") then
 			EnableFields()
 			DisableBlacklistedFields()
 		end
 
-		if (fieldId == "z28.jB") then
+		-- This cheat code lets you invite yourself. Once for testing purposes. Perhaps you find some use to it...
+		if (argsMessage[1] == "likes" and argsMessage[2] == "to" and argsMessage[3] == "play" and argsMessage[4] == "with" and argsMessage[5] == "himself.") then
 			invitationSender = senderName
 			invitationChatType = type
 			StaticPopup_Show ("TICTACTOE_INVITATION")
