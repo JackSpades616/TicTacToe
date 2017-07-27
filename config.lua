@@ -233,7 +233,7 @@ local function SelectField(key, curPlayer)
 		UpdatePlayerStats(2, true, false, false)
 		if (singleplayer == false) then
 			-- If it is undecided, both player applaud.
-			DoEmote("APPLAUD")
+			DoEmote("APPLAUD", "none")
 		end
 	end
 end
