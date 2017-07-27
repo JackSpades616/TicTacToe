@@ -93,9 +93,9 @@ local expandedMainFrame = false
 -- Updates the statistics in the statistic frame.
 local function UpdateStatsFrame(id)
 	Config:CreateStats(id, "name", 			"Player Two")
-	Config:CreateStats(id, "wins", 			"Wins:         ")
-	Config:CreateStats(id, "defeats", 		"Defeats:      ")
-	Config:CreateStats(id, "playedGames", 	"Total:        ")
+	Config:CreateStats(id, "wins", 			"Wins:            ")
+	Config:CreateStats(id, "defeats", 		"Defeats:        ")
+	Config:CreateStats(id, "playedGames", 	"Total:            ")
 end
 
 -- Updates the players statistics by adding 1 to any of the fields.
@@ -773,7 +773,7 @@ function Config:CreateStatsFrame()
 	-- this sets the TextFrame for the Name of the first Player
 	StatsFrame.plOneFrame.textPl = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	StatsFrame.plOneFrame.textPl:SetPoint("TOPLEFT", StatsFrame.plOneFrame, "TOPLEFT", 10, -10)
-	Config:CreateStats(1, "name", 			"Player Two")
+	Config:CreateStats(1, "name", 			"Player One")
 	
 	-- This gives the number of victories from the first player
 	StatsFrame.plOneFrame.textWins = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -783,7 +783,7 @@ function Config:CreateStatsFrame()
 	-- This gives the number of defeats from the first player
 	StatsFrame.plOneFrame.textDefeats = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	StatsFrame.plOneFrame.textDefeats:SetPoint("TOPLEFT", StatsFrame.plOneFrame.textWins, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(1, "defeats", 		"Defeats:       ")
+	Config:CreateStats(1, "defeats", 		"Defeats:        ")
 	
 	-- This gives the number of games from the first player
 	StatsFrame.plOneFrame.textGames = StatsFrame.plOneFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -808,7 +808,7 @@ function Config:CreateStatsFrame()
 	-- This gives the number of defeats from the second player
 	StatsFrame.plTwoFrame.textDefeats = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	StatsFrame.plTwoFrame.textDefeats:SetPoint("TOPLEFT", StatsFrame.plTwoFrame.textWins, "BOTTOMLEFT", 0, -10)
-	Config:CreateStats(2, "defeats", 		"Defeats:       ")
+	Config:CreateStats(2, "defeats", 		"Defeats:        ")
 	
 	-- This gives the number of games from the first player
 	StatsFrame.plTwoFrame.textGames = StatsFrame.plTwoFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
