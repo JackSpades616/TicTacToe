@@ -285,14 +285,15 @@ local function AcceptingInvitation()
 	if (chatType == "WHISPER") then
 		whisperTarget = invitationSender
 	end
-	UpdateSingleplayer(false)
 	if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
 		core:Print("No whisper target chosen!")
 	else
 		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
+	UpdateSingleplayer(false)
 	SetPlayers(invitationSender, UnitName("player"))
-	core.Config:Toggle(true)
+	Config:Toggle(true)
+	Config:ResetGame()
 end
 
 -- Runs by declining an invitation of an other player.
@@ -351,7 +352,10 @@ local function ReceiveInput(sender, message, type) -- event, _, message, sender,
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
+			UpdateSingleplayer(false)
 			SetPlayers(inviteSender, senderName)
+			Config:Toggle(true)
+			Config:ResetGame()
 		end
 	end
 
