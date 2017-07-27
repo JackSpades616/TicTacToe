@@ -366,7 +366,7 @@ local function ReceiveInput(sender, message, type)
 			SetPlayers(inviteSender, senderName)
 			if (inviteSender == UnitName("player")) then
 				playerSelf = 1
-			endx
+			end
 			Config:ResetGame()
 		end
 	end
