@@ -102,27 +102,63 @@ end
 
 -- Updates the players statistics by adding 1 to any of the fields.
 local function UpdatePlayerStats(id, total, win, lose)
-	if (win) 	then player[id].wins		= player[id].wins 			+ 1	end
-	if (lose)	then player[id].defeats		= player[id].defeats 		+ 1	end
-	if (total) then player[id].total	= player[id].total	+ 1	end
+	if (win) then player[id].wins = player[id].wins + 1 end
+	if (lose) then player[id].defeats = player[id].defeats + 1 end
+	if (total) then player[id].total = player[id].total + 1 end
 	UpdateStatsFrame(id)
 end
 
 -- Initializes the players.
-local function SetPlayers(playerOne, playerTwo)
-	if (playerOne) then
-		player[1].name = playerOne
-		player[1].wins = 0
-		player[1].defeats = 0
-		player[1].total = 0
-		UpdateStatsFrame(1)
+local function SetPlayer(id, name, wins, defeats, total)
+	if (id) then
+		player[id].name = name or ""
+		player[id].wins = wins or 0
+		player[id].defeats = defeats or 0
+		player[id].total = total or 0
+
+		if (player[id].name == UnitName("player")) then
+			playerSelf = id
+		end
+
+		UpdateStatsFrame(id)
 	end
-	if (playerTwo) then
-		player[2].name = playerTwo
-		player[2].wins = 0
-		player[2].defeats = 0
-		player[2].total = 0
-		UpdateStatsFrame(2)
+end
+
+local function SetBothPlayers(newOne, newTwo)
+	local oldOne = {
+		name = player[1].name,
+		wins = player[1].wins,
+		defeats = player[1].defeats,
+		total = player[1].total
+	}
+
+	local oldTwo = {
+		name = player[2].name,
+		wins = player[2].wins,
+		defeats = player[2].defeats,
+		total = player[2].total
+	}
+
+	if (newOne == oldOne.name) then
+		print("player 1 is the same")
+		SetPlayer(1, oldOne.name, oldOne.wins, oldOne.defeats, oldOne.total)
+	elseif (newOne == oldTwo.name) then
+		print("player 1 is new")
+		SetPlayer(1, oldTwo.name, oldTwo.wins, oldTwo.defeats, oldTwo.total)
+	else
+		print("player 1 is ENTIRELY new")
+		SetPlayer(1, newOne)
+	end
+
+	if (newTwo == oldOne.name) then
+		print("player 2 is new")
+		SetPlayer(2, oldOne.name, oldOne.wins, oldOne.defeats, oldOne.total)
+	elseif (newTwo == oldTwo.name) then
+		print("player 2 is the same")
+		SetPlayer(2, oldTwo.name, oldTwo.wins, oldTwo.defeats, oldTwo.total)
+	else
+		print("player 2 is ENTIRELY new")
+		SetPlayer(2, newTwo)
 	end
 end
 
@@ -248,15 +284,13 @@ end
 -- Procedure after clicking a game field. Prints the move message for other players. For own input only.
 local function Field_Onclick(self)
 	if (player[1].name == "") then
-		SetPlayers(UnitName("player"), nil)
-		playerSelf = 1
+		SetPlayer(1, UnitName("player"))
 	elseif (player[2].name == "") then
 		if (player[1].name == UnitName("player")) then
-			SetPlayers(nil, UnitName("player") .. " 2")
+			SetPlayer(2, UnitName("player") .. " 2")
 			playerSelf = 2
 		else
-			SetPlayers(nil, UnitName("player"))
-			playerSelf = 2
+			SetPlayer(2, UnitName("player"))
 		end
 	end
 
@@ -309,8 +343,8 @@ local function AcceptingInvitation()
 	end
 
 	UpdateSingleplayer(false)
-	SetPlayers(invitationSender, UnitName("player"))
-	playerSelf = 2
+	SetBothPlayers(invitationSender, UnitName("player"))
+
 	Config:ResetGame()
 end
 
@@ -363,10 +397,9 @@ local function ReceiveInput(sender, message, type)
 			Config:Toggle(true)
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
 			UpdateSingleplayer(false)
-			SetPlayers(inviteSender, senderName)
-			if (inviteSender == UnitName("player")) then
-				playerSelf = 1
-			end
+
+			SetBothPlayers(inviteSender, senderName)
+
 			Config:ResetGame()
 		end
 	end
@@ -390,9 +423,9 @@ local function ReceiveInput(sender, message, type)
 			if (senderName ~= UnitName("player")) then
 				-- If there is no player two, it will be set here.
 				if (player[1].name == "" and mark == "X") then
-					SetPlayers(senderName, nil)
+					SetPlayer(1, senderName)
 				elseif (player[2].name == "" and mark == "O") then
-					SetPlayers(nil, senderName)
+					SetPlayer(2, senderName)
 				end
 
 				-- To avoid people spoiling the game, it will be checked, if the senders name is correct.
@@ -806,9 +839,9 @@ function Config:CreateStatsSubs(frame, id, point)
 	player.resetBtn.text:SetPoint("CENTER", player.resetBtn, "CENTER", 0, 0)
 	player.resetBtn.text:SetText("Clear")
 	if (id == 1) then
-		player.resetBtn:SetScript("OnClick", function(self) SetPlayers("", nil) end)
+		player.resetBtn:SetScript("OnClick", function(self) SetPlayer(1) end)
 	elseif (id == 2) then
-		player.resetBtn:SetScript("OnClick", function(self) SetPlayers(nil, "") end)
+		player.resetBtn:SetScript("OnClick", function(self) SetPlayer(2) end)
 	end
 
 	return player
