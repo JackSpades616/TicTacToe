@@ -435,11 +435,6 @@ end
 -- Resets the whole AddOn
 function Config:ResetAddon()
 	MainFrame:Hide()
---	ScrollFrame = nil
---	GameFrame = nil
---	SpaceFrame = nil
---	StatsFrame = nil
---	ConfigFrame = nil
 
 	MainFrame = nil
 	ScrollFrame = nil
