@@ -92,10 +92,12 @@ local expandedMainFrame = false
 
 -- Updates the statistics in the statistic frame.
 local function UpdateStatsFrame(id)
-	Config:CreateStats(id, "name", StatsFrame.player[id].name)
-	Config:CreateStats(id, "wins", StatsFrame.player[id].wins)
-	Config:CreateStats(id, "defeats", StatsFrame.player[id].defeats)
-	Config:CreateStats(id, "total", StatsFrame.player[id].total)
+	if (StatsFrame) then
+		Config:CreateStats(id, "name", StatsFrame.player[id].name)
+		Config:CreateStats(id, "wins", StatsFrame.player[id].wins)
+		Config:CreateStats(id, "defeats", StatsFrame.player[id].defeats)
+		Config:CreateStats(id, "total", StatsFrame.player[id].total)
+	end
 end
 
 -- Updates the players statistics by adding 1 to any of the fields.
@@ -292,6 +294,7 @@ end
 
 -- Runs by accepting an invitation of an other player.
 local function AcceptingInvitation()
+	Config:Toggle(true)
 	chatType = invitationChatType
 	if (DropDownChatType) then
 		UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
@@ -304,10 +307,10 @@ local function AcceptingInvitation()
 	else
 		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
+
 	UpdateSingleplayer(false)
 	SetPlayers(invitationSender, UnitName("player"))
 	playerSelf = 2
-	Config:Toggle(true)
 	Config:ResetGame()
 end
 
@@ -357,13 +360,13 @@ local function ReceiveInput(sender, message, type)
 	if (argsMessage[2] == "accepted") then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
+			Config:Toggle(true)
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
 			UpdateSingleplayer(false)
 			SetPlayers(inviteSender, senderName)
 			if (inviteSender == UnitName("player")) then
 				playerSelf = 1
-			end
-			Config:Toggle(true)
+			endx
 			Config:ResetGame()
 		end
 	end
