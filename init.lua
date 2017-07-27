@@ -7,19 +7,7 @@ local _, core = ...
 -- Custom Slash Command
 --------------------------------------
 core.commands = {
-	["start"] = core.Config.Toggle, -- this is a function (no knowledge of Config object)
-	
-	["help"] = function()
-		local color = "fffb00"
-		print(" ")
-		core:Print("List of slash commands:")
-		core:Print("|cff"..color.."/ttt start|r - start the game")
-		core:Print("|cff"..color.."/ttt reset|r - reset the AddOn configuration")
-		core:Print("|cff"..color.."/ttt solo|r  - enables singleplayer mode")
-		core:Print("|cff"..color.."/ttt help|r  - shows help info")
-		core:Print("|cff"..color.."/ttt stats|r - shows the player statistics")
-		print(" ")
-	end,
+	["help"] = core.CommandList,
 	
 	["example"] = {
 		["test"] = function(...)
@@ -33,6 +21,18 @@ core.commands = {
 
 	["stats"] = core.Config.PrintPlayerStats,
 }
+
+local function CommandList()
+	local color = "fffb00"
+	core:PrintLine()
+	core:Print("List of slash commands:")
+	core:Print("|cff"..color.."/ttt|r - start the game")
+	core:Print("|cff"..color.."/ttt reset|r - reset the AddOn configuration")
+	core:Print("|cff"..color.."/ttt solo|r  - enables singleplayer mode")
+	core:Print("|cff"..color.."/ttt help|r  - shows help info")
+	core:Print("|cff"..color.."/ttt stats|r - shows the player statistics")
+	core:PrintLine()
+end
 
 local function HandleSlashCommands(str)	
 	if (#str == 0) then	
