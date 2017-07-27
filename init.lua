@@ -96,7 +96,12 @@ function core:init(event, name)
 	----------------------------------
 	SLASH_TicTacToe1 = "/ttt"
 	SlashCmdList.TicTacToe = HandleSlashCommands
-	
+
+	local color = "fffb00"
+	core:PrintLine()
+	core:Print("|cff"..color.."/ttt|r - start the game")
+	core:PrintLine()
+
 	-- Needs to be removed, once developing is finished!
 	-- core.Config.Toggle()
 end
