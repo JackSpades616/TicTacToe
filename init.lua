@@ -76,6 +76,12 @@ function core:Print(...)
     DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...))
 end
 
+function core:PrintLine(...)
+	local hex = select(4, self.Config:GetThemeColor())
+	local prefix = string.format("|cff%s%s|r", hex:upper(), "---------------------------------------------------------------")
+	DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix))
+end
+
 -- WARNING: self automatically becomes events frame!
 function core:init(event, name)
 
