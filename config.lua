@@ -278,7 +278,12 @@ end
 -- Procedure after clicking a game field. Prints the move message for other players. For own input only.
 local function Field_Onclick(self)
 	if (player[1].name == "") then
-		SetPlayer(1, UnitName("player"))
+		if (player[2].name == UnitName("player")) then
+			SetPlayer(1, UnitName("player") .. " 2")
+			playerSelf = 1
+		else
+			SetPlayer(1, UnitName("player"))
+		end
 	elseif (player[2].name == "") then
 		if (player[1].name == UnitName("player")) then
 			SetPlayer(2, UnitName("player") .. " 2")
