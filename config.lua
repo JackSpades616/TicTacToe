@@ -337,15 +337,6 @@ local function ReceiveInput(sender, message, type)
 	-- the recipients name becomes index three of the array (argsMessage[3]).
 	local argsMessage = core.Lib:SplitString(message, " ")
 
-	--[[
-	local argsMessage = {}
-	for _, arg in ipairs({ string.split(' ', message) }) do
-		if (#arg > 0) then
-			table.insert(argsMessage, arg)
-		end
-	end
-	]]
-
 	-- Check if the second word is the keyword "invited".
 	if (argsMessage[2] == "invited") then
 		-- If I get an invitation, the recipient (me) must have my name and the sender mustn't be myself as well.
