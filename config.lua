@@ -208,7 +208,7 @@ local function SelectField(key, curPlayer)
 		blackList = blackList .. key
 
 		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
-		if (counter >= 5) then
+		if (counter >= 3) then
 			win =  checkIfWon(1, 2, 3, curPlayer)
 					or checkIfWon(4, 5, 6, curPlayer)
 					or checkIfWon(7, 8, 9, curPlayer)
