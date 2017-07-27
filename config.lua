@@ -1006,10 +1006,8 @@ function Config:CreateDropDownChatType()
 			chatType = self.value
 
 			if (chatType == "WHISPER") then
-				ConfigFrame.targetEditBox:Enable()
 				whisperTarget = ConfigFrame.targetEditBox:GetText()
 			else
-				ConfigFrame.targetEditBox:Disable()
 				whisperTarget = nil
 			end
 		end
