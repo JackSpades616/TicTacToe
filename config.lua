@@ -44,7 +44,7 @@ local default = {
 	singlePlayerModes = {
 		"self",
 		"easy",
-		"normal",
+		"medium",
 	},
 }
 
@@ -85,7 +85,7 @@ local invitationSender = ""
 local chatType = "EMOTE"
 local whisperTarget = nil
 local lastMsg = ""
-local singlePlayerMode = "normal"
+local singlePlayerMode = "medium"
 
 local counter = 0
 local win = false
@@ -340,7 +340,7 @@ local function AIInput(mode)
 					valid = true
 				end
 			end
-		elseif (mode == "normal") then
+		elseif (mode == "medium") then
 			key = checkAllLines("O") or checkAllLines("X")
 			if (not key) then
 				while (not valid) do
