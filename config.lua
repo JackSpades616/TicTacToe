@@ -298,7 +298,6 @@ local function checkLine(frst, scnd, thrd, value)
 		key = frst
 	end
 	
-	print(key)
 	return key
 end
 
@@ -319,7 +318,6 @@ local function AIInput(mode)
 	mode = mode or singlePlayerMode
 	local key
 	local valid = false
-	print(mode)
 	
 	if (mode == "self") then
 		if (playerSelf == 1) then
