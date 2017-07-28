@@ -40,6 +40,12 @@ local default = {
 		"PARTY",
         "GUILD",
 	},
+	
+	singlePlayerModes = {
+		"self",
+		"easy",
+		"normal",
+	},
 }
 
 
@@ -79,6 +85,7 @@ local invitationSender = ""
 local chatType = "EMOTE"
 local whisperTarget = nil
 local lastMsg = ""
+local singlePlayerMode = "normal"
 
 local counter = 0
 local win = false
@@ -203,6 +210,7 @@ local function InvitePlayer(name)
 	end
 end
 
+
 -- Check if a player has won.
 local function checkIfWon(frst, scnd, thrd, curPlayer)
 	if ((GameFrame.field[frst]:GetText() == GameFrame.field[scnd]:GetText()) and (GameFrame.field[frst]:GetText() == GameFrame.field[thrd]:GetText()) and (GameFrame.field[frst]:GetText() ~= nil)) then
@@ -244,20 +252,20 @@ local function SelectField(key, curPlayer)
 		end
 
 		blackList = blackList .. key
-
-		-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
-		if (counter >= 3) then
-			win =  checkIfWon(1, 2, 3, curPlayer)
-					or checkIfWon(4, 5, 6, curPlayer)
-					or checkIfWon(7, 8, 9, curPlayer)
-					or checkIfWon(1, 4, 7, curPlayer)
-					or checkIfWon(2, 5, 8, curPlayer)
-					or checkIfWon(3, 6, 9, curPlayer)
-					or checkIfWon(1, 5, 9, curPlayer)
-					or checkIfWon(3, 5, 7, curPlayer)
-		end
 	end
 
+	-- This is in case you win or lose. It disables all buttons, highlight them and do an emote.
+	if (counter >= 3) then
+		win =  checkIfWon(1, 2, 3, curPlayer)
+				or checkIfWon(4, 5, 6, curPlayer)
+				or checkIfWon(7, 8, 9, curPlayer)
+				or checkIfWon(1, 4, 7, curPlayer)
+				or checkIfWon(2, 5, 8, curPlayer)
+				or checkIfWon(3, 6, 9, curPlayer)
+				or checkIfWon(1, 5, 9, curPlayer)
+				or checkIfWon(3, 5, 7, curPlayer)
+	end
+	
 	if (win) then
 		if (curPlayer == 1) then
 			UpdatePlayerStats(1, true, true, false)
@@ -266,12 +274,95 @@ local function SelectField(key, curPlayer)
 			UpdatePlayerStats(1, true, false, true)
 			UpdatePlayerStats(2, true, true, false)
 		end
-	elseif (counter >= 9) then
+	elseif (#blackList >= 9) then
 		UpdatePlayerStats(1, true, false, false)
 		UpdatePlayerStats(2, true, false, false)
 		if (singleplayer == false) then
 			-- If it is undecided, both player applaud.
 			DoEmote("APPLAUD", "none")
+		end
+	end
+end
+
+--------------------------------------
+-- AI
+--------------------------------------
+
+local function checkLine(frst, scnd, thrd, value)
+	local key
+	if ((GameFrame.field[frst]:GetText() == value) and (GameFrame.field[scnd]:GetText() == value) and (GameFrame.field[thrd]:GetText() == nil)) then
+		key = thrd
+	elseif ((GameFrame.field[frst]:GetText() == value) and (GameFrame.field[scnd]:GetText() == nil) and (GameFrame.field[thrd]:GetText() == value)) then
+		key = scnd
+	elseif ((GameFrame.field[frst]:GetText() == nil) and (GameFrame.field[scnd]:GetText() == value) and (GameFrame.field[thrd]:GetText() == value)) then
+		key = frst
+	end
+	
+	print(key)
+	return key
+end
+
+local function checkAllLines(value)
+	local key
+	key = checkLine(1, 2, 3, value)
+		or checkLine(4, 5, 6, value)
+		or checkLine(7, 8, 9, value)
+		or checkLine(1, 4, 7, value)
+		or checkLine(2, 5, 8, value)
+		or checkLine(3, 6, 9, value)
+		or checkLine(1, 5, 9, value)
+		or checkLine(3, 5, 7, value)
+	return key
+end
+
+local function AIInput(mode)
+	mode = mode or singlePlayerMode
+	local key
+	local valid = false
+	print(mode)
+	
+	if (mode == "self") then
+		if (playerSelf == 1) then
+			playerSelf = 2
+		else
+			playerSelf = 1
+		end
+	else
+		DisableFields()
+		if (mode == "easy") then
+			while (not valid) do
+				if (#blackList < 9) then
+					key = random(1, 9)
+				else
+					valid = true
+				end
+				if (not string.find(blackList, tostring(key))) then
+					valid = true
+				end
+			end
+		elseif (mode == "normal") then
+			key = checkAllLines("O") or checkAllLines("X")
+			if (not key) then
+				while (not valid) do
+					if (#blackList < 9) then
+						key = random(1, 9)
+					else
+						valid = true
+					end
+					if (not string.find(blackList, tostring(key))) then
+						valid = true
+					end
+				end
+			end
+		elseif (mode == "hard") then
+		
+		end
+		if ((not win) and #blackList < 9) then
+			SelectField(key, 2)
+			if ((not win) and #blackList < 9) then
+				EnableFields()
+				DisableBlacklistedFields()
+			end
 		end
 	end
 end
@@ -319,10 +410,8 @@ local function Field_Onclick(self)
 
 	if (singleplayer == false or singleplayer == nil) then
 		DisableFields()
-	elseif (playerSelf == 1) then
-		playerSelf = 2
 	else
-		playerSelf = 1
+		AIInput()
 	end
 end
 
@@ -539,6 +628,17 @@ end
 function Config:ResetPosition()
 	xPosition = default.position.x
 	yPosition = default.position.y
+end
+
+function Config:EnableSinglePlayer(pOne, pTwo, mode)
+	if (not singleplayer) then
+		singleplayer = true
+	end
+	
+	singlePlayerMode = mode
+	
+	if (mode == "self") then pTwo = UnitName("player") .. " 2" end
+	SetBothPlayers(pOne, pTwo)
 end
 
 -- Collapses the Main Frame
@@ -991,8 +1091,10 @@ function Config:CreateConfigFrame()
 	ConfigFrame.soloCheckBox.text:SetText("Singleplayer")
 	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
 		if (self:GetChecked()) then
-			singleplayer = true
+			UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode)
+			Config:EnableSinglePlayer(UnitName("player"), "AI " .. core.Lib:FirstLetterUp(singlePlayerMode), singlePlayerMode)
 		else
+			UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
 			singleplayer = false
 		end
 	end)
@@ -1003,6 +1105,7 @@ function Config:CreateConfigFrame()
 	end
 
 	Config:CreateDropDownChatType()
+	Config:CreateDropDownSinglePlayerMode()
 end
 
 ---------------------------------
@@ -1016,7 +1119,7 @@ function Config:CreateDropDownChatType()
 		DropDownChatType:SetPoint("TOPLEFT", ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 
 
-		local function DropDownMenu_OnClick(self)
+		local function DropDownMenuChatType_OnClick(self)
 			UIDropDownMenu_SetSelectedID(DropDownChatType, self:GetID())
 
 			chatType = self.value
@@ -1034,7 +1137,7 @@ function Config:CreateDropDownChatType()
 				info = UIDropDownMenu_CreateInfo()
 				info.text = core.Lib:FirstLetterUp(v)
 				info.value = v
-				info.func = DropDownMenu_OnClick
+				info.func = DropDownMenuChatType_OnClick
 				UIDropDownMenu_AddButton(info, level)
 				UIDropDownMenu_AddSeparator(DropDownChatType)
 			end
@@ -1054,6 +1157,53 @@ function Config:SetDropDownChatType()
 	DropDownChatType:SetParent(ConfigFrame)
 	DropDownChatType:SetPoint("TOPLEFT", ConfigFrame.inviteButton, "BOTTOMLEFT", -16, -5)
 	UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
+end
+
+---------------------------------
+-- Drop Down Single Player Mode
+---------------------------------
+function Config:CreateDropDownSinglePlayerMode()
+	-- testing the DropDown Menu
+	if (not DropDownSinglePlayerMode) then
+        DropDownSinglePlayerMode = CreateFrame("Button", "TicTacToe_DropDownSinglePlayerMode", ConfigFrame, "UIDropDownMenuTemplate")
+		DropDownSinglePlayerMode:ClearAllPoints()
+		DropDownSinglePlayerMode:SetPoint("TOPLEFT", ConfigFrame.soloCheckBox, "BOTTOMLEFT", -16, -5)
+
+
+		local function DropDownSinglePlayerMode_OnClick(self)
+			UIDropDownMenu_SetSelectedID(DropDownSinglePlayerMode, self:GetID())
+			
+			Config:EnableSinglePlayer(UnitName("player"), "AI " .. core.Lib:FirstLetterUp(self.value), self.value)
+		end
+
+		local function initialize(self, level)
+			local info
+			for _,v in pairs(default.singlePlayerModes) do
+				info = UIDropDownMenu_CreateInfo()
+				info.text = core.Lib:FirstLetterUp(v)
+				info.value = v
+				info.func = DropDownSinglePlayerMode_OnClick
+				UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddSeparator(DropDownSinglePlayerMode)
+			end
+		end
+
+		UIDropDownMenu_Initialize(DropDownSinglePlayerMode, initialize)
+		UIDropDownMenu_SetWidth(DropDownSinglePlayerMode, 82)
+		UIDropDownMenu_SetButtonWidth(DropDownSinglePlayerMode, 124)
+		UIDropDownMenu_SetSelectedValue(DropDownSinglePlayerMode, singlePlayerMode)
+		UIDropDownMenu_JustifyText(DropDownSinglePlayerMode, "LEFT")
+		
+		UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
+	else
+		Config:SetDropDownChatType()
+	end
+end
+function Config:SetDropDownChatType()
+	DropDownSinglePlayerMode:ClearAllPoints()
+	DropDownSinglePlayerMode:SetParent(ConfigFrame)
+	DropDownSinglePlayerMode:SetPoint("TOPLEFT", ConfigFrame.soloCheckBox, "BOTTOMLEFT", -16, -5)
+	UIDropDownMenu_SetSelectedValue(DropDownSinglePlayerMode, singlePlayerMode)
 end
 
 
