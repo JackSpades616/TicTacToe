@@ -33,3 +33,12 @@ Guild Mode
 -------------------------------------
 
 This is same like the Party Mode but with someone in your guild.
+
+-------------------------------------
+Singleplayer Mode
+-------------------------------------
+
+You can choose the single player mode by activating the single player checkbox in the configuration. If it is activated the dropdown menu below will be enabled. 
+There you can choose if you want to play against yourself or against simple or medium AI. On launch it is set to medium.
+
+We are planning to integrate a hard mode but first things first. ;)
