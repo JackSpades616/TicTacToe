@@ -81,7 +81,7 @@ local player = {
 	},
 }
 local playerSelf = ""
-local singleplayer = false
+local singleplayer = true
 local invitationChatType = ""
 local invitationSender = ""
 local chatType = "EMOTE"
@@ -355,6 +355,12 @@ local function AIInput(mode)
 	mode = mode or singlePlayerMode
 	local key
 	local valid = false
+
+	if (player[1].name == "") then
+		SetPlayer(1, "AI " .. core.Lib:FirstLetterUp(singlePlayerMode))
+	elseif (player[2].name == "") then
+		SetPlayer(2, "AI " .. core.Lib:FirstLetterUp(singlePlayerMode))
+	end
 
 	if (mode == "easy") then
 		while (not valid) do
