@@ -86,7 +86,7 @@ local invitationSender = ""
 local chatType = "EMOTE"
 local whisperTarget = nil
 local lastMsg = ""
-local invitationTimeElapsed = false
+local invitationSent = false
 local singlePlayerMode = "medium"
 
 local counter = 0
@@ -219,10 +219,10 @@ local function InvitePlayer(name)
 		SendChatMessage("has invited " ..name.. " to play Tic Tac Toe.", chatType, nil, whisperTarget)
 	end
 
-	invitationTimeElapsed = false
+	invitationSent = true
 	ConfigFrame.inviteButton:LockHighlight()
 	C_Timer.After(30, function(self)
-		invitationTimeElapsed = true
+		invitationSent = false
 		ConfigFrame.inviteButton:UnlockHighlight()
 	end)
 end
@@ -511,11 +511,11 @@ local function ReceiveInput(sender, message, type)
 	end
 
 	-- Check if the second word is the keyword "accepted".
-	if (argsMessage[2] == "accepted" and (not invitationTimeElapsed)) then
+	if (argsMessage[2] == "accepted" and (invitationSent)) then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
 			Config:Toggle(true)
-			invitationTimeElapsed = true
+			invitationSent = false
 			ConfigFrame.inviteButton:UnlockHighlight()
 
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
@@ -529,10 +529,10 @@ local function ReceiveInput(sender, message, type)
 	end
 
 	-- Check if the second word is the keyword "declined".
-	if (argsMessage[2] == "declined" and (not invitationTimeElapsed)) then
+	if (argsMessage[2] == "declined" and (invitationSent)) then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
-			invitationTimeElapsed = true
+			invitationSent = false
 			ConfigFrame.inviteButton:UnlockHighlight()
 		end
 	end
