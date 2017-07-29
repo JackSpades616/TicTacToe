@@ -44,7 +44,7 @@ local default = {
 	singlePlayerModes = {
 		"self",
 		"easy",
-		"normal",
+		"medium",
 	},
 }
 
@@ -334,7 +334,6 @@ local function CheckLine(frst, scnd, thrd, value)
 		key = frst
 	end
 	
-	print(key)
 	return key
 end
 
@@ -392,7 +391,6 @@ local function AIInput(mode)
 		end
 	end
 end
-
 
 -- Procedure after clicking a game field. Prints the move message for other players. For own input only.
 local function Field_Onclick(self)
