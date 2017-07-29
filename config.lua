@@ -87,7 +87,7 @@ local chatType = "EMOTE"
 local whisperTarget = nil
 local lastMsg = ""
 local invitationTimeElapsed = false
-local singlePlayerMode = "normal"
+local singlePlayerMode = "medium"
 
 local counter = 0
 local beginner = 1
@@ -366,7 +366,7 @@ local function AIInput(mode)
 				valid = true
 			end
 		end
-	elseif (mode == "normal") then
+	elseif (mode == "medium") then
 		key = CheckAllLines("O") or CheckAllLines("X")
 		if (not key) then
 			while (not valid) do
