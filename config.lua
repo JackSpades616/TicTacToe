@@ -1261,10 +1261,10 @@ function Config:CreateDropDownSinglePlayerMode()
 		
 		UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
 	else
-		Config:SetDropDownChatType()
+		Config:SetDropDownSinglePlayerMode()
 	end
 end
-function Config:SetDropDownChatType()
+function Config:SetDropDownSinglePlayerMode()
 	DropDownSinglePlayerMode:ClearAllPoints()
 	DropDownSinglePlayerMode:SetParent(ConfigFrame)
 	DropDownSinglePlayerMode:SetPoint("TOPLEFT", ConfigFrame.soloCheckBox, "BOTTOMLEFT", -16, -5)
