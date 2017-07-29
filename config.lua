@@ -695,18 +695,22 @@ function Config:UpdateSingleplayer(solo, pOne, pTwo)
 		ConfigFrame.soloCheckBox:SetChecked(solo)
 	end
 	if (solo) then
-		if (DropDownSinglePlayerMode) then UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode) end
-		pOne = pOne or UnitName("player")
-
-		if (singlePlayerMode == "self") then
-			pTwo = pTwo or UnitName("player") .. " 2"
-		else
-			pTwo = pTwo or "AI " .. core.Lib:FirstLetterUp(singlePlayerMode)
+		if (DropDownSinglePlayerMode) then 
+		UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode) 
 		end
+		pOne = pOne or UnitName("player")
+		MainFrame.repeatBtn:Disable()
+
+			if (singlePlayerMode == "self") then
+				pTwo = pTwo or UnitName("player") .. " 2"
+			else
+				pTwo = pTwo or "AI " .. core.Lib:FirstLetterUp(singlePlayerMode)
+			end
 
 		SetBothPlayers(pOne, pTwo)
 	else
 		if (DropDownSinglePlayerMode) then UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode) end
+		MainFrame.repeatBtn:Enable()
 	end
 end
 
@@ -1263,10 +1267,10 @@ function Config:CreateDropDownSinglePlayerMode()
 		
 		UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
 	else
-		Config:SetDropDownChatType()
+		Config:SetDropDownSinglePlayerMode()
 	end
 end
-function Config:SetDropDownChatType()
+function Config:SetDropDownSinglePlayerMode()
 	DropDownSinglePlayerMode:ClearAllPoints()
 	DropDownSinglePlayerMode:SetParent(ConfigFrame)
 	DropDownSinglePlayerMode:SetPoint("TOPLEFT", ConfigFrame.soloCheckBox, "BOTTOMLEFT", -16, -5)
