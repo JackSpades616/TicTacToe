@@ -68,6 +68,19 @@ We are planning to integrate a hard mode but first things first. ;)
 Updates
 ----------------------------
 
+Version 3.1.1 Beta
+----------------------------
+Bugfixes
+>Dropdown ChatType
+>>Fixed the disappearing of the Dropdown for the chat type after hard reset via command.
+
+Changes
+>Default Singleplayer
+>> Set singleplayer against medium AI as default.
+
+>Repeat Button
+>> Disabled the repeat button when singleplayer mode is activated.
+
 Version 3.1.0 Beta
 ----------------------------
 New Features
@@ -85,7 +98,7 @@ The game of the player (or AI) who made the first move will be disabled, letting
 > Raid channel
 >> The game can now also be played over the raid channel.
 
-Changes:
+Changes
 > Invitation time-out
 >> Added a time-out for sent invitations. After 30 seconds the invitation will be canceled.
 
