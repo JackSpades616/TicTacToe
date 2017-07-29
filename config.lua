@@ -38,6 +38,7 @@ local default = {
 		"EMOTE",
 		"WHISPER",
 		"PARTY",
+		"RAID",
         "GUILD",
 	},
 	
@@ -1313,6 +1314,10 @@ local msgGuild = CreateFrame("Frame")
 msgGuild:RegisterEvent("CHAT_MSG_GUILD")
 msgGuild:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "GUILD") end)
 
-local msgOfficer = CreateFrame("Frame")
-msgOfficer:RegisterEvent("CHAT_MSG_OFFICER")
-msgOfficer:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "GUILD") end)
+local msgRaid = CreateFrame("Frame")
+msgRaid:RegisterEvent("CHAT_MSG_RAID")
+msgRaid:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "RAID") end)
+
+local msgRaidLeader = CreateFrame("Frame")
+msgRaidLeader:RegisterEvent("CHAT_MSG_RAID_LEADER")
+msgRaidLeader:SetScript("OnEvent", function(self, event, message, sender) ReceiveInput(sender, message, "RAID") end)
