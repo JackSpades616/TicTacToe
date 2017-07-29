@@ -4,10 +4,13 @@ With this AddOn you can play the world famous game Tic Tac Toe in World of Warcr
 Commands
 ----------------------------
 
-Start the game: /ttt
-Shows help info: /ttt help
-Reset the AddOn configuration: /ttt reset
-Shows the player statistics: /ttt stats
+> Start the game: /ttt
+
+> Shows help info: /ttt help
+
+> Reset the AddOn configuration: /ttt reset
+
+> Shows the player statistics: /ttt stats
 
 ----------------------------
 GUI
@@ -60,40 +63,35 @@ Singleplayer Mode
 You can choose the single player mode by activating the single player checkbox in the configuration. If it is activated the dropdown menu below will be enabled. 
 There you can choose if you want to play against yourself or against simple or medium AI. On launch it is set to medium.
 We are planning to integrate a hard mode but first things first. ;)
- 
- 
- 
- 
-We would like to thank Mayron, who has helped us with his tutorial videos on AddOn programming. 
-If you're new to AddOn development we recommend you to watch his videos. https://www.youtube.com/channel/UCCu-NuBYVi7yokZmKBCBvHw
 
 ----------------------------
 Updates
 ----------------------------
 
-
 Version 3.1.0 Beta
-
+----------------------------
 New Features
-
-AI player
-
-Added an AI to singleplayer.
+> AI player
+>> Added an AI to singleplayer.
 Singleplayer has now three modes:
 self (play against yourself like before)
 easy (easy difficulty for AI)
 medium (medium difficulty)
-Automatic reset
 
-Implemented an automatic reset after a game has finished. That way you don't have to reset the game manually.
+> Automatic reset
+>> Implemented an automatic reset after a game has finished. That way you don't have to reset the game manually.
 The game of the player (or AI) who made the first move will be disabled, letting the other player start the new game.
-Raid channel
 
-The game can now also be played over the raid channel.
+> Raid channel
+>> The game can now also be played over the raid channel.
 
 Changes:
+> Invitation time-out
+>> Added a time-out for sent invitations. After 30 seconds the invitation will be canceled.
 
 
-Invitation time-out
-
-Added a time-out for sent invitations. After 30 seconds the invitation will be canceled.
+----------------------------
+Other
+----------------------------
+We would like to thank Mayron, who has helped us with his tutorial videos on AddOn programming. 
+If you're new to AddOn development we recommend you to watch his videos. https://www.youtube.com/channel/UCCu-NuBYVi7yokZmKBCBvHw
