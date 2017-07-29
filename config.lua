@@ -80,7 +80,7 @@ local player = {
 		total = 0,
 	},
 }
-local playerSelf = ""
+local playerSelf = 0
 local singleplayer = true
 local invitationChatType = ""
 local invitationSender = ""
@@ -91,7 +91,7 @@ local invitationSent = false
 local singlePlayerMode = "medium"
 
 local counter = 0
-local beginner = 1
+local beginner = 0
 local win = false
 local blackList = ""
 local cheatUsed = false
@@ -665,20 +665,26 @@ function Config:ResetAddon()
 			total = 0,
 		},
 	}
-	playerSelf = ""
-	singleplayer = false
+	playerSelf = 0
+	singleplayer = true
 	invitationChatType = ""
 	invitationSender = ""
 	chatType = "EMOTE"
 	whisperTarget = nil
 	lastMsg = ""
+	invitationSent = false
+	singlePlayerMode = "medium"
+
+
 	counter = 0
+	beginner = 0
 	win = false
 	blackList = ""
+	cheatUsed = false
 
 	expandedMainFrame = false
-	xPosition = default.position.x
-	yPosition = default.position.y
+
+	Config:ResetPosition()
 end
 
 -- Resets the position to the default position
