@@ -86,9 +86,11 @@ local invitationSender = ""
 local chatType = "EMOTE"
 local whisperTarget = nil
 local lastMsg = ""
+local invitationTimeElapsed = false
 local singlePlayerMode = "normal"
 
 local counter = 0
+local beginner = 1
 local win = false
 local blackList = ""
 local cheatUsed = false
@@ -165,13 +167,20 @@ local function SetBothPlayers(newOne, newTwo)
 	end
 end
 
--- Updates the state of the singleplayer checkbox.
-local function UpdateSingleplayer(solo)
-	if (solo == nil) then solo = false end
-	singleplayer = solo
-    if (MainFrame) then
-	    ConfigFrame.soloCheckBox:SetChecked(solo)
-    end
+local function ClearPlayer(id, other)
+	if (other) then
+		if (singleplayer) then
+			if (singlePlayerMode == "self") then
+				SetPlayer(id, UnitName("player") .. " 2")
+			else
+				SetPlayer(id, "AI " .. core.Lib:FirstLetterUp(singlePlayerMode))
+			end
+		else
+			SetPlayer(id)
+		end
+	else
+		SetPlayer(id)
+	end
 end
 
 -- Disables all buttons.
@@ -209,8 +218,14 @@ local function InvitePlayer(name)
 	else
 		SendChatMessage("has invited " ..name.. " to play Tic Tac Toe.", chatType, nil, whisperTarget)
 	end
-end
 
+	invitationTimeElapsed = false
+	ConfigFrame.inviteButton:LockHighlight()
+	C_Timer.After(30, function(self)
+		invitationTimeElapsed = true
+		ConfigFrame.inviteButton:UnlockHighlight()
+	end)
+end
 
 -- Check if a player has won.
 local function checkIfWon(frst, scnd, thrd, curPlayer)
@@ -252,6 +267,10 @@ local function SelectField(key, curPlayer)
 			GameFrame.field[key]:SetText("O")
 		end
 
+		if (counter == 1) then
+			beginner = curPlayer
+		end
+
 		blackList = blackList .. key
 	end
 
@@ -283,13 +302,29 @@ local function SelectField(key, curPlayer)
 			DoEmote("APPLAUD", "none")
 		end
 	end
+
+	if (win or #blackList >= 9) then
+		C_Timer.After(2, function(self)
+			if (singleplayer and singlePlayerMode == "self") then
+				Config:ResetGame(false, false)
+			elseif (singleplayer and playerSelf == beginner) then
+				Config:ResetGame(true, true)
+			elseif (singleplayer) then
+				Config:ResetGame(false, false)
+			elseif (playerSelf == beginner) then
+				Config:ResetGame(true, false)
+			else
+				Config:ResetGame(false, false)
+			end
+		end)
+	end
 end
 
 --------------------------------------
 -- AI
 --------------------------------------
 
-local function checkLine(frst, scnd, thrd, value)
+local function CheckLine(frst, scnd, thrd, value)
 	local key
 	if ((GameFrame.field[frst]:GetText() == value) and (GameFrame.field[scnd]:GetText() == value) and (GameFrame.field[thrd]:GetText() == nil)) then
 		key = thrd
@@ -303,16 +338,16 @@ local function checkLine(frst, scnd, thrd, value)
 	return key
 end
 
-local function checkAllLines(value)
+local function CheckAllLines(value)
 	local key
-	key = checkLine(1, 2, 3, value)
-		or checkLine(4, 5, 6, value)
-		or checkLine(7, 8, 9, value)
-		or checkLine(1, 4, 7, value)
-		or checkLine(2, 5, 8, value)
-		or checkLine(3, 6, 9, value)
-		or checkLine(1, 5, 9, value)
-		or checkLine(3, 5, 7, value)
+	key = CheckLine(1, 2, 3, value)
+		or CheckLine(4, 5, 6, value)
+		or CheckLine(7, 8, 9, value)
+		or CheckLine(1, 4, 7, value)
+		or CheckLine(2, 5, 8, value)
+		or CheckLine(3, 6, 9, value)
+		or CheckLine(1, 5, 9, value)
+		or CheckLine(3, 5, 7, value)
 	return key
 end
 
@@ -320,17 +355,21 @@ local function AIInput(mode)
 	mode = mode or singlePlayerMode
 	local key
 	local valid = false
-	print(mode)
-	
-	if (mode == "self") then
-		if (playerSelf == 1) then
-			playerSelf = 2
-		else
-			playerSelf = 1
+
+	if (mode == "easy") then
+		while (not valid) do
+			if (#blackList < 9) then
+				key = random(1, 9)
+			else
+				valid = true
+			end
+			if (not string.find(blackList, tostring(key))) then
+				valid = true
+			end
 		end
-	else
-		DisableFields()
-		if (mode == "easy") then
+	elseif (mode == "normal") then
+		key = CheckAllLines("O") or CheckAllLines("X")
+		if (not key) then
 			while (not valid) do
 				if (#blackList < 9) then
 					key = random(1, 9)
@@ -341,46 +380,31 @@ local function AIInput(mode)
 					valid = true
 				end
 			end
-		elseif (mode == "normal") then
-			key = checkAllLines("O") or checkAllLines("X")
-			if (not key) then
-				while (not valid) do
-					if (#blackList < 9) then
-						key = random(1, 9)
-					else
-						valid = true
-					end
-					if (not string.find(blackList, tostring(key))) then
-						valid = true
-					end
-				end
-			end
-		elseif (mode == "hard") then
-		
 		end
+	elseif (mode == "hard") then
+
+	end
+	if ((not win) and #blackList < 9) then
+		SelectField(key, 2)
 		if ((not win) and #blackList < 9) then
-			SelectField(key, 2)
-			if ((not win) and #blackList < 9) then
-				EnableFields()
-				DisableBlacklistedFields()
-			end
+			EnableFields()
+			DisableBlacklistedFields()
 		end
 	end
 end
+
 
 -- Procedure after clicking a game field. Prints the move message for other players. For own input only.
 local function Field_Onclick(self)
 	if (player[1].name == "") then
 		if (player[2].name == UnitName("player")) then
 			SetPlayer(1, UnitName("player") .. " 2")
-			playerSelf = 1
 		else
 			SetPlayer(1, UnitName("player"))
 		end
 	elseif (player[2].name == "") then
 		if (player[1].name == UnitName("player")) then
 			SetPlayer(2, UnitName("player") .. " 2")
-			playerSelf = 2
 		else
 			SetPlayer(2, UnitName("player"))
 		end
@@ -409,10 +433,19 @@ local function Field_Onclick(self)
 	-- if it is not your turn, this disables for you the Buttons
 	SelectField(self:GetID(), playerSelf)
 
-	if (singleplayer == false or singleplayer == nil) then
-		DisableFields()
+	if (singleplayer) then
+		if (singlePlayerMode == "self") then
+			if (playerSelf == 1) then
+				playerSelf = 2
+			else
+				playerSelf = 1
+			end
+		else
+			DisableFields()
+			C_Timer.After(1, AIInput)
+		end
 	else
-		AIInput()
+		DisableFields()
 	end
 end
 
@@ -420,9 +453,9 @@ end
 local function AcceptingInvitation()
 	Config:Toggle(true)
 	chatType = invitationChatType
-	if (DropDownChatType) then
-		UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType)
-	end
+	-- if (DropDownChatType) then UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType) end
+	Config:UpdateSingleplayer(false)
+
 	if (chatType == "WHISPER") then
 		whisperTarget = invitationSender
 	end
@@ -432,9 +465,7 @@ local function AcceptingInvitation()
 		SendChatMessage("has accepted the invitation of " .. invitationSender .. ".", chatType, nil, whisperTarget)
 	end
 
-	UpdateSingleplayer(false)
 	SetBothPlayers(invitationSender, UnitName("player"))
-
 	Config:ResetGame()
 end
 
@@ -477,20 +508,31 @@ local function ReceiveInput(sender, message, type)
 			invitationSender = senderName
 			invitationChatType = type
 			StaticPopup_Show ("TICTACTOE_INVITATION")
+			C_Timer.After(30, function(self) StaticPopup_Hide ("TICTACTOE_INVITATION") end)
 		end
 	end
 
 	-- Check if the second word is the keyword "accepted".
-	if (argsMessage[2] == "accepted") then
+	if (argsMessage[2] == "accepted" and (not invitationTimeElapsed)) then
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
 			Config:Toggle(true)
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
-			UpdateSingleplayer(false)
+
+			-- if (DropDownChatType) then UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType) end
+			Config:UpdateSingleplayer(false)
 
 			SetBothPlayers(inviteSender, senderName)
-
 			Config:ResetGame()
+		end
+	end
+
+	-- Check if the second word is the keyword "declined".
+	if (argsMessage[2] == "declined" and (not invitationTimeElapsed)) then
+		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
+		if (senderName ~= UnitName("player")) then
+			invitationTimeElapsed = true
+			ConfigFrame.inviteButton:UnlockHighlight()
 		end
 	end
 
@@ -567,7 +609,7 @@ end
 --------------------------------------
 
 -- Resets the game area
-function Config:ResetGame()
+function Config:ResetGame(keepDisabled, AITurn)
 	invitationChatType = ""
 	invitationSender = ""
 	lastMsg = ""
@@ -580,7 +622,13 @@ function Config:ResetGame()
 	for i = 1, 9 do
 		GameFrame.field[i]:UnlockHighlight()
 		GameFrame.field[i]:SetText("")
-		GameFrame.field[i]:Enable()
+		if (not keepDisabled) then
+			GameFrame.field[i]:Enable()
+		end
+	end
+
+	if (AITurn) then
+		C_Timer.After(1, AIInput)
 	end
 end
 
@@ -631,15 +679,27 @@ function Config:ResetPosition()
 	yPosition = default.position.y
 end
 
-function Config:EnableSinglePlayer(pOne, pTwo, mode)
-	if (not singleplayer) then
-		singleplayer = true
+-- Updates the state of the singleplayer checkbox.
+function Config:UpdateSingleplayer(solo, pOne, pTwo)
+	if (solo == nil) then solo = false end
+	singleplayer = solo
+	if (MainFrame) then
+		ConfigFrame.soloCheckBox:SetChecked(solo)
 	end
-	
-	singlePlayerMode = mode
-	
-	if (mode == "self") then pTwo = UnitName("player") .. " 2" end
-	SetBothPlayers(pOne, pTwo)
+	if (solo) then
+		if (DropDownSinglePlayerMode) then UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode) end
+		pOne = pOne or UnitName("player")
+
+		if (singlePlayerMode == "self") then
+			pTwo = pTwo or UnitName("player") .. " 2"
+		else
+			pTwo = pTwo or "AI " .. core.Lib:FirstLetterUp(singlePlayerMode)
+		end
+
+		SetBothPlayers(pOne, pTwo)
+	else
+		if (DropDownSinglePlayerMode) then UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode) end
+	end
 end
 
 -- Collapses the Main Frame
@@ -955,9 +1015,9 @@ function Config:CreateStatsSubs(frame, id, point)
 	player.resetBtn.text:SetPoint("CENTER", player.resetBtn, "CENTER", 0, 0)
 	player.resetBtn.text:SetText("Clear")
 	if (id == 1) then
-		player.resetBtn:SetScript("OnClick", function(self) SetPlayer(1) end)
+		player.resetBtn:SetScript("OnClick", function(self) ClearPlayer(1) end)
 	elseif (id == 2) then
-		player.resetBtn:SetScript("OnClick", function(self) SetPlayer(2) end)
+		player.resetBtn:SetScript("OnClick", function(self) ClearPlayer(2, true) end)
 	end
 
 	return player
@@ -1092,11 +1152,9 @@ function Config:CreateConfigFrame()
 	ConfigFrame.soloCheckBox.text:SetText("Singleplayer")
 	ConfigFrame.soloCheckBox:SetScript("OnClick", function(self)
 		if (self:GetChecked()) then
-			UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode)
-			Config:EnableSinglePlayer(UnitName("player"), "AI " .. core.Lib:FirstLetterUp(singlePlayerMode), singlePlayerMode)
+			Config:UpdateSingleplayer(true)
 		else
-			UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
-			singleplayer = false
+			Config:UpdateSingleplayer(false)
 		end
 	end)
 	if (singleplayer) then
@@ -1173,8 +1231,8 @@ function Config:CreateDropDownSinglePlayerMode()
 
 		local function DropDownSinglePlayerMode_OnClick(self)
 			UIDropDownMenu_SetSelectedID(DropDownSinglePlayerMode, self:GetID())
-			
-			Config:EnableSinglePlayer(UnitName("player"), "AI " .. core.Lib:FirstLetterUp(self.value), self.value)
+			singlePlayerMode = self.value
+			Config:UpdateSingleplayer(true)
 		end
 
 		local function initialize(self, level)
