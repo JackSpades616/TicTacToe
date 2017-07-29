@@ -60,6 +60,7 @@ local SpaceFrame
 local StatsFrame
 local ConfigFrame
 local DropDownChatType
+local DropDownSinglePlayerMode
 
 local xPosition = default.position.x
 local yPosition = default.position.y
