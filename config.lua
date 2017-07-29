@@ -515,6 +515,9 @@ local function ReceiveInput(sender, message, type)
 		-- If I get an invitation, the sender (me) must have my name and the recipient mustn't be myself as well.
 		if (senderName ~= UnitName("player")) then
 			Config:Toggle(true)
+			invitationTimeElapsed = true
+			ConfigFrame.inviteButton:UnlockHighlight()
+
 			local inviteSender = core.Lib:SplitString(argsMessage[6], ".", 1)
 
 			-- if (DropDownChatType) then UIDropDownMenu_SetSelectedValue(DropDownChatType, chatType) end
