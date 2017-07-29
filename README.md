@@ -23,16 +23,18 @@ If you want to play with someone in whisper Mode, you only have to take the play
 You can also enter the name of the opponent in the TextBox and invite it.
 
 -------------------------------------
-Party Mode
+Party and Raid Mode
 -------------------------------------
 
-You can play with someone in your party. So you can play Tic Tac Toe over distances. The handling is the same as whisper mode.
+You can play with someone in your party or raid. So you can play Tic Tac Toe over distances. The handling is the same as whisper mode.
 
 -------------------------------------
 Guild Mode
 -------------------------------------
 
 This is same like the Party Mode but with someone in your guild.
+
+
 
 -------------------------------------
 Singleplayer Mode
