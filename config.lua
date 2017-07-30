@@ -1270,8 +1270,12 @@ function Config:CreateDropDownSinglePlayerMode()
 		UIDropDownMenu_SetButtonWidth(DropDownSinglePlayerMode, 124)
 		UIDropDownMenu_SetSelectedValue(DropDownSinglePlayerMode, singlePlayerMode)
 		UIDropDownMenu_JustifyText(DropDownSinglePlayerMode, "LEFT")
-		
-		UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
+
+		if (singleplayer) then
+			UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode)
+		else
+			UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
+		end
 	else
 		Config:SetDropDownSinglePlayerMode()
 	end
@@ -1281,6 +1285,12 @@ function Config:SetDropDownSinglePlayerMode()
 	DropDownSinglePlayerMode:SetParent(ConfigFrame)
 	DropDownSinglePlayerMode:SetPoint("TOPLEFT", ConfigFrame.soloCheckBox, "BOTTOMLEFT", -16, -5)
 	UIDropDownMenu_SetSelectedValue(DropDownSinglePlayerMode, singlePlayerMode)
+
+	if (singleplayer) then
+		UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode)
+	else
+		UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode)
+	end
 end
 
 
