@@ -699,7 +699,7 @@ function Config:UpdateHelpPlate()
 				height = GameFrame:GetHeight()
 			},
 			ToolTipDir = "DOWN",
-			ToolTipText = "Test"
+			ToolTipText = "This is the game field. Here you play Tic Tac Toe."
 		},
 		[2] = {
 			ButtonPos = {
@@ -713,7 +713,35 @@ function Config:UpdateHelpPlate()
 				height = MainFrame.repeatBtn:GetHeight()
 			},
 			ToolTipDir = "UP",
-			ToolTipText = "Test"
+			ToolTipText = "The Reset Button resets only the game. The Repeat Button allows you in multiplayer games to repeat the last move you did."
+		},
+		[3] = {
+			ButtonPos = {
+				x = SpaceFrame.StatsBtn:GetLeft() - MainFrame:GetLeft() - 15,
+				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - MainFrame:GetTop() + 19
+			},
+			HighLightBox = {
+				x = SpaceFrame.StatsBtn:GetLeft() - MainFrame:GetLeft(),
+				y = SpaceFrame.StatsBtn:GetTop() - MainFrame:GetTop() - 8,
+				width = SpaceFrame.StatsBtn:GetWidth(),
+				height = SpaceFrame.StatsBtn:GetHeight() - 8
+			},
+			ToolTipDir = "LEFT",
+			ToolTipText = "This button opens the statistics where you can see the names of the players and their amount of wins, defeats and total played games."
+		},
+		[4] = {
+			ButtonPos = {
+				x = SpaceFrame.ConfigBtn:GetRight() - MainFrame:GetLeft() - 26,
+				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - MainFrame:GetTop() + 19
+			},
+			HighLightBox = {
+				x = SpaceFrame.ConfigBtn:GetLeft() - MainFrame:GetLeft(),
+				y = SpaceFrame.ConfigBtn:GetTop() - MainFrame:GetTop() - 8,
+				width = SpaceFrame.ConfigBtn:GetWidth(),
+				height = SpaceFrame.ConfigBtn:GetHeight() - 8
+			},
+			ToolTipDir = "RIGHT",
+			ToolTipText = "This button opens the configuration where you can change the options."
 		},
 	}
 end
