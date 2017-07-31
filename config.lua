@@ -101,12 +101,62 @@ local cheatUsed = false
 local expandedMainFrame = false
 
 local TicTacToe_HelpPlate = {
-	FramePos = { x = 0,	y = 0},
-	FrameSize = { width = default.size.width, height = default.size.height	},
-	[1] = { ButtonPos = { x = ((default.size.width - 10) / 2) -20 ,	y = -(205 / 2)}, HighLightBox = { x = 4, y = -22, width = default.size.width -10, height = 205 }, ToolTipDir = "DOWN", ToolTipText = "Test"},
-	[2] = { ButtonPos = { x = default.size.width - 105 ,	y = 12}, HighLightBox = { x = default.size.width - 134, y = 0, width = 110, height = 24}, ToolTipDir = "UP", ToolTipText = "Test"},
-	[3] = { ButtonPos = { x = 20 + 35 / 2,	y = - (default.size.height) + 45}, HighLightBox = { x = 10, y = - (default.size.height) + 35, width = default.size.width / 2 -10, height = 24}, ToolTipDir = "UP", ToolTipText = "Test"},
-	[4] = { ButtonPos = { x = 130 + 35 / 2,	y = - (default.size.height) + 45}, HighLightBox = { x = 115, y = - (default.size.height) + 35, width = default.size.width / 2 -10, height = 24}, ToolTipDir = "UP", ToolTipText = "Test"},
+	FramePos = { 
+		x = 0,	
+		y = 0
+	},
+	FrameSize = { 
+		width = default.size.width, 
+		height = default.size.height	
+	},
+	[1] = { 
+		ButtonPos = { 
+			x = ((default.size.width - 10) / 2) -20 ,	
+			y = -(205 / 2)}, 
+		HighLightBox = { 
+			x = 4, 
+			y = -22, 
+			width = default.size.width -10, 
+			height = 205 }, 
+			ToolTipDir = "DOWN", 
+			ToolTipText = "Test"
+		},
+	[2] = { 
+		ButtonPos = { 
+			x = default.size.width - 105 ,	
+			y = 12}, 
+		HighLightBox = { 
+			x = default.size.width - 134, 
+			y = 0, 
+			width = 110, 
+			height = 24}, 
+			ToolTipDir = "UP", 
+			ToolTipText = "Test"
+		},
+	[3] = { 
+		ButtonPos = { 
+			x = 60,	
+			y = - (default.size.height) + 45}, 
+		HighLightBox = { 
+			x = 30, 
+			y = - (default.size.height) + 15, 
+			width = default.size.width / 2 -10, 
+			height = 24}, 
+			ToolTipDir = "LEFT", 
+			ToolTipText = "Test"
+		},
+	[4] = { 
+		ButtonPos = { 
+			x = 130 + 35 / 2,	
+			y = - (default.size.height) + 45}, 
+		HighLightBox = { 
+			x = 115, 
+			y = - (default.size.height) + 35, 
+			width = default.size.width / 2 -10, 
+			height = 24}, 
+			ToolTipDir = "RIGHT", 
+			ToolTipText = "Test"
+		},
 	
 }
 
