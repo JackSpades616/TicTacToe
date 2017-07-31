@@ -679,6 +679,8 @@ end
 --------------------------------------
 
 function Config:UpdateHelpPlate()
+	-- Config:SetHelpPosition(point, relativeTo, relativePoint, xOffset, yOffset, width, height, widthOffset, heightOffset)
+
 	TicTacToe_HelpPlate = {
 		FramePos = {
 			x = 0,
@@ -689,12 +691,7 @@ function Config:UpdateHelpPlate()
 			height = MainFrame:GetHeight()
 		},
 		[1] = {
-			ButtonPos = {
-				-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
-				-- core.Lib:GetCenter(get, frame)
-				x = core.Lib:GetCenter("x", GameFrame) - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", GameFrame) - MainFrame:GetTop() + 23
-			},
+			ButtonPos = Config:SetHelpPosition(GameFrame, "CENTER", MainFrame, "TOPLEFT", -23, 23),
 			HighLightBox = {
 				x = GameFrame:GetLeft() - MainFrame:GetLeft(),
 				y = GameFrame:GetTop() - MainFrame:GetTop(),
@@ -719,6 +716,89 @@ function Config:UpdateHelpPlate()
 			ToolTipText = "Test"
 		},
 	}
+end
+
+function Config:SetHelpPosition(frame, point, relativeTo, relativePoint, xOffset, yOffset, width, height, widthOffset, heightOffset)
+	local frameX, frameY, relativeX, relativeY
+
+	local pos = {
+		x = 0,
+		y = 0
+	}
+
+	if (point == "TOPLEFT") then
+		frameX = frame:GetLeft()
+		frameY = frame:GetTop()
+	elseif (point == "TOP") then
+		frameX = core.Lib:GetCenter("x", frame)
+		frameY = frame:GetTop()
+	elseif (point == "TOPRIGHT") then
+		frameX = frame:GetRight()
+		frameY = frame:GetTop()
+	elseif (point == "LEFT") then
+		frameX = frame:GetLeft()
+		frameY = core.Lib:GetCenter("y", frame)
+	elseif (point == "CENTER") then
+		frameX = core.Lib:GetCenter("x", frame)
+		frameY = core.Lib:GetCenter("y", frame)
+	elseif (point == "RIGHT") then
+		frameX = frame:GetRight()
+		frameY = core.Lib:GetCenter("y", frame)
+	elseif (point == "BOTTOMLEFT") then
+		frameX = frame:GetLeft()
+		frameY = frame:GetBottom()
+	elseif (point == "BOTTOM") then
+		frameX = core.Lib:GetCenter("x", frame)
+		frameY = frame:GetBottom()
+	elseif (point == "BOTTOMRIGHT") then
+		frameX = frame:GetRight()
+		frameY = frame:GetBottom()
+	else
+		return pos
+	end
+
+	if (relativePoint == "TOPLEFT") then
+		relativeX = relativeTo:GetLeft()
+		relativeY = relativeTo:GetTop()
+	elseif (relativePoint == "TOP") then
+		relativeX = core.Lib:GetCenter("x", relativeTo)
+		relativeY = relativeTo:GetTop()
+	elseif (relativePoint == "TOPRIGHT") then
+		relativeX = relativeTo:GetRight()
+		relativeY = relativeTo:GetTop()
+	elseif (relativePoint == "LEFT") then
+		relativeX = relativeTo:GetLeft()
+		relativeY = core.Lib:GetCenter("y", relativeTo)
+	elseif (relativePoint == "CENTER") then
+		relativeX = core.Lib:GetCenter("x", relativeTo)
+		relativeY = core.Lib:GetCenter("y", relativeTo)
+	elseif (relativePoint == "RIGHT") then
+		relativeX = relativeTo:GetRight()
+		relativeY = core.Lib:GetCenter("y", relativeTo)
+	elseif (relativePoint == "BOTTOMLEFT") then
+		relativeX = relativeTo:GetLeft()
+		relativeY = relativeTo:GetBottom()
+	elseif (relativePoint == "BOTTOM") then
+		relativeX = core.Lib:GetCenter("x", relativeTo)
+		relativeY = relativeTo:GetBottom()
+	elseif (relativePoint == "BOTTOMRIGHT") then
+		relativeX = relativeTo:GetRight()
+		relativeY = relativeTo:GetBottom()
+	else
+		return pos
+	end
+
+	xOffset = xOffset or 0
+	yOffset = yOffset or 0
+	pos.x = frameX - relativeX + xOffset
+	pos.y = frameY - relativeY + yOffset
+
+	widthOffset = widthOffset or 0
+	heightOffset = heightOffset or 0
+	if (width) then pos.width = relativeTo:GetWidth() + widthOffset end
+	if (height) then pos.height = relativeTo:GetHeight() + heightOffset end
+
+	return pos
 end
 
 function Config:ToggleHelpPlate()
