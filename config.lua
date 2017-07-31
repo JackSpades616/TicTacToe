@@ -679,7 +679,8 @@ end
 --------------------------------------
 
 function Config:UpdateHelpPlate()
-	-- Config:SetHelpPosition(frame, point, relativeTo, relativePoint, xOffset, yOffset, width, height, widthOffset, heightOffset)
+	-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
+	-- core.Lib:GetCenter(get, frame)
 
 	TicTacToe_HelpPlate = {
 		FramePos = {
@@ -692,8 +693,6 @@ function Config:UpdateHelpPlate()
 		},
 		[1] = {
 			ButtonPos = {
-				-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
-				-- core.Lib:GetCenter(get, frame)
 				x = core.Lib:GetCenter("x", GameFrame) - MainFrame:GetLeft() - 23,
 				y = core.Lib:GetCenter("y", GameFrame) - MainFrame:GetTop() + 23
 			},
