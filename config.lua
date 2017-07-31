@@ -55,11 +55,13 @@ local default = {
 --------------------------------------
 
 local MainFrame
+local HelpFrame
 local ScrollFrame
 local GameFrame
 local SpaceFrame
 local StatsFrame
 local ConfigFrame
+local mainHelpButton
 local DropDownChatType
 local DropDownSinglePlayerMode
 
@@ -97,6 +99,16 @@ local blackList = ""
 local cheatUsed = false
 
 local expandedMainFrame = false
+
+local TicTacToe_HelpPlate = {
+	FramePos = { x = 0,	y = 0},
+	FrameSize = { width = default.size.width, height = default.size.height	},
+	[1] = { ButtonPos = { x = ((default.size.width - 10) / 2) -20 ,	y = -(205 / 2)}, HighLightBox = { x = 4, y = -22, width = default.size.width -10, height = 205 }, ToolTipDir = "DOWN", ToolTipText = "Test"},
+	[2] = { ButtonPos = { x = default.size.width - 105 ,	y = 12}, HighLightBox = { x = default.size.width - 134, y = 0, width = 110, height = 24}, ToolTipDir = "UP", ToolTipText = "Test"},
+	[3] = { ButtonPos = { x = 20 + 35 / 2,	y = - (default.size.height) + 45}, HighLightBox = { x = 10, y = - (default.size.height) + 35, width = default.size.width / 2 -10, height = 24}, ToolTipDir = "UP", ToolTipText = "Test"},
+	[4] = { ButtonPos = { x = 130 + 35 / 2,	y = - (default.size.height) + 45}, HighLightBox = { x = 115, y = - (default.size.height) + 35, width = default.size.width / 2 -10, height = 24}, ToolTipDir = "UP", ToolTipText = "Test"},
+	
+}
 
 --------------------------------------
 -- Functions
@@ -616,6 +628,59 @@ end
 -- Config functions
 --------------------------------------
 
+function Config:UpdateHelpPlate()
+	TicTacToe_HelpPlate = {
+		FramePos = {
+			x = 0,
+			y = 0
+		},
+		FrameSize = {
+			width = MainFrame:GetWidth(),
+			height = MainFrame:GetHeight()
+		},
+		[1] = {
+			ButtonPos = {
+				-- get, relativeX, relativeY, targetX, targetY
+				x = core.Lib:GetCenter("x", GameFrame) - MainFrame.mainHelpButton:GetLeft(),
+				y = core.Lib:GetCenter("y", GameFrame) - core.Lib:GetCenter("y", MainFrame.mainHelpButton)
+			},
+			HighLightBox = {
+				x = 4,
+				y = -22,
+				width = GameFrame:GetWidth(),
+				height = GameFrame:GetHeight()
+			},
+			ToolTipDir = "DOWN",
+			ToolTipText = "Test"
+		},
+		[2] = {
+			ButtonPos = {
+				x = MainFrame:GetWidth() - 105,
+				y = 12
+			},
+			HighLightBox = {
+				x = MainFrame:GetWidth() - 134,
+				y = 0, width = 110,
+				height = 24
+			},
+			ToolTipDir = "UP",
+			ToolTipText = "Test"
+		},
+	}
+end
+
+function Config:ToggleHelpPlate()
+	local helpPlate = TicTacToe_HelpPlate;
+
+	if ( helpPlate and not HelpPlate_IsShowing(helpPlate) and MainFrame:IsShown()) then
+		HelpPlate_Show( helpPlate, MainFrame, MainFrame.mainHelpButton );
+		SetCVarBitfield( "closedInfoFrames", LE_FRAME_TUTORIAL_WORLD_MAP_FRAME );
+	else
+		HelpPlate_Hide(true);
+	end
+end
+
+
 -- Resets the game area
 function Config:ResetGame(keepDisabled, AITurn)
 	invitationChatType = ""
@@ -800,7 +865,17 @@ function Config:CreateAll()
 	Config.CreateSpaceFrame()
 	Config.CreateStatsFrame()
 	Config.CreateConfigFrame()
-
+	
+	Config:UpdateHelpPlate()
+	Config:ToggleHelpPlate()
+	print("mainHelpButton")
+	print("Width: " .. MainFrame.mainHelpButton:GetWidth() .. ", Height: " .. MainFrame.mainHelpButton:GetHeight())
+	print("X: " .. MainFrame.mainHelpButton:GetLeft() .. ", Y: " .. MainFrame.mainHelpButton:GetTop())
+	print("MainFrame")
+	print("Width: " .. MainFrame:GetWidth() .. ", Height: " .. MainFrame:GetHeight())
+	print("GameFrame")
+	print("Width: " .. GameFrame:GetWidth() .. ", Height: " .. GameFrame:GetHeight())
+	
 	return MainFrame
 end
 
@@ -829,6 +904,7 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	   self.isMoving = false
 	   xPosition = self:GetLeft()
 	   yPosition = self:GetTop()
+	   Config:UpdateHelpPlate()
 	  end
 	end)
 	MainFrame:SetScript("OnHide", function(self)
@@ -865,6 +941,16 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	MainFrame.repeatBtn.text = MainFrame.repeatBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	MainFrame.repeatBtn.text:SetPoint("CENTER", MainFrame.repeatBtn, "CENTER", 0, 0)
 	MainFrame.repeatBtn.text:SetText("Repeat")
+	
+	
+	MainFrame.mainHelpButton = CreateFrame("Button", "TicTacToe_HelpBtn", MainFrame, "MainHelpPlateButton")
+	MainFrame.mainHelpButton:ClearAllPoints()
+	MainFrame.mainHelpButton:SetPoint("TOPRIGHT", MainFrame, "TOPLEFT", 20, 15)
+	MainFrame.mainHelpButton.initialTutorial = false
+	MainFrame.mainHelpButton:SetScript("OnClick", function(self)
+		Config:ToggleHelpPlate()
+	end)
+	
 
 	MainFrame:Hide()
 	return MainFrame
