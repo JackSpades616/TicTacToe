@@ -679,7 +679,7 @@ end
 --------------------------------------
 
 function Config:UpdateHelpPlate()
-	-- Config:SetHelpPosition(point, relativeTo, relativePoint, xOffset, yOffset, width, height, widthOffset, heightOffset)
+	-- Config:SetHelpPosition(frame, point, relativeTo, relativePoint, xOffset, yOffset, width, height, widthOffset, heightOffset)
 
 	TicTacToe_HelpPlate = {
 		FramePos = {
@@ -691,7 +691,12 @@ function Config:UpdateHelpPlate()
 			height = MainFrame:GetHeight()
 		},
 		[1] = {
-			ButtonPos = Config:SetHelpPosition(GameFrame, "CENTER", MainFrame, "TOPLEFT", -23, 23),
+			ButtonPos = {
+				-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
+				-- core.Lib:GetCenter(get, frame)
+				x = core.Lib:GetCenter("x", GameFrame) - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", GameFrame) - MainFrame:GetTop() + 23
+			},
 			HighLightBox = {
 				x = GameFrame:GetLeft() - MainFrame:GetLeft(),
 				y = GameFrame:GetTop() - MainFrame:GetTop(),
@@ -823,8 +828,10 @@ function Config:SetHelpPosition(frame, point, relativeTo, relativePoint, xOffset
 
 	widthOffset = widthOffset or 0
 	heightOffset = heightOffset or 0
-	if (width) then pos.width = relativeTo:GetWidth() + widthOffset end
-	if (height) then pos.height = relativeTo:GetHeight() + heightOffset end
+	if (width == true) then pos.width = frame:GetWidth() + widthOffset
+	elseif (width) then pos.width = width + widthOffset end
+	if (height) then pos.height = frame:GetHeight() + heightOffset
+	elseif (height) then pos.height = height + heightOffset end
 
 	return pos
 end
