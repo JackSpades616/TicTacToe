@@ -49,9 +49,17 @@ function Lib:IsNumeric(str)
     end
 end
 
-
-
-
+function Lib:GetCenter(get,frame)
+	local x, y = frame:GetCenter()
+	
+	if (get == string.lower("x")) then
+		return x
+	elseif (get == string.lower("y")) then
+		return y
+	else
+		return 0
+	end
+end
 
 
 
