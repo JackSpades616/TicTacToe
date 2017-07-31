@@ -640,13 +640,14 @@ function Config:UpdateHelpPlate()
 		},
 		[1] = {
 			ButtonPos = {
-				-- get, relativeX, relativeY, targetX, targetY
-				x = core.Lib:GetCenter("x", GameFrame) - MainFrame.mainHelpButton:GetLeft(),
-				y = core.Lib:GetCenter("y", GameFrame) - core.Lib:GetCenter("y", MainFrame.mainHelpButton)
+				-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
+				-- core.Lib:GetCenter(get, frame)
+				x = core.Lib:GetCenter("x", GameFrame) - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", GameFrame) - MainFrame:GetTop() + 23
 			},
 			HighLightBox = {
-				x = 4,
-				y = -22,
+				x = GameFrame:GetLeft() - MainFrame:GetLeft(),
+				y = GameFrame:GetTop() - MainFrame:GetTop(),
 				width = GameFrame:GetWidth(),
 				height = GameFrame:GetHeight()
 			},
@@ -655,13 +656,14 @@ function Config:UpdateHelpPlate()
 		},
 		[2] = {
 			ButtonPos = {
-				x = MainFrame:GetWidth() - 105,
-				y = 12
+				x = MainFrame.repeatBtn:GetRight() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", MainFrame.resetBtn) - MainFrame:GetTop() + 23
 			},
 			HighLightBox = {
-				x = MainFrame:GetWidth() - 134,
-				y = 0, width = 110,
-				height = 24
+				x = MainFrame.repeatBtn:GetLeft() - MainFrame:GetLeft(),
+				y = MainFrame.repeatBtn:GetTop() - MainFrame:GetTop(),
+				width = MainFrame.repeatBtn:GetWidth() + MainFrame.resetBtn:GetWidth(),
+				height = MainFrame.repeatBtn:GetHeight()
 			},
 			ToolTipDir = "UP",
 			ToolTipText = "Test"
@@ -679,7 +681,6 @@ function Config:ToggleHelpPlate()
 		HelpPlate_Hide(true);
 	end
 end
-
 
 -- Resets the game area
 function Config:ResetGame(keepDisabled, AITurn)
