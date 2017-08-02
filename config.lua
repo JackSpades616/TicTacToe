@@ -681,7 +681,7 @@ end
 function Config:UpdateHelpPlate()
 	-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
 	-- core.Lib:GetCenter(get, frame)
-
+	
 	TicTacToe_HelpPlate = {
 		FramePos = {
 			x = 0,
@@ -748,17 +748,41 @@ function Config:UpdateHelpPlate()
 			ToolTipText = "This button opens the configuration where you can change the options."
 		},
 	}
+	
+	
 end
 
 function Config:ToggleHelpPlate()
 	local helpPlate = TicTacToe_HelpPlate;
 
+	if (ScrollFrame.StatsFrame ~= nil) then
+		helpPlate[5] = {
+			ButtonPos = {
+				x = ScrollFrame.StatsFrame:GetLeft() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ScrollFrame.StatsFrame) - MainFrame:GetTop() + 23
+			},
+				HighLightBox = {
+					x = ScrollFrame.StatsFrame:GetLeft() - MainFrame:GetLeft(),
+					y = ScrollFrame.StatsFrame:GetTop() - MainFrame:GetTop() - 8,
+					width = ScrollFrame.StatsFrame:GetWidth(),
+					height = ScrollFrame.StatsFrame:GetHeight()
+				},
+				ToolTipDir = "LEFT",
+				ToolTipText = "This button opens the configuration where you can change the options."
+			}
+	else
+		helpPlate[5] = nil
+	end
+	
 	if ( helpPlate and not HelpPlate_IsShowing(helpPlate) and MainFrame:IsShown()) then
 		HelpPlate_Show( helpPlate, MainFrame, MainFrame.mainHelpButton );
 		SetCVarBitfield( "closedInfoFrames", LE_FRAME_TUTORIAL_WORLD_MAP_FRAME );
 	else
 		HelpPlate_Hide(true);
 	end
+	
+	
+	
 end
 
 -- Resets the game area
@@ -948,13 +972,7 @@ function Config:CreateAll()
 	
 	Config:UpdateHelpPlate()
 	Config:ToggleHelpPlate()
-	print("mainHelpButton")
-	print("Width: " .. MainFrame.mainHelpButton:GetWidth() .. ", Height: " .. MainFrame.mainHelpButton:GetHeight())
-	print("X: " .. MainFrame.mainHelpButton:GetLeft() .. ", Y: " .. MainFrame.mainHelpButton:GetTop())
-	print("MainFrame")
-	print("Width: " .. MainFrame:GetWidth() .. ", Height: " .. MainFrame:GetHeight())
-	print("GameFrame")
-	print("Width: " .. GameFrame:GetWidth() .. ", Height: " .. GameFrame:GetHeight())
+	
 	
 	return MainFrame
 end
@@ -1174,6 +1192,8 @@ function Config:CreateStatsFrame()
 		Config:CreateStatsSubs(StatsFrame, 1, "TOPLEFT"), -- Creates the Frame for Player One
 		Config:CreateStatsSubs(StatsFrame, 2, "TOPRIGHT"),
 	}
+	
+	
 end
 
 function Config:CreateStatsSubs(frame, id, point)
