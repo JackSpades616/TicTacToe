@@ -683,10 +683,15 @@ function Config:UpdateHelpPlate()
 	-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
 	-- core.Lib:GetCenter(get, frame)
 	local color = "ffd700"
+	local xOffset = 0
+	local yOffset = -22
+	local xReferencePoint = MainFrame:GetLeft() + xOffset
+	local yReferencePoint = MainFrame:GetTop() + yOffset
+	
 	TicTacToe_HelpPlate = {
 		FramePos = {
-			x = 0,
-			y = 0
+			x = xOffset,
+			y = yOffset
 		},
 		FrameSize = {
 			width = MainFrame:GetWidth(),
@@ -694,12 +699,12 @@ function Config:UpdateHelpPlate()
 		},
 		[1] = {
 			ButtonPos = {
-				x = core.Lib:GetCenter("x", GameFrame) - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", GameFrame) - MainFrame:GetTop() + 23
+				x = core.Lib:GetCenter("x", GameFrame) - xReferencePoint - 23,
+				y = core.Lib:GetCenter("y", GameFrame) - yReferencePoint + 23
 			},
 			HighLightBox = {
-				x = GameFrame:GetLeft() - MainFrame:GetLeft(),
-				y = GameFrame:GetTop() - MainFrame:GetTop(),
+				x = GameFrame:GetLeft() - xReferencePoint,
+				y = GameFrame:GetTop() - yReferencePoint,
 				width = GameFrame:GetWidth(),
 				height = GameFrame:GetHeight()
 			},
@@ -709,12 +714,12 @@ function Config:UpdateHelpPlate()
 		
 		[2] = {
 			ButtonPos = {
-				x = SpaceFrame.StatsBtn:GetLeft() - MainFrame:GetLeft() - 15,
-				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - MainFrame:GetTop() + 19
+				x = SpaceFrame.StatsBtn:GetLeft() - xReferencePoint - 15,
+				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - yReferencePoint + 19
 			},
 			HighLightBox = {
-				x = SpaceFrame.StatsBtn:GetLeft() - MainFrame:GetLeft(),
-				y = SpaceFrame.StatsBtn:GetTop() - MainFrame:GetTop() - 8,
+				x = SpaceFrame.StatsBtn:GetLeft() - xReferencePoint,
+				y = SpaceFrame.StatsBtn:GetTop() - yReferencePoint - 8,
 				width = SpaceFrame.StatsBtn:GetWidth(),
 				height = SpaceFrame.StatsBtn:GetHeight() - 8
 			},
@@ -723,12 +728,12 @@ function Config:UpdateHelpPlate()
 		},
 		[3] = {
 			ButtonPos = {
-				x = SpaceFrame.ConfigBtn:GetRight() - MainFrame:GetLeft() - 26,
-				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - MainFrame:GetTop() + 19
+				x = SpaceFrame.ConfigBtn:GetRight() - xReferencePoint - 26,
+				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - yReferencePoint + 19
 			},
 			HighLightBox = {
-				x = SpaceFrame.ConfigBtn:GetLeft() - MainFrame:GetLeft(),
-				y = SpaceFrame.ConfigBtn:GetTop() - MainFrame:GetTop() - 8,
+				x = SpaceFrame.ConfigBtn:GetLeft() - xReferencePoint,
+				y = SpaceFrame.ConfigBtn:GetTop() - yReferencePoint - 8,
 				width = SpaceFrame.ConfigBtn:GetWidth(),
 				height = SpaceFrame.ConfigBtn:GetHeight() - 8
 			},
@@ -739,12 +744,12 @@ function Config:UpdateHelpPlate()
 	if (expandedMainFrame and StatsFrame:IsShown()) then
 		TicTacToe_HelpPlate[4] = {
 			ButtonPos = {
-				x = StatsFrame:GetLeft() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", StatsFrame) - MainFrame:GetTop() + 23
+				x = StatsFrame:GetLeft() - xReferencePoint - 23,
+				y = core.Lib:GetCenter("y", StatsFrame) - yReferencePoint + 23
 			},
 			HighLightBox = {
-				x = StatsFrame:GetLeft() - MainFrame:GetLeft(),
-				y = StatsFrame:GetTop() - MainFrame:GetTop() - 8,
+				x = StatsFrame:GetLeft() - xReferencePoint,
+				y = StatsFrame:GetTop() - yReferencePoint - 8,
 				width = StatsFrame:GetWidth(),
 				height = StatsFrame:GetHeight() - 10
 			},
@@ -754,110 +759,38 @@ function Config:UpdateHelpPlate()
 	elseif (expandedMainFrame and ConfigFrame:IsShown()) then
 		TicTacToe_HelpPlate[4] = {
 			ButtonPos = {
-				x = ConfigFrame:GetRight() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ConfigFrame) - MainFrame:GetTop() + 23
+				x = ConfigFrame:GetRight() - xReferencePoint - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame) - yReferencePoint + 23
 			},
 			HighLightBox = {
-				x = ConfigFrame:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame:GetTop() - MainFrame:GetTop() - 8,
+				x = ConfigFrame:GetLeft() - xReferencePoint,
+				y = ConfigFrame:GetTop() - yReferencePoint - 8,
 				width = ConfigFrame:GetWidth(),
 				height = ConfigFrame:GetHeight() - 10
 			},
 		ToolTipDir = "RIGHT",
-		ToolTipText = "Here are the configurations."
-		}
-		TicTacToe_HelpPlate[5] = {
-			ButtonPos = {
-				x = ConfigFrame.repeatBtn:GetRight() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ConfigFrame.repeatBtn) - MainFrame:GetTop() + 23
-			},
-			HighLightBox = {
-				x = ConfigFrame.repeatBtn:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame.repeatBtn:GetTop() - MainFrame:GetTop(),
-				width = ConfigFrame.repeatBtn:GetWidth(),
-				height = ConfigFrame.repeatBtn:GetHeight()
-			},
-			ToolTipDir = "RIGHT",
-			ToolTipText = "|cff"..color.."[Repeat]|r\nAllows you in multiplayer games to repeat the last move you did."
-		}
-		TicTacToe_HelpPlate[6] = {
-			ButtonPos = {
-				x = ConfigFrame.resetBtn:GetLeft() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ConfigFrame.resetBtn) - MainFrame:GetTop() + 23
-			},
-			HighLightBox = {
-				x = ConfigFrame.resetBtn:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame.resetBtn:GetTop() - MainFrame:GetTop(),
-				width = ConfigFrame.resetBtn:GetWidth(),
-				height = ConfigFrame.resetBtn:GetHeight()
-			},
-			ToolTipDir = "LEFT",
-			ToolTipText = "|cff"..color.."[Reset]|r\nResets only the game."
-		}
-		TicTacToe_HelpPlate[7] = {
-			ButtonPos = {
-				x = ConfigFrame.targetButton:GetLeft() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ConfigFrame.targetButton) - MainFrame:GetTop() + 23
-			},
-			HighLightBox = {
-				x = ConfigFrame.targetButton:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame.targetButton:GetTop() - MainFrame:GetTop(),
-				width = ConfigFrame.targetButton:GetWidth(),
-				height = ConfigFrame.targetButton:GetHeight()
-			},
-			ToolTipDir = "LEFT",
-			ToolTipText = "Inserts the name of your target in the box on the right."
-		}
-		TicTacToe_HelpPlate[8] = {
-			ButtonPos = {
-				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ConfigFrame.inviteButton) - MainFrame:GetTop() + 23
-			},
-			HighLightBox = {
-				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame.inviteButton:GetTop() - MainFrame:GetTop(),
-				width = ConfigFrame.inviteButton:GetWidth(),
-				height = ConfigFrame.inviteButton:GetHeight()
-			},
-			ToolTipDir = "LEFT",
-			ToolTipText = "|cff"..color.."[Invite]|r\nSend an invitation to the player you entered in the text box."
-		}
-		TicTacToe_HelpPlate[9] = {
-			ButtonPos = {
-				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ConfigFrame.inviteButton) - MainFrame:GetTop() - 9
-			},
-			HighLightBox = {
-				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame.inviteButton:GetTop() - 35 - MainFrame:GetTop(),
-				width = ConfigFrame.inviteButton:GetWidth(),
-				height = ConfigFrame.inviteButton:GetHeight() - 5
-			},
-			ToolTipDir = "LEFT",
-			ToolTipText = "|cff"..color.."[Chat type]|r\nUse this drop-down to select the channel you want to play in a multiplayer game."
-		}
-		TicTacToe_HelpPlate[10] = {
-			ButtonPos = {
-				x = ConfigFrame.repeatBtn:GetRight() - MainFrame:GetLeft() - 23,
-				y = ConfigFrame:GetTop() - MainFrame:GetTop() - 97
-			},
-			HighLightBox = {
-				x = ConfigFrame.repeatBtn:GetLeft() - MainFrame:GetLeft(),
-				y = ConfigFrame:GetTop() - 106 - MainFrame:GetTop(),
-				width = ConfigFrame.repeatBtn:GetWidth(),
-				height = ConfigFrame.repeatBtn:GetHeight() + 4
-			},
-			ToolTipDir = "RIGHT",
-			ToolTipText = "With this drop-down you can choose the singleplayer mode.\n\n" .. "|cff"..color.."[Self]|r\nPlay against yourself.\n\n".."|cff"..color.."[Easy]|r\nPlay against an easy AI.\n\n".."|cff"..color.."[Medium]|r\nPlay against a medium AI."
+		ToolTipText = "|cff"..color.."[Repeat]|r\n"
+					.."Allows you in multiplayer games to repeat the last move you did."
+					.."\n\n"
+					.."|cff"..color.."[Reset]|r\n"
+					.."Resets only the game."
+					.."\n\n"
+					.."|cff"..color.."[Target]|r\n"
+					.."Inserts the name of your target in the box on the right."
+					.."\n\n"
+					.."|cff"..color.."[Invite]|r\n"
+					.."Send an invitation to the player you entered in the text box."
+					.."\n\n"
+					.."|cff"..color.."[Chat type]|r\n"
+					.."Use this dropdown to select the channel you want to play in a multiplayer game."
+					.."\n\n"
+					.."|cff"..color.."[Singleplayer mode]|r\n"
+					.."With this dropdown you can choose the singleplayer mode.\n"
+					.."Select 'Self' to play against yourself or the others to play against an AI.\n"
+					.."Singleplayer has to be checked."
 		}
 	else
 		TicTacToe_HelpPlate[4] = nil
-		TicTacToe_HelpPlate[5] = nil
-		TicTacToe_HelpPlate[6] = nil
-		TicTacToe_HelpPlate[7] = nil
-		TicTacToe_HelpPlate[8] = nil
-		TicTacToe_HelpPlate[9] = nil
-		TicTacToe_HelpPlate[10] = nil
 	end			
 	
 end
@@ -1133,7 +1066,7 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	MainFrame:SetSize(default.size.width, default.size.height) -- width, height
 	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition) -- point, relativeFrame, relativePoint, xOffset, yOffset
 	MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	MainFrame.title:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", 5, 0)
+	MainFrame.title:SetPoint("CENTER", MainFrame.TitleBg, "CENTER", 0, 0)
 	MainFrame.title:SetText(default.title)
 	MainFrame:SetMovable(true)
 	MainFrame:EnableMouse(true)
@@ -1153,7 +1086,7 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	  end
 	end)
 	MainFrame:SetScript("OnHide", function(self)
-	Config:ToggleHelpPlate()
+		TicTacToe_HelpPlate:
 	  if (self.isMoving) then
 	   self:StopMovingOrSizing()
 	   self.isMoving = false
@@ -1163,7 +1096,7 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	
 	MainFrame.mainHelpButton = CreateFrame("Button", "TicTacToe_HelpBtn", MainFrame, "MainHelpPlateButton")
 	MainFrame.mainHelpButton:ClearAllPoints()
-	MainFrame.mainHelpButton:SetPoint("RIGHT", MainFrame, "TOPRIGHT", - 12, - 12)
+	MainFrame.mainHelpButton:SetPoint("LEFT", MainFrame.TitleBg, "LEFT", -20, 0)
 	MainFrame.mainHelpButton.initialTutorial = false
 	MainFrame.mainHelpButton:SetScript("OnClick", function(self)
 		Config:ToggleHelpPlate()
