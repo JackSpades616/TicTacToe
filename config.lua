@@ -1031,7 +1031,7 @@ function Config:ResizeMainFrame(targetHeight)
 		if (h == default.size.height) or (targetHeight == default.size.height) then
 			iterator = 5
 		else
-			iterator = 2
+			iterator = 0.75
 		end
 		local expanding
 		if (h < targetHeight) then expanding = true else expanding = false end
