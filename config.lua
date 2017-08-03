@@ -749,7 +749,7 @@ function Config:UpdateHelpPlate()
 				height = StatsFrame:GetHeight() - 10
 			},
 		ToolTipDir = "LEFT",
-		ToolTipText = "Here you can see the statistics like the number of victories, defeats and overall played games.\n\nWith the Clear button you can reset the statistics of the respective player to zero."
+		ToolTipText = "Here you can see the statistics like the number of victories, defeats and overall played games.\n\n".."|cff"..color.."[Clear]|r\nResets the statistics of the respective player to zero."
 		}
 	elseif (expandedMainFrame and ConfigFrame:IsShown()) then
 		TicTacToe_HelpPlate[4] = {
