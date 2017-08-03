@@ -1153,6 +1153,7 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	  end
 	end)
 	MainFrame:SetScript("OnHide", function(self)
+	Config:ToggleHelpPlate()
 	  if (self.isMoving) then
 	   self:StopMovingOrSizing()
 	   self.isMoving = false
