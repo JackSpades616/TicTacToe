@@ -22,8 +22,8 @@ local default = {
 	},
 
 	position = {
-		x = xCenter * 1.5,
-		y = yCenter * 1.1,
+		x = xCenter * 1.4,
+		y = yCenter * 1.3,
 	},
 	
 	size = {
