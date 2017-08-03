@@ -808,11 +808,56 @@ function Config:UpdateHelpPlate()
 			ToolTipDir = "LEFT",
 			ToolTipText = "Inserts the name of your target in the box on the right."
 		}
+		TicTacToe_HelpPlate[8] = {
+			ButtonPos = {
+				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame.inviteButton) - MainFrame:GetTop() + 23
+			},
+			HighLightBox = {
+				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame.inviteButton:GetTop() - MainFrame:GetTop(),
+				width = ConfigFrame.inviteButton:GetWidth(),
+				height = ConfigFrame.inviteButton:GetHeight()
+			},
+			ToolTipDir = "LEFT",
+			ToolTipText = "|cff"..color.."[Invite]|r\nSend an invitation to the player you entered in the text box."
+		}
+		TicTacToe_HelpPlate[9] = {
+			ButtonPos = {
+				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame.inviteButton) - MainFrame:GetTop() - 9
+			},
+			HighLightBox = {
+				x = ConfigFrame.inviteButton:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame.inviteButton:GetTop() - 35 - MainFrame:GetTop(),
+				width = ConfigFrame.inviteButton:GetWidth(),
+				height = ConfigFrame.inviteButton:GetHeight() - 5
+			},
+			ToolTipDir = "LEFT",
+			ToolTipText = "|cff"..color.."[Chat type]|r\nUse this drop-down to select the channel you want to play in a multiplayer game."
+		}
+		TicTacToe_HelpPlate[10] = {
+			ButtonPos = {
+				x = ConfigFrame.repeatBtn:GetRight() - MainFrame:GetLeft() - 23,
+				y = ConfigFrame:GetTop() - MainFrame:GetTop() - 97
+			},
+			HighLightBox = {
+				x = ConfigFrame.repeatBtn:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame:GetTop() - 106 - MainFrame:GetTop(),
+				width = ConfigFrame.repeatBtn:GetWidth(),
+				height = ConfigFrame.repeatBtn:GetHeight() + 4
+			},
+			ToolTipDir = "RIGHT",
+			ToolTipText = "With this drop-down you can choose the singleplayer mode.\n\n" .. "|cff"..color.."[Self]|r\nPlay against yourself.\n\n".."|cff"..color.."[Easy]|r\nPlay against an easy AI.\n\n".."|cff"..color.."[Medium]|r\nPlay against a medium AI."
+		}
 	else
 		TicTacToe_HelpPlate[4] = nil
 		TicTacToe_HelpPlate[5] = nil
 		TicTacToe_HelpPlate[6] = nil
 		TicTacToe_HelpPlate[7] = nil
+		TicTacToe_HelpPlate[8] = nil
+		TicTacToe_HelpPlate[9] = nil
+		TicTacToe_HelpPlate[10] = nil
 	end			
 	
 end
