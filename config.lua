@@ -1162,7 +1162,7 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	
 	MainFrame.mainHelpButton = CreateFrame("Button", "TicTacToe_HelpBtn", MainFrame, "MainHelpPlateButton")
 	MainFrame.mainHelpButton:ClearAllPoints()
-	MainFrame.mainHelpButton:SetPoint("TOPRIGHT", MainFrame, "TOPLEFT", 20, 15)
+	MainFrame.mainHelpButton:SetPoint("RIGHT", MainFrame, "TOPRIGHT", - 12, - 12)
 	MainFrame.mainHelpButton.initialTutorial = false
 	MainFrame.mainHelpButton:SetScript("OnClick", function(self)
 		Config:ToggleHelpPlate()
