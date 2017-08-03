@@ -99,6 +99,7 @@ local blackList = ""
 local cheatUsed = false
 
 local expandedMainFrame = false
+local isResizingMainFrame = false
 
 local TicTacToe_HelpPlate = {
 	FramePos = { 
@@ -681,7 +682,7 @@ end
 function Config:UpdateHelpPlate()
 	-- The button has a size of 46 * 46. The '+/- 23' is used to find the center of the button.
 	-- core.Lib:GetCenter(get, frame)
-	
+	local color = "ffd700"
 	TicTacToe_HelpPlate = {
 		FramePos = {
 			x = 0,
@@ -705,21 +706,8 @@ function Config:UpdateHelpPlate()
 			ToolTipDir = "DOWN",
 			ToolTipText = "This is the game field. Here you play Tic Tac Toe."
 		},
+		
 		[2] = {
-			ButtonPos = {
-				x = MainFrame.repeatBtn:GetRight() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", MainFrame.resetBtn) - MainFrame:GetTop() + 23
-			},
-			HighLightBox = {
-				x = MainFrame.repeatBtn:GetLeft() - MainFrame:GetLeft(),
-				y = MainFrame.repeatBtn:GetTop() - MainFrame:GetTop(),
-				width = MainFrame.repeatBtn:GetWidth() + MainFrame.resetBtn:GetWidth(),
-				height = MainFrame.repeatBtn:GetHeight()
-			},
-			ToolTipDir = "UP",
-			ToolTipText = "The Reset Button resets only the game. The Repeat Button allows you in multiplayer games to repeat the last move you did."
-		},
-		[3] = {
 			ButtonPos = {
 				x = SpaceFrame.StatsBtn:GetLeft() - MainFrame:GetLeft() - 15,
 				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - MainFrame:GetTop() + 19
@@ -733,7 +721,7 @@ function Config:UpdateHelpPlate()
 			ToolTipDir = "LEFT",
 			ToolTipText = "This button opens the statistics where you can see the names of the players and their amount of wins, defeats and total played games."
 		},
-		[4] = {
+		[3] = {
 			ButtonPos = {
 				x = SpaceFrame.ConfigBtn:GetRight() - MainFrame:GetLeft() - 26,
 				y = core.Lib:GetCenter("y", SpaceFrame.StatsBtn) - MainFrame:GetTop() + 19
@@ -748,31 +736,91 @@ function Config:UpdateHelpPlate()
 			ToolTipText = "This button opens the configuration where you can change the options."
 		},
 	}
-	
+	if (expandedMainFrame and StatsFrame:IsShown()) then
+		TicTacToe_HelpPlate[4] = {
+			ButtonPos = {
+				x = StatsFrame:GetLeft() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", StatsFrame) - MainFrame:GetTop() + 23
+			},
+			HighLightBox = {
+				x = StatsFrame:GetLeft() - MainFrame:GetLeft(),
+				y = StatsFrame:GetTop() - MainFrame:GetTop() - 8,
+				width = StatsFrame:GetWidth(),
+				height = StatsFrame:GetHeight() - 10
+			},
+		ToolTipDir = "LEFT",
+		ToolTipText = "Here you can see the statistics like the number of victories, defeats and overall played games.\n\nWith the Clear button you can reset the statistics of the respective player to zero."
+		}
+	elseif (expandedMainFrame and ConfigFrame:IsShown()) then
+		TicTacToe_HelpPlate[4] = {
+			ButtonPos = {
+				x = ConfigFrame:GetRight() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame) - MainFrame:GetTop() + 23
+			},
+			HighLightBox = {
+				x = ConfigFrame:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame:GetTop() - MainFrame:GetTop() - 8,
+				width = ConfigFrame:GetWidth(),
+				height = ConfigFrame:GetHeight() - 10
+			},
+		ToolTipDir = "RIGHT",
+		ToolTipText = "Here are the configurations."
+		}
+		TicTacToe_HelpPlate[5] = {
+			ButtonPos = {
+				x = ConfigFrame.repeatBtn:GetRight() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame.repeatBtn) - MainFrame:GetTop() + 23
+			},
+			HighLightBox = {
+				x = ConfigFrame.repeatBtn:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame.repeatBtn:GetTop() - MainFrame:GetTop(),
+				width = ConfigFrame.repeatBtn:GetWidth(),
+				height = ConfigFrame.repeatBtn:GetHeight()
+			},
+			ToolTipDir = "RIGHT",
+			ToolTipText = "|cff"..color.."[Repeat]|r\nAllows you in multiplayer games to repeat the last move you did."
+		}
+		TicTacToe_HelpPlate[6] = {
+			ButtonPos = {
+				x = ConfigFrame.resetBtn:GetLeft() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame.resetBtn) - MainFrame:GetTop() + 23
+			},
+			HighLightBox = {
+				x = ConfigFrame.resetBtn:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame.resetBtn:GetTop() - MainFrame:GetTop(),
+				width = ConfigFrame.resetBtn:GetWidth(),
+				height = ConfigFrame.resetBtn:GetHeight()
+			},
+			ToolTipDir = "LEFT",
+			ToolTipText = "|cff"..color.."[Reset]|r\nResets only the game."
+		}
+		TicTacToe_HelpPlate[7] = {
+			ButtonPos = {
+				x = ConfigFrame.targetButton:GetLeft() - MainFrame:GetLeft() - 23,
+				y = core.Lib:GetCenter("y", ConfigFrame.targetButton) - MainFrame:GetTop() + 23
+			},
+			HighLightBox = {
+				x = ConfigFrame.targetButton:GetLeft() - MainFrame:GetLeft(),
+				y = ConfigFrame.targetButton:GetTop() - MainFrame:GetTop(),
+				width = ConfigFrame.targetButton:GetWidth(),
+				height = ConfigFrame.targetButton:GetHeight()
+			},
+			ToolTipDir = "LEFT",
+			ToolTipText = "Inserts the name of your target in the box on the right."
+		}
+	else
+		TicTacToe_HelpPlate[4] = nil
+		TicTacToe_HelpPlate[5] = nil
+		TicTacToe_HelpPlate[6] = nil
+		TicTacToe_HelpPlate[7] = nil
+	end			
 	
 end
 
 function Config:ToggleHelpPlate()
 	local helpPlate = TicTacToe_HelpPlate;
-
-	if (ScrollFrame.StatsFrame ~= nil) then
-		helpPlate[5] = {
-			ButtonPos = {
-				x = ScrollFrame.StatsFrame:GetLeft() - MainFrame:GetLeft() - 23,
-				y = core.Lib:GetCenter("y", ScrollFrame.StatsFrame) - MainFrame:GetTop() + 23
-			},
-				HighLightBox = {
-					x = ScrollFrame.StatsFrame:GetLeft() - MainFrame:GetLeft(),
-					y = ScrollFrame.StatsFrame:GetTop() - MainFrame:GetTop() - 8,
-					width = ScrollFrame.StatsFrame:GetWidth(),
-					height = ScrollFrame.StatsFrame:GetHeight()
-				},
-				ToolTipDir = "LEFT",
-				ToolTipText = "This button opens the configuration where you can change the options."
-			}
-	else
-		helpPlate[5] = nil
-	end
+	--Config:UpdateHelpPlate()
+	
 	
 	if ( helpPlate and not HelpPlate_IsShowing(helpPlate) and MainFrame:IsShown()) then
 		HelpPlate_Show( helpPlate, MainFrame, MainFrame.mainHelpButton );
@@ -793,8 +841,7 @@ function Config:ResetGame(keepDisabled, AITurn)
 	counter = 0
 	win = false
 	blackList = ""
-
-	MainFrame.title:SetText(default.title)
+	isResizingMainFrame = false
 
 	for i = 1, 9 do
 		GameFrame.field[i]:UnlockHighlight()
@@ -852,6 +899,7 @@ function Config:ResetAddon()
 	cheatUsed = false
 
 	expandedMainFrame = false
+	isResizingMainFrame = false
 
 	Config:ResetPosition()
 end
@@ -902,6 +950,8 @@ function Config:CollapsingMainFrame()
 			animation:SetScript("OnUpdate", nil)
 			SpaceFrame.StatsBtn:UnlockHighlight()
 			SpaceFrame.ConfigBtn:UnlockHighlight()
+			StatsFrame:Hide()
+			ConfigFrame:Hide()
 		end
 	end)
 	MainFrame:ClearAllPoints()
@@ -925,6 +975,58 @@ function Config:ExpandingMainFrame()
 	MainFrame:ClearAllPoints()
 	MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
 	expandedMainFrame = true
+end
+
+function Config:ResizeMainFrame(targetHeight)
+	if (not isResizingMainFrame) then
+		isResizingMainFrame = true
+		
+		local h = MainFrame:GetHeight()
+		local iterator
+		if (h == default.size.height) or (targetHeight == default.size.height) then
+			iterator = 5
+		else
+			iterator = 2
+		end
+		local expanding
+		if (h < targetHeight) then expanding = true else expanding = false end
+		
+		local animation = CreateFrame("Frame")
+		animation:SetScript("OnUpdate", function()
+			if (expanding) then
+				if (h <= targetHeight) then
+					h = h + iterator
+					MainFrame:SetHeight(h)
+					ScrollFrame:SetHeight(h - 30)
+				else
+					MainFrame:SetHeight(targetHeight)
+					ScrollFrame:SetHeight(targetHeight - 30)
+					animation:SetScript("OnUpdate", nil)
+					isResizingMainFrame = false
+				end
+			else
+				if (h >= targetHeight) then
+					h = h - iterator
+					MainFrame:SetHeight(h)
+					ScrollFrame:SetHeight(h - 30)
+				else
+					MainFrame:SetHeight(targetHeight)
+					ScrollFrame:SetHeight(targetHeight - 30)
+					animation:SetScript("OnUpdate", nil)
+					isResizingMainFrame = false
+					if (targetHeight == default.size.height) then
+						SpaceFrame.StatsBtn:UnlockHighlight()
+						SpaceFrame.ConfigBtn:UnlockHighlight()
+						StatsFrame:Hide()
+						ConfigFrame:Hide()
+					end
+				end
+			end
+		end)
+		MainFrame:ClearAllPoints()
+		MainFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", xPosition, yPosition)
+		expandedMainFrame = true
+	end
 end
 
 -- Reads the default theme color
@@ -1012,34 +1114,6 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	  end
 	end)
 
-	-- this creates the reset button. The reset button resets the game.
-	MainFrame.resetBtn = CreateFrame("Button", nil, MainFrame, "MagicButtonTemplate")
-	MainFrame.resetBtn:ClearAllPoints()
-	MainFrame.resetBtn:SetWidth(55) -- width, height
-	MainFrame.resetBtn:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -24, 0)
-	MainFrame.resetBtn:SetScript("OnClick", function(self)
-		Config.ResetGame()
-		if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
-			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
-				core:Print("No whisper target chosen!")
-			else
-				SendChatMessage("has reset the game.", chatType, nil, whisperTarget)
-			end
-		end
-	end)
-	MainFrame.resetBtn.text = MainFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	MainFrame.resetBtn.text:SetPoint("CENTER", MainFrame.resetBtn, "CENTER", 0, 0)
-	MainFrame.resetBtn.text:SetText("Reset")
-
-	MainFrame.repeatBtn = CreateFrame("Button", nil, MainFrame, "MagicButtonTemplate")
-	MainFrame.repeatBtn:ClearAllPoints()
-	MainFrame.repeatBtn:SetWidth(55)
-	MainFrame.repeatBtn:SetPoint("RIGHT", MainFrame.resetBtn, "LEFT")
-	MainFrame.repeatBtn:SetScript("OnClick", RepeatMessage)
-	MainFrame.repeatBtn.text = MainFrame.repeatBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	MainFrame.repeatBtn.text:SetPoint("CENTER", MainFrame.repeatBtn, "CENTER", 0, 0)
-	MainFrame.repeatBtn.text:SetText("Repeat")
-	
 	
 	MainFrame.mainHelpButton = CreateFrame("Button", "TicTacToe_HelpBtn", MainFrame, "MainHelpPlateButton")
 	MainFrame.mainHelpButton:ClearAllPoints()
@@ -1136,18 +1210,22 @@ function Config:CreateSpaceFrame()
 	SpaceFrame.StatsBtn.statTitle:SetText("Statistics")
 	SpaceFrame.StatsBtn:SetScript("OnClick", function(self)
 		if (expandedMainFrame and StatsFrame:IsShown()) then
-			Config.CollapsingMainFrame()
+			Config:ResizeMainFrame(default.size.height)
+			Config:UpdateHelpPlate()
 		elseif (expandedMainFrame) then
+			Config:ResizeMainFrame(default.size.height + StatsFrame:GetHeight())
             self:LockHighlight()
 			StatsFrame:Show()
             SpaceFrame.ConfigBtn:UnlockHighlight()
 			ConfigFrame:Hide()
+			Config:UpdateHelpPlate()
 		else
             self:LockHighlight()
 			StatsFrame:Show()
             SpaceFrame.ConfigBtn:UnlockHighlight()
 			ConfigFrame:Hide()
-			Config.ExpandingMainFrame()
+			Config:ResizeMainFrame(default.size.height + StatsFrame:GetHeight())
+			Config:UpdateHelpPlate()
 		end
 	end)
 
@@ -1162,18 +1240,22 @@ function Config:CreateSpaceFrame()
 	SpaceFrame.ConfigBtn.configTitle:SetText("Configuration")
 	SpaceFrame.ConfigBtn:SetScript("OnClick", function(self)
 		if (expandedMainFrame and ConfigFrame:IsShown()) then
-			Config.CollapsingMainFrame()
+			Config:ResizeMainFrame(default.size.height)
+			Config.UpdateHelpPlate()
 		elseif (expandedMainFrame) then
+			Config:ResizeMainFrame(default.size.height + ConfigFrame:GetHeight())
             self:LockHighlight()
 			ConfigFrame:Show()
             SpaceFrame.StatsBtn:UnlockHighlight()
 			StatsFrame:Hide()
+			Config:UpdateHelpPlate()
 		else
             self:LockHighlight()
 			ConfigFrame:Show()
             SpaceFrame.StatsBtn:UnlockHighlight()
 			StatsFrame:Hide()
-            Config.ExpandingMainFrame()
+			Config:ResizeMainFrame(default.size.height + ConfigFrame:GetHeight())
+			Config:UpdateHelpPlate()
 		end
 	end)
 end
@@ -1271,13 +1353,41 @@ function Config:CreateConfigFrame()
 	-- Creates the ConfigFrame
 	ConfigFrame = CreateFrame("Frame", "TicTacToe_ConfigFrame", ScrollFrame, "InsetFrameTemplate")
 	ConfigFrame:ClearAllPoints()
-	ConfigFrame:SetSize(ScrollFrame:GetWidth(), default.size.expanded.height) -- width, height
+	ConfigFrame:SetSize(ScrollFrame:GetWidth(), default.size.expanded.height + 20) -- width, height
 	ConfigFrame:SetPoint("TOP", SpaceFrame, "BOTTOM", 0, -5) -- point, relativeFrame, relativePoint, xOffset, yOffset
 
+		-- this creates the reset button. The reset button resets the game.
+	ConfigFrame.resetBtn = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate")
+	ConfigFrame.resetBtn:ClearAllPoints()
+	ConfigFrame.resetBtn:SetWidth(100) -- width, height
+	ConfigFrame.resetBtn:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 5, -10)
+	ConfigFrame.resetBtn:SetScript("OnClick", function(self)
+		Config.ResetGame()
+		if (player[1].name ~= "" and player[2].name ~= "" and not singleplayer) then
+			if (chatType == "WHISPER" and (not whisperTarget or whisperTarget == "")) then
+				core:Print("No whisper target chosen!")
+			else
+				SendChatMessage("has reset the game.", chatType, nil, whisperTarget)
+			end
+		end
+	end)
+	ConfigFrame.resetBtn.text = ConfigFrame.resetBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	ConfigFrame.resetBtn.text:SetPoint("CENTER", ConfigFrame.resetBtn, "CENTER", 0, 0)
+	ConfigFrame.resetBtn.text:SetText("Reset")
+
+	ConfigFrame.repeatBtn = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate")
+	ConfigFrame.repeatBtn:ClearAllPoints()
+	ConfigFrame.repeatBtn:SetWidth(107)
+	ConfigFrame.repeatBtn:SetPoint("TOPRIGHT", ConfigFrame, "TOPRIGHT", -5, -10)
+	ConfigFrame.repeatBtn:SetScript("OnClick", RepeatMessage)
+	ConfigFrame.repeatBtn.text = ConfigFrame.repeatBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	ConfigFrame.repeatBtn.text:SetPoint("CENTER", ConfigFrame.repeatBtn, "CENTER", 0, 0)
+	ConfigFrame.repeatBtn.text:SetText("Repeat")
+	
 	ConfigFrame.targetButton = CreateFrame("Button", nil, ConfigFrame, "GameMenuButtonTemplate")
 	ConfigFrame.targetButton:ClearAllPoints()
 	ConfigFrame.targetButton:SetSize(100, 30)
-	ConfigFrame.targetButton:SetPoint("TOPLEFT", ConfigFrame, "TOPLEFT", 5, -10)
+	ConfigFrame.targetButton:SetPoint("TOPLEFT", ConfigFrame.resetBtn, "BOTTOMLEFT", 0, -5)
 	ConfigFrame.targetButton.text = ConfigFrame.targetButton:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 	ConfigFrame.targetButton.text:SetPoint("CENTER", ConfigFrame.targetButton, "CENTER", 0,0)
 	ConfigFrame.targetButton.text:SetText("Target")
@@ -1312,8 +1422,8 @@ function Config:CreateConfigFrame()
 	-- this creates the TextBox in which you can write the Target Name for whispering
 	ConfigFrame.targetEditBox = CreateFrame("EditBox", nil, ConfigFrame, "InputBoxTemplate")
 	ConfigFrame.targetEditBox:ClearAllPoints()
-	ConfigFrame.targetEditBox:SetSize(100, 30)
-	ConfigFrame.targetEditBox:SetPoint("TOPRIGHT", ConfigFrame, "TOPRIGHT", -5, -10)
+	ConfigFrame.targetEditBox:SetSize(100, 35)
+	ConfigFrame.targetEditBox:SetPoint("TOPRIGHT", ConfigFrame.repeatBtn, "BOTTOMRIGHT", 0, 0)
 	ConfigFrame.targetEditBox:SetAutoFocus(false)
 	ConfigFrame.targetEditBox:SetScript("OnTextChanged", function(self)
 		if (self:GetText() == "") then
@@ -1452,7 +1562,7 @@ function Config:CreateDropDownSinglePlayerMode()
 		end
 
 		UIDropDownMenu_Initialize(DropDownSinglePlayerMode, initialize)
-		UIDropDownMenu_SetWidth(DropDownSinglePlayerMode, 82)
+		UIDropDownMenu_SetWidth(DropDownSinglePlayerMode, 90)
 		UIDropDownMenu_SetButtonWidth(DropDownSinglePlayerMode, 124)
 		UIDropDownMenu_SetSelectedValue(DropDownSinglePlayerMode, singlePlayerMode)
 		UIDropDownMenu_JustifyText(DropDownSinglePlayerMode, "LEFT")
