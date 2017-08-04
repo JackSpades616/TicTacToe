@@ -902,7 +902,7 @@ function Config:UpdateSingleplayer(solo, pOne, pTwo)
 		UIDropDownMenu_EnableDropDown(DropDownSinglePlayerMode) 
 		end
 		pOne = pOne or UnitName("player")
-		MainFrame.repeatBtn:Disable()
+		ConfigFrame.repeatBtn:Disable()
 
 			if (singlePlayerMode == "self") then
 				pTwo = pTwo or UnitName("player") .. " 2"
@@ -913,7 +913,7 @@ function Config:UpdateSingleplayer(solo, pOne, pTwo)
 		SetBothPlayers(pOne, pTwo)
 	else
 		if (DropDownSinglePlayerMode) then UIDropDownMenu_DisableDropDown(DropDownSinglePlayerMode) end
-		MainFrame.repeatBtn:Enable()
+		ConfigFrame.repeatBtn:Enable()
 	end
 end
 
