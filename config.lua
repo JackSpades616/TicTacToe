@@ -100,6 +100,7 @@ local cheatUsed = false
 
 local expandedMainFrame = false
 local isResizingMainFrame = false
+local helpShown = false
 
 local TicTacToe_HelpPlate = {
 	FramePos = { 
@@ -795,20 +796,20 @@ function Config:UpdateHelpPlate()
 	
 end
 
-function Config:ToggleHelpPlate()
+function Config:ToggleHelpPlate(animation)
 	local helpPlate = TicTacToe_HelpPlate;
 	--Config:UpdateHelpPlate()
+
+    if (animation == nil) then animation = true end
 	
-	
-	if ( helpPlate and not HelpPlate_IsShowing(helpPlate) and MainFrame:IsShown()) then
+	if ( helpPlate and not helpShown and MainFrame:IsShown()) then
 		HelpPlate_Show( helpPlate, MainFrame, MainFrame.mainHelpButton );
-		SetCVarBitfield( "closedInfoFrames", LE_FRAME_TUTORIAL_WORLD_MAP_FRAME );
+		--SetCVarBitfield( "closedInfoFrames", LE_FRAME_TUTORIAL_WORLD_MAP_FRAME );
+        helpShown = true
 	else
-		HelpPlate_Hide(true);
+		HelpPlate_Hide(animation);
+        helpShown = false
 	end
-	
-	
-	
 end
 
 -- Resets the game area
@@ -878,6 +879,7 @@ function Config:ResetAddon()
 
 	expandedMainFrame = false
 	isResizingMainFrame = false
+    helpShown = false
 
 	Config:ResetPosition()
 end
@@ -1071,27 +1073,28 @@ function Config:CreateMainFrame() -- creates the Main Frame
 	MainFrame:SetMovable(true)
 	MainFrame:EnableMouse(true)
 	MainFrame:SetScript("OnMouseDown", function(self, button)
-	  if button == "LeftButton" and not self.isMoving then
-	   self:StartMoving()
-	   self.isMoving = true
-	  end
-	end)
-	MainFrame:SetScript("OnMouseUp", function(self, button)
-	  if button == "LeftButton" and self.isMoving then
-	   self:StopMovingOrSizing()
-	   self.isMoving = false
-	   xPosition = self:GetLeft()
-	   yPosition = self:GetTop()
-	   Config:UpdateHelpPlate()
-	  end
-	end)
-	MainFrame:SetScript("OnHide", function(self)
-		TicTacToe_HelpPlate:
-	  if (self.isMoving) then
-	   self:StopMovingOrSizing()
-	   self.isMoving = false
-	  end
-	end)
+        if button == "LeftButton" and not self.isMoving then
+            self:StartMoving()
+            self.isMoving = true
+        end
+    end)
+    MainFrame:SetScript("OnMouseUp", function(self, button)
+        if button == "LeftButton" and self.isMoving then
+            self:StopMovingOrSizing()
+            self.isMoving = false
+            xPosition = self:GetLeft()
+            yPosition = self:GetTop()
+            Config:UpdateHelpPlate()
+        end
+    end)
+    MainFrame:SetScript("OnHide", function(self)
+        Config:ToggleHelpPlate(false)
+
+        if (self.isMoving) then
+            self:StopMovingOrSizing()
+            self.isMoving = false
+        end
+    end)
 
 	
 	MainFrame.mainHelpButton = CreateFrame("Button", "TicTacToe_HelpBtn", MainFrame, "MainHelpPlateButton")
