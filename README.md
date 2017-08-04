@@ -68,6 +68,18 @@ We are planning to integrate a hard mode but first things first. ;)
 Updates
 ----------------------------
 
+Version 3.2.0 Beta
+----------------------------
+Bugfixes
+> Singleplayer mode selection
+>> Disabled the dropdown for singleplayer modes when singleplayer is not active.
+
+Changes
+>Moved the reset and the repeat button into the configuration frame.
+>Help button
+>>Added a help button, that offers descriptions of the interface. Just like the one of the world map frame.
+
+
 Version 3.1.1 Beta
 ----------------------------
 Bugfixes
